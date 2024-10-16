@@ -1,0 +1,14 @@
+/* Home.module.css */
+
+.flexContainer {
+  display: flex;
+  gap: 20px; /* Space between the components */
+}
+
+.flexContainer > :first-child {
+  flex: 8; /* 8 parts */
+}
+
+.flexContainer > :last-child {
+  flex: 2; /* 2 parts */
+}

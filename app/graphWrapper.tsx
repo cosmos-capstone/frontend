@@ -6,6 +6,7 @@ import SankeyChart from './graph';
 
 
 const csvData = `source,target,value
+source,target,value
 Agricultural 'waste',Bio-conversion,124.729
 Bio-conversion,Liquid,0.597
 Bio-conversion,Losses,26.862
@@ -73,7 +74,8 @@ Thermal generation,District heating,79.329
 Tidal,Electricity grid,9.452
 UK land based bioenergy,Bio-conversion,182.01
 Wave,Electricity grid,19.013
-Wind,Electricity grid,289.366`;
+Wind,Electricity grid,289.366
+`;
 
 function parseCsvData(csv) {
   const lines = csv.trim().split('\n');
@@ -105,5 +107,5 @@ export default function SankeyChartWrapper() {
     return <p>Loading...</p>;
   }
 
-  return <SankeyChart data={data} width={1000} height={600} />;
+  return <SankeyChart data={data} width={1200} height={600} />;
 }

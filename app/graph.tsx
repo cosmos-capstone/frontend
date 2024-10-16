@@ -1,11 +1,13 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef ,useState} from 'react';
 import * as d3 from 'd3';
-import { sankey, sankeyLinkHorizontal, sankeyLeft } from 'd3-sankey';
+import { sankey, sankeyLinkHorizontal, sankeyRight } from 'd3-sankey';
+import Popup from './Popup'; 
 
 const SankeyChart = ({ data, width = 600, height = 400 }) => { // width와 height를 props로 받습니다
   const svgRef = useRef(null);
+  const [selectedNode, setSelectedNode] = useState(null);
 
   useEffect(() => {
     if (data && data.nodes && data.links && data.nodes.length > 0 && data.links.length > 0) {
@@ -38,7 +40,7 @@ const SankeyChart = ({ data, width = 600, height = 400 }) => { // width와 heigh
     // Sankey 레이아웃 설정
     const sankeyLayout = sankey()
       .nodeId(d => d.name)
-      .nodeAlign(sankeyLeft)
+      .nodeAlign(sankeyRight)
       .nodeWidth(10)
       .nodePadding(8)
       .extent([[1, 5], [width - 1, height - 5]]);
@@ -62,6 +64,10 @@ const SankeyChart = ({ data, width = 600, height = 400 }) => { // width와 heigh
         .attr("height", d => d.y1 - d.y0)
         .attr("width", d => d.x1 - d.x0)
         .attr("fill", d => color(d.category))
+        .on("click",(event,d)=>{
+          console.log("Clicked node :",d);
+          setSelectedNode(selectedNode === d.name ? null : d.name);
+        })
       .append("title")
         .text(d => `${d.name}\n${format(d.value)} TWh`);
 
@@ -88,12 +94,18 @@ const SankeyChart = ({ data, width = 600, height = 400 }) => { // width와 heigh
         .attr("dy", "0.35em")
         .attr("text-anchor", d => d.x0 < width / 2 ? "start" : "end")
         .text(d => d.name)
-        .style("font-size", "8px"); // 폰트 크기를 줄입니다
+        .style("font-size", "10px"); 
   };
 
   return (
-    <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto' }}> {/* 컨테이너 추가 */}
+    <div style={{ width: '100%', maxWidth: '1920px', margin: '0 auto' }}> {/* 컨테이너 추가 */}
       <svg ref={svgRef} style={{ width: '100%', height: 'auto', backgroundColor: 'white' }} />
+      {selectedNode && (
+        <Popup
+          node={selectedNode}
+          onClose={() => setSelectedNode(null)}
+        />
+      )}  
     </div>
   );
 };
