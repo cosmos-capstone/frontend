@@ -1,57 +1,32 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Dashboard, PieChart, BarChart, Person, Settings } from '@mui/icons-material';
 
 export default function Sidebar() {
-  const [activeItem, setActiveItem] = useState("Dashboard");
+  const location = useLocation();
 
   return (
     <div style={styles.sidebar}>
       <nav style={styles.nav}>
-        <MenuItem
-          icon={<Dashboard />}
-          text="Dashboard"
-          isActive={activeItem === "Dashboard"}
-          onClick={() => setActiveItem("Dashboard")}
-        />
-        <MenuItem
-          icon={<PieChart />}
-          text="Portfolio"
-          isActive={activeItem === "Portfolio"}
-          onClick={() => setActiveItem("Portfolio")}
-        />
-        <MenuItem
-          icon={<BarChart />}
-          text="Data Registration"
-          isActive={activeItem === "Data Registration"}
-          onClick={() => setActiveItem("Data Registration")}
-        />
-        <MenuItem
-          icon={<Person />}
-          text="Accounts"
-          isActive={activeItem === "Accounts"}
-          onClick={() => setActiveItem("Accounts")}
-        />
-        <MenuItem
-          icon={<Settings />}
-          text="Setting"
-          isActive={activeItem === "Setting"}
-          onClick={() => setActiveItem("Setting")}
-        />
+        <MenuItem icon={<Dashboard />} text="Dashboard" path="/" isActive={location.pathname === "/"} />
+        <MenuItem icon={<PieChart />} text="Portfolio" path="/portfolio" isActive={location.pathname === "/portfolio"} />
+        <MenuItem icon={<BarChart />} text="Data Registration" path="/data-registration" isActive={location.pathname === "/data-registration"} />
+        <MenuItem icon={<Person />} text="Accounts" path="/accounts" isActive={location.pathname === "/accounts"} />
+        <MenuItem icon={<Settings />} text="Setting" path="/setting" isActive={location.pathname === "/setting"} />
       </nav>
     </div>
   );
 }
 
-const MenuItem = ({ icon, text, isActive, onClick }) => (
-  <div
-    style={isActive ? styles.activeMenuItem : styles.menuItem}
-    onClick={onClick}
-  >
-    <span style={styles.icon}>{icon}</span>
-    <span style={isActive ? styles.activeText : styles.text}>{text}</span>
-  </div>
+const MenuItem = ({ icon, text, path, isActive }) => (
+  <Link to={path} style={styles.link}>
+    <div style={isActive ? styles.activeMenuItem : styles.menuItem}>
+      <span style={styles.icon}>{icon}</span>
+      <span style={isActive ? styles.activeText : styles.text}>{text}</span>
+    </div>
+  </Link>
 );
 
 const styles = {
@@ -82,7 +57,6 @@ const styles = {
     alignItems: 'center',
     padding: '10px',
     color: '#007bff',
-    cursor: 'pointer',
     transition: 'background-color 0.3s',
     borderRadius: '5px',
     backgroundColor: '#f0f8ff',
@@ -98,5 +72,9 @@ const styles = {
   activeText: {
     fontSize: '16px',
     fontWeight: 'bold',
+  },
+  link: {
+    textDecoration: 'none',
+    color: 'inherit',
   },
 };
