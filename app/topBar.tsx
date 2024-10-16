@@ -1,77 +1,65 @@
+'use client';
+
 import React from 'react';
+import { Search, Settings, Notifications } from '@mui/icons-material';
 
 export default function TopBar() {
   return (
-    <div style={styles.container}>
-      <div style={styles.logoSection}>
-        <img src="/path/to/logo.png" alt="Logo" style={styles.logo} />
-        <span style={styles.title}>토스증권</span>
+    <div style={styles.topBar}>
+      <span style={styles.title}>Overview</span>
+      <div style={styles.searchBar}>
+        <Search style={styles.icon} />
+        <input
+          type="text"
+          placeholder="Search for something"
+          style={styles.input}
+        />
       </div>
-      <nav style={styles.nav}>
-        <span style={styles.navItem}>홈</span>
-        <span style={styles.navItem}>뉴스</span>
-        <span style={styles.navItem}>주식 골라보기</span>
-        <span style={styles.navItem}>내 계좌</span>
-      </nav>
-      <div style={styles.searchSection}>
-        <input type="text" placeholder="종목 검색" style={styles.searchInput} />
-        <button style={styles.searchButton}>Q</button>
+      <div style={styles.icons}>
+        <Settings style={styles.icon} />
+        <Notifications style={styles.icon} />
       </div>
-      <button style={styles.loginButton}>로그인</button>
     </div>
   );
 }
 
 const styles = {
-  container: {
+  topBar: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '10px 20px',
-    backgroundColor: '#f4f5f7',
-  },
-  logoSection: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  logo: {
-    height: '24px',
+    borderBottom: '2px solid #007bff',
+    backgroundColor: '#fff',
   },
   title: {
-    marginLeft: '8px',
+    fontSize: '24px',
+    color: '#303030',
     fontWeight: 'bold',
   },
-  nav: {
+  searchBar: {
     display: 'flex',
     alignItems: 'center',
-    gap: '20px',
+    backgroundColor: '#f3f5f9',
+    borderRadius: '20px',
+    padding: '5px 10px',
+    marginRight: '15px',
   },
-  navItem: {
-    color: '#6b7280',
-    cursor: 'pointer',
-  },
-  searchSection: {
-    display: 'flex',
-    alignItems: 'center',
-    backgroundColor: '#e5e7eb',
-    padding: '5px',
-    borderRadius: '5px',
-  },
-  searchInput: {
+  input: {
     border: 'none',
     outline: 'none',
+    backgroundColor: 'transparent',
+    color: '#a0a4a8',
+    width: '1000px',
   },
-  searchButton: {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
+  icons: {
+    display: 'flex',
+    alignItems: 'center',
   },
-  loginButton: {
-    backgroundColor: '#3b82f6',
-    color: '#fff',
-    border: 'none',
-    padding: '5px 15px',
-    borderRadius: '5px',
+  icon: {
+    fontSize: '20px',
+    color: '#a0a4a8',
+    margin: '0 10px',
     cursor: 'pointer',
   },
 };

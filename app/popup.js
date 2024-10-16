@@ -1,25 +1,39 @@
-import React from 'react';
-
-const Popup = ({ node, onClose }) => {
+const Popup = ({ node, onClose, position }) => {
   if (!node) return null;
 
   return (
     <div style={{
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      backgroundColor: 'blue',
-      color: 'black', 
-      padding: '20px',
-      borderRadius: '5px',
+      position: 'absolute',
+      top: `${position.top}px`,
+      left: `${position.left}px`,
+      transform: 'translate(-50%, -100%)',
+      backgroundColor: '#e0e0e0',
+      padding: '10px 20px',
+      borderRadius: '8px',
       boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-      zIndex: 1000
+      zIndex: 1000,
+      textAlign: 'center'
     }}>
-      <h2>{node.name}</h2>
+      <h2 style={{
+        margin: '0 0 10px 0',
+        fontSize: '18px',
+        fontWeight: 'normal',
+        color: '#333'
+      }}>
+        {node.name}
+      </h2>
       <p>Value: {node.value} TWh</p>
-      <p>Category: {node.category}</p>
-      <button onClick={onClose}>Close</button>
+      <button onClick={onClose} style={{
+        marginTop: '10px',
+        padding: '5px 10px',
+        borderRadius: '5px',
+        border: 'none',
+        backgroundColor: '#ccc',
+        color: '#333',
+        cursor: 'pointer'
+      }}>
+        Close
+      </button>
     </div>
   );
 };

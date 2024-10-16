@@ -1,13 +1,12 @@
-'use client'
-
-import React, { useEffect, useRef ,useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { sankey, sankeyLinkHorizontal, sankeyRight } from 'd3-sankey';
 import Popup from './Popup'; 
 
-const SankeyChart = ({ data, width = 600, height = 400 }) => { // width와 height를 props로 받습니다
+const SankeyChart = ({ data, width = 600, height = 400 }) => {
   const svgRef = useRef(null);
   const [selectedNode, setSelectedNode] = useState(null);
+  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
 
   useEffect(() => {
     if (data && data.nodes && data.links && data.nodes.length > 0 && data.links.length > 0) {
@@ -23,21 +22,17 @@ const SankeyChart = ({ data, width = 600, height = 400 }) => { // width와 heigh
 
     const format = d3.format(",.0f");
 
-    // SVG 요소 초기화
     d3.select(svgRef.current).selectAll("*").remove();
 
-    // SVG 생성 및 배경 설정
     const svg = d3.select(svgRef.current)
       .attr("viewBox", [0, 0, width, height])
       .style("font", "10px sans-serif");
 
-    // 흰색 배경 추가
     svg.append("rect")
       .attr("width", "100%")
       .attr("height", "100%")
       .attr("fill", "white");
 
-    // Sankey 레이아웃 설정
     const sankeyLayout = sankey()
       .nodeId(d => d.name)
       .nodeAlign(sankeyRight)
@@ -45,16 +40,13 @@ const SankeyChart = ({ data, width = 600, height = 400 }) => { // width와 heigh
       .nodePadding(8)
       .extent([[1, 5], [width - 1, height - 5]]);
 
-    // 데이터 적용
     const { nodes, links } = sankeyLayout({
       nodes: data.nodes.map(d => Object.assign({}, d)),
       links: data.links.map(d => Object.assign({}, d))
     });
 
-    // 색상 스케일 정의
     const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-    // 노드 그리기
     svg.append("g")
       .selectAll("rect")
       .data(nodes)
@@ -64,14 +56,16 @@ const SankeyChart = ({ data, width = 600, height = 400 }) => { // width와 heigh
         .attr("height", d => d.y1 - d.y0)
         .attr("width", d => d.x1 - d.x0)
         .attr("fill", d => color(d.category))
-        .on("click",(event,d)=>{
-          console.log("Clicked node :",d);
-          setSelectedNode(selectedNode === d.name ? null : d.name);
+        .on("click", (event, d) => {
+          setSelectedNode(selectedNode === d ? null : d);
+          setPopupPosition({
+            top: event.clientY,
+            left: event.clientX
+          });
         })
       .append("title")
         .text(d => `${d.name}\n${format(d.value)} TWh`);
 
-    // 링크 그리기
     svg.append("g")
       .attr("fill", "none")
       .selectAll("path")
@@ -84,7 +78,6 @@ const SankeyChart = ({ data, width = 600, height = 400 }) => { // width와 heigh
       .append("title")
         .text(d => `${d.source.name} → ${d.target.name}\n${format(d.value)} TWh`);
 
-    // 노드 레이블 추가
     svg.append("g")
       .selectAll("text")
       .data(nodes)
@@ -98,14 +91,15 @@ const SankeyChart = ({ data, width = 600, height = 400 }) => { // width와 heigh
   };
 
   return (
-    <div style={{ width: '100%', maxWidth: '1920px', margin: '0 auto' }}> {/* 컨테이너 추가 */}
+    <div style={{ position: 'relative', width: '100%', maxWidth: '1920px', margin: '0 auto' }}>
       <svg ref={svgRef} style={{ width: '100%', height: 'auto', backgroundColor: 'white' }} />
       {selectedNode && (
         <Popup
           node={selectedNode}
           onClose={() => setSelectedNode(null)}
+          position={popupPosition}
         />
-      )}  
+      )}
     </div>
   );
 };
