@@ -1,6 +1,9 @@
 const Popup = ({ node, onClose, position }) => {
   if (!node) return null;
 
+  // value를 반올림
+  const roundedValue = Math.round(node.value);
+
   return (
     <div style={{
       position: 'absolute',
@@ -22,7 +25,20 @@ const Popup = ({ node, onClose, position }) => {
       }}>
         {node.name}
       </h2>
-      <p>Value: {node.value} TWh</p>
+      <p>자산: $ {roundedValue}</p>
+
+      <select style={{
+        marginTop: '10px',
+        padding: '5px',
+        borderRadius: '5px',
+        border: '1px solid #ccc',
+        width: '100%'
+      }}>
+        <option value="nvidia">NVIDIA</option>
+        <option value="amd">AMD</option>
+        <option value="broadcom">Broadcom</option>
+      </select>
+
       <button onClick={onClose} style={{
         marginTop: '10px',
         padding: '5px 10px',
@@ -32,7 +48,7 @@ const Popup = ({ node, onClose, position }) => {
         color: '#333',
         cursor: 'pointer'
       }}>
-        Close
+        닫기
       </button>
     </div>
   );
