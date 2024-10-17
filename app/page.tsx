@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Sidebar from './sideBar';
+
 import DashboardPage from './pages/DashboardPage';
 import PortfolioPage from './pages/PortfolioPage';
 // import DataRegistrationPage from ' ./pages/DataRegistrationPage';
