@@ -1,4 +1,4 @@
-
+import React from 'react';
 
 export default function Dashboard() {
   return (
@@ -24,12 +24,11 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      
     </div>
   );
 }
 
-const styles = {
+const styles: { [key: string]: React.CSSProperties } = {
   dashboard: {
     backgroundColor: '#fff',
     padding: '20px',
@@ -54,6 +53,6 @@ const styles = {
   },
   chart: {
     marginTop: '20px',
-    // 여기에 차트 관련 스타일 추가 가능
+    // Add chart-related styles here
   },
 };
