@@ -1,0 +1,9 @@
+/* app/globals.css */
+.container {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f5f5f5;
+}
