@@ -28,14 +28,14 @@ export default function TradePage() {
     },
   ]);
 
-  // useEffect(() => {
-  //   async function fetchTransactions() {
-  //     const res = await fetch("/api/getTransactions");
-  //     const data = await res.json();
-  //     setExistingTransactions(data);
-  //   }
-  //   fetchTransactions();
-  // }, []);
+  useEffect(() => {
+    async function fetchTransactions() {
+      const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/dumpdata1");
+      const data = await res.json();
+      setExistingTransactions(data.data);
+    }
+    fetchTransactions();
+  }, []);
 
   const handleInputChange = (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
