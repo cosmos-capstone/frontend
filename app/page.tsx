@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import DashboardPage from './pages/DashboardPage';
 import PortfolioPage from './pages/PortfolioPage';
-// import DataRegistrationPage from ' ./pages/DataRegistrationPage';
+import DataRegistrationPage from './pages/DataRegistrationPage';
 // import AccountsPage from './pages/AccountsPage';
 // import SettingPage from './pages/SettingPage';
 
@@ -23,9 +23,9 @@ function App() {
           <Routes>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/portfolio" element={<PortfolioPage />} />
-            {/* <Route path="/data-registration" element={<DataRegistrationPage />} />
-            <Route path="/accounts" element={<AccountsPage />} />
-            <Route path="/setting" element={<SettingPage />} /> */}
+            <Route path="/data-registration" element={<DataRegistrationPage />} />
+            {/* <Route path="/accounts" element={<AccountsPage />} /> */}
+            {/* <Route path="/setting" element={<SettingPage />} /> */}
           </Routes>
         </div>
       </div>
