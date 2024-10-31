@@ -1,4 +1,4 @@
-
+import { CSSProperties } from 'react';
 
 export default function Dashboard() {
   return (
@@ -29,7 +29,7 @@ export default function Dashboard() {
   );
 }
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   dashboard: {
     backgroundColor: '#fff',
     padding: '20px',

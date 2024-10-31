@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
 const existingPortfolioData = [
@@ -75,7 +75,7 @@ const PortfolioAnalysis = () => {
   );
 };
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   container: {
     // padding: '20px',
     backgroundColor: '#f8f9fa',

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Dashboard, PieChart, BarChart, Person, Settings } from '@mui/icons-material';
 
@@ -29,7 +29,7 @@ const MenuItem = ({ icon, text, path, isActive }) => (
   </Link>
 );
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   sidebar: {
     width: '200px',
     height: '100vh',

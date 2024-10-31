@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, CSSProperties } from 'react';
 
 export default function OptionSelector() {
   const [categories, setCategories] = useState({
@@ -91,7 +91,7 @@ export default function OptionSelector() {
   );
 }
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   container: {
     padding: '20px',
     maxWidth: '300px',
