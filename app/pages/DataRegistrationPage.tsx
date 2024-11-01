@@ -110,7 +110,6 @@ export default function TradePage() {
               <th className="border-b py-2">Date</th>
               <th className="border-b py-2">Type</th>
               <th className="border-b py-2">Category</th>
-              <th className="border-b py-2">Stock Code</th>
               <th className="border-b py-2">Stock Name</th>
               <th className="border-b py-2">Bond Name</th>
               <th className="border-b py-2">Fund Name</th>
@@ -126,7 +125,6 @@ export default function TradePage() {
                 <td className="border-b py-2">{transaction.transaction_date}</td>
                 <td className="border-b py-2">{transaction.transaction_type}</td>
                 <td className="border-b py-2">{transaction.asset_category}</td>
-                <td className="border-b py-2">{transaction.stock_code || "-"}</td>
                 <td className="border-b py-2">{transaction.stock_name || "-"}</td>
                 <td className="border-b py-2">{transaction.bond_name || "-"}</td>
                 <td className="border-b py-2">{transaction.fund_name || "-"}</td>
@@ -180,16 +178,6 @@ export default function TradePage() {
                     <option value="deposit">Deposit</option>
                     <option value="savings">Savings Account</option>
                   </select>
-                </td>
-                {/* Add other fields for stock_code, stock_name, bond_name, etc. */}
-                <td className="border-b py-2">
-                  <input
-                    type="text"
-                    name="stock_code"
-                    value={transaction.stock_code || ""}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                  />
                 </td>
                 <td className="border-b py-2">
                   <input
