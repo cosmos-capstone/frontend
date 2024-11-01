@@ -88,6 +88,9 @@ export default function TradePage() {
           transaction_amount: 0,
         },
       ]); // 폼 초기화
+    } else {
+      const response = await res.json();
+      alert("거래 내역 저장을 실패했습니다.\nError: " + response.error);
     }
   };
 
