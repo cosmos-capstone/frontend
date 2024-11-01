@@ -4,7 +4,7 @@ interface Transaction {
   transaction_date: string;
   transaction_type: "deposit" | "withdrawal" | "buy" | "sell";
   asset_category: "korean_stock" | "american_stock" | "korean_bond" | "american_bond" | "fund" | "commodity" | "gold" | "deposit" | "savings";
-  asset_code?: string;
+  asset_symbol?: string;
   asset_name?: string;
   quantity: number;
   transaction_amount: number;
@@ -17,7 +17,7 @@ export default function TradePage() {
       transaction_date: "",
       transaction_type: "buy",
       asset_category: "korean_stock",
-      asset_code: "",
+      asset_symbol: "",
       asset_name: "",
       quantity: 0,
       transaction_amount: 0,
@@ -52,7 +52,7 @@ export default function TradePage() {
         transaction_date: "",
         transaction_type: "buy",
         asset_category: "korean_stock",
-        asset_code: "",
+        asset_symbol: "",
         asset_name: "",
         quantity: 0,
         transaction_amount: 0,
@@ -66,7 +66,7 @@ export default function TradePage() {
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const res = await fetch("/api/submitTransactions", {
+    const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/submit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -82,7 +82,7 @@ export default function TradePage() {
           transaction_date: "",
           transaction_type: "buy",
           asset_category: "korean_stock",
-          asset_code: "",
+          asset_symbol: "",
           asset_name: "",
           quantity: 0,
           transaction_amount: 0,
