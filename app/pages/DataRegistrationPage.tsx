@@ -4,10 +4,8 @@ interface Transaction {
   transaction_date: string;
   transaction_type: "deposit" | "withdrawal" | "buy" | "sell";
   asset_category: "korean_stock" | "american_stock" | "korean_bond" | "american_bond" | "fund" | "commodity" | "gold" | "deposit" | "savings";
-  stock_code?: string;
-  stock_name?: string;
-  bond_name?: string;
-  fund_name?: string;
+  asset_code?: string;
+  asset_name?: string;
   quantity: number;
   transaction_amount: number;
 }
@@ -19,10 +17,8 @@ export default function TradePage() {
       transaction_date: "",
       transaction_type: "buy",
       asset_category: "korean_stock",
-      stock_code: "",
-      stock_name: "",
-      bond_name: "",
-      fund_name: "",
+      asset_code: "",
+      asset_name: "",
       quantity: 0,
       transaction_amount: 0,
     },
@@ -56,10 +52,8 @@ export default function TradePage() {
         transaction_date: "",
         transaction_type: "buy",
         asset_category: "korean_stock",
-        stock_code: "",
-        stock_name: "",
-        bond_name: "",
-        fund_name: "",
+        asset_code: "",
+        asset_name: "",
         quantity: 0,
         transaction_amount: 0,
       },
@@ -88,10 +82,8 @@ export default function TradePage() {
           transaction_date: "",
           transaction_type: "buy",
           asset_category: "korean_stock",
-          stock_code: "",
-          stock_name: "",
-          bond_name: "",
-          fund_name: "",
+          asset_code: "",
+          asset_name: "",
           quantity: 0,
           transaction_amount: 0,
         },
@@ -110,9 +102,7 @@ export default function TradePage() {
               <th className="border-b py-2">Date</th>
               <th className="border-b py-2">Type</th>
               <th className="border-b py-2">Category</th>
-              <th className="border-b py-2">Stock Name</th>
-              <th className="border-b py-2">Bond Name</th>
-              <th className="border-b py-2">Fund Name</th>
+              <th className="border-b py-2">Asset Name</th>
               <th className="border-b py-2">Quantity</th>
               <th className="border-b py-2">Amount</th>
               <th className="border-b py-2">Actions</th>
@@ -125,9 +115,7 @@ export default function TradePage() {
                 <td className="border-b py-2">{transaction.transaction_date}</td>
                 <td className="border-b py-2">{transaction.transaction_type}</td>
                 <td className="border-b py-2">{transaction.asset_category}</td>
-                <td className="border-b py-2">{transaction.stock_name || "-"}</td>
-                <td className="border-b py-2">{transaction.bond_name || "-"}</td>
-                <td className="border-b py-2">{transaction.fund_name || "-"}</td>
+                <td className="border-b py-2">{transaction.asset_name}</td>
                 <td className="border-b py-2">{transaction.quantity}</td>
                 <td className="border-b py-2">{transaction.transaction_amount}</td>
                 <td className="border-b py-2">-</td>
@@ -182,26 +170,8 @@ export default function TradePage() {
                 <td className="border-b py-2">
                   <input
                     type="text"
-                    name="stock_name"
-                    value={transaction.stock_name || ""}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </td>
-                <td className="border-b py-2">
-                  <input
-                    type="text"
-                    name="bond_name"
-                    value={transaction.bond_name || ""}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </td>
-                <td className="border-b py-2">
-                  <input
-                    type="text"
-                    name="fund_name"
-                    value={transaction.fund_name || ""}
+                    name="asset_name"
+                    value={transaction.asset_name || ""}
                     onChange={(e) => handleInputChange(index, e)}
                     className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   />
