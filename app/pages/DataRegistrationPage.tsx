@@ -110,7 +110,8 @@ export default function TradePage() {
       setExistingTransactions((prev) => prev.filter((_, i) => i !== index));
       alert("거래 내역이 성공적으로 삭제되었습니다.");
     } else {
-      alert("거래 내역 삭제를 실패했습니다.");
+      const response = await res.json();
+      alert("거래 내역 삭제를 실패했습니다.\n" + response.error);
     }
   };
 
