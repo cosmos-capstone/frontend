@@ -171,7 +171,17 @@ export default function TradePage() {
             {/* Existing Transactions */}
             {existingTransactions.map((transaction, index) => (
               <tr key={index} className="text-gray-600">
-                <td className="border-b py-2">{transaction.transaction_date.toISOString()}</td>
+                <td className="border-b py-2">
+                {transaction.transaction_date.toLocaleString("ko-KR", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  weekday: "long",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false // Uses 24-hour format
+                })}
+                </td>
                 <td className="border-b py-2">{transaction.transaction_type}</td>
                 <td className="border-b py-2">{transaction.asset_category}</td>
                 <td className="border-b py-2">{transaction.asset_name}</td>
