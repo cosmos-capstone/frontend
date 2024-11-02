@@ -2,7 +2,7 @@ import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
 
 interface Transaction {
   id: number;
-  transaction_date: string;
+  transaction_date: Date;
   transaction_type: "deposit" | "withdrawal" | "buy" | "sell";
   asset_category: "korean_stock" | "american_stock" | "korean_bond" | "american_bond" | "fund" | "commodity" | "gold" | "deposit" | "savings" | "cash";
   asset_symbol?: string;
@@ -16,7 +16,7 @@ export default function TradePage() {
   const [newTransactions, setNewTransactions] = useState<Transaction[]>([
     {
       id: -1,
-      transaction_date: "",
+      transaction_date: new Date(),
       transaction_type: "buy",
       asset_category: "korean_stock",
       asset_symbol: "",
@@ -31,7 +31,10 @@ export default function TradePage() {
       const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/test");
       const data = await res.json();
 
-      const sortedData = data.data.sort((a: Transaction, b: Transaction) => {
+      const sortedData = data.data.map((item: any) => ({
+        ...item,
+        transaction_date: new Date(item.transaction_date)
+      })).sort((a: Transaction, b: Transaction) => {
         return new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime();
       });
 
@@ -46,7 +49,11 @@ export default function TradePage() {
       const updatedTransactions = [...prev];
       updatedTransactions[index] = {
         ...updatedTransactions[index],
-        [name]: name === "quantity" || name === "transaction_amount" ? Number(value) : value,
+        [name]: name === "quantity" || name === "transaction_amount"
+          ? Number(value)
+          : name === "transaction_date"
+          ? new Date(value)
+          : value,
         ...(name === "transaction_type" && (value === "deposit" || value === "withdrawal") ? { asset_category: "cash" } : {}),
       };
       return updatedTransactions;
@@ -58,7 +65,7 @@ export default function TradePage() {
       ...newTransactions,
       {
         id: -1,
-        transaction_date: "",
+        transaction_date: new Date(),
         transaction_type: "buy",
         asset_category: "korean_stock",
         asset_symbol: "",
@@ -80,13 +87,21 @@ export default function TradePage() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newTransactions),
+      body: JSON.stringify(newTransactions.map(transaction => ({
+        ...transaction,
+        transaction_date: formatDateForInput(transaction.transaction_date)
+      }))),
     });
     if (res.ok) {
       alert("거래 내역이 성공적으로 저장되었습니다.");
       const updatedTransactions = await res.json();
 
-      const combinedTransaction = [...existingTransactions, ...updatedTransactions].sort(
+      const convertedTransactions = updatedTransactions.map((transaction: any) => ({
+        ...transaction,
+        transaction_date: new Date(transaction.transaction_date),
+      }));
+
+      const combinedTransaction = [...existingTransactions, ...convertedTransactions].sort(
         (a, b) => new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime()
       );
 
@@ -94,7 +109,7 @@ export default function TradePage() {
       setNewTransactions([
         {
           id: -1,
-          transaction_date: "",
+          transaction_date: new Date(),
           transaction_type: "buy",
           asset_category: "korean_stock",
           asset_symbol: "",
@@ -125,6 +140,16 @@ export default function TradePage() {
     }
   };
 
+  const formatDateForInput = (date: Date) => {
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1); // Months are zero-based
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
   return (
     <div className="bg-gray-100 min-h-screen p-6">
       <h2 className="text-2xl font-bold mb-4">거래 내역 관리</h2>
@@ -146,7 +171,7 @@ export default function TradePage() {
             {/* Existing Transactions */}
             {existingTransactions.map((transaction, index) => (
               <tr key={index} className="text-gray-600">
-                <td className="border-b py-2">{transaction.transaction_date}</td>
+                <td className="border-b py-2">{transaction.transaction_date.toISOString()}</td>
                 <td className="border-b py-2">{transaction.transaction_type}</td>
                 <td className="border-b py-2">{transaction.asset_category}</td>
                 <td className="border-b py-2">{transaction.asset_name}</td>
@@ -171,7 +196,7 @@ export default function TradePage() {
                   <input
                     type="datetime-local"
                     name="transaction_date"
-                    value={transaction.transaction_date}
+                    value={formatDateForInput(transaction.transaction_date)}
                     onChange={(e) => handleInputChange(index, e)}
                     className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                     required
