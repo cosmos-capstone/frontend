@@ -158,6 +158,7 @@ export default function TradePage() {
                     value={transaction.asset_category}
                     onChange={(e) => handleInputChange(index, e)}
                     className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    disabled={transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"}
                     required
                   >
                     <option value="korean_stock">Korean Stock</option>
@@ -177,6 +178,7 @@ export default function TradePage() {
                     value={transaction.asset_name || ""}
                     onChange={(e) => handleInputChange(index, e)}
                     className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    disabled={transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"}
                   />
                 </td>
                 <td className="border-b py-2">
@@ -186,6 +188,7 @@ export default function TradePage() {
                     value={transaction.quantity}
                     onChange={(e) => handleInputChange(index, e)}
                     className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    disabled={transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"}
                     required
                   />
                 </td>
