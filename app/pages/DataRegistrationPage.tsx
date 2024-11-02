@@ -1,9 +1,10 @@
 import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
 
 interface Transaction {
+  id: number;
   transaction_date: string;
   transaction_type: "deposit" | "withdrawal" | "buy" | "sell";
-  asset_category: "korean_stock" | "american_stock" | "korean_bond" | "american_bond" | "fund" | "commodity" | "gold" | "deposit" | "savings";
+  asset_category: "korean_stock" | "american_stock" | "korean_bond" | "american_bond" | "fund" | "commodity" | "gold" | "deposit" | "savings" | "cash";
   asset_symbol?: string;
   asset_name?: string;
   quantity: number;
@@ -14,6 +15,7 @@ export default function TradePage() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
   const [newTransactions, setNewTransactions] = useState<Transaction[]>([
     {
+      id: -1,
       transaction_date: "",
       transaction_type: "buy",
       asset_category: "korean_stock",
@@ -40,6 +42,7 @@ export default function TradePage() {
       updatedTransactions[index] = {
         ...updatedTransactions[index],
         [name]: name === "quantity" || name === "transaction_amount" ? Number(value) : value,
+        ...(name === "transaction_type" && (value === "deposit" || value === "withdrawal") ? { asset_category: "cash" } : {}),
       };
       return updatedTransactions;
     });
@@ -49,6 +52,7 @@ export default function TradePage() {
     setNewTransactions([
       ...newTransactions,
       {
+        id: -1,
         transaction_date: "",
         transaction_type: "buy",
         asset_category: "korean_stock",
@@ -79,6 +83,7 @@ export default function TradePage() {
       setExistingTransactions([...existingTransactions, ...newTransactions]); // 기존 내역에 추가된 내역 반영
       setNewTransactions([
         {
+          id: -1,
           transaction_date: "",
           transaction_type: "buy",
           asset_category: "korean_stock",
@@ -91,6 +96,21 @@ export default function TradePage() {
     } else {
       const response = await res.json();
       alert("거래 내역 저장을 실패했습니다.\nError: " + response.error);
+    }
+  };
+
+  const handleDeleteExistingTransaction = async (index: number) => {
+    const transactionId = existingTransactions[index].id; // Assuming each transaction has an `id` field
+  
+    const res = await fetch(`https://cosmos-backend.cho0h5.org/transaction/test?id=${transactionId}`, {
+      method: "DELETE",
+    });
+  
+    if (res.ok) {
+      setExistingTransactions((prev) => prev.filter((_, i) => i !== index));
+      alert("거래 내역이 성공적으로 삭제되었습니다.");
+    } else {
+      alert("거래 내역 삭제를 실패했습니다.");
     }
   };
 
@@ -121,7 +141,15 @@ export default function TradePage() {
                 <td className="border-b py-2">{transaction.asset_name}</td>
                 <td className="border-b py-2">{transaction.quantity}</td>
                 <td className="border-b py-2">{transaction.transaction_amount}</td>
-                <td className="border-b py-2">-</td>
+                <td className="border-b py-2">
+                <button
+                    type="button"
+                    onClick={() => handleDeleteExistingTransaction(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    삭제
+                  </button>
+                </td>
               </tr>
             ))}
 
