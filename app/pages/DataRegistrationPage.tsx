@@ -30,7 +30,12 @@ export default function TradePage() {
     async function fetchTransactions() {
       const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/test");
       const data = await res.json();
-      setExistingTransactions(data.data);
+
+      const sortedData = data.data.sort((a: Transaction, b: Transaction) => {
+        return new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime();
+      });
+
+      setExistingTransactions(sortedData);
     }
     fetchTransactions();
   }, []);
