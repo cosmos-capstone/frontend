@@ -1,4 +1,5 @@
 import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
+import Select from 'react-select';
 
 interface Transaction {
   id: number;
@@ -12,8 +13,8 @@ interface Transaction {
 }
 
 interface StockListElement {
-  symbol: string;
-  name: string;
+  value: string;
+  label: string;
 }
 
 export default function TradePage() {
@@ -54,8 +55,12 @@ export default function TradePage() {
       const res = await fetch("https://cosmos-backend.cho0h5.org/market_data/stocks");
       const data = await res.json();
 
-      console.log(data.data);
-      setAllStocks(data.data);
+      const transformedData = data.data.map((stock) => ({
+        label: stock.name,
+        value: stock.symbol,
+      }));
+
+      setAllStocks(transformedData);
     }
     fetchAllStocks();
   }, []);
@@ -166,6 +171,19 @@ export default function TradePage() {
     const minutes = pad(date.getMinutes());
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
+
+  const handleAssetNameChange = (index: number, selectedOption: StockListElement | null) => {
+    console.info(selectedOption);
+    setNewTransactions((prev) => {
+      const updatedTransactions = [...prev];
+      updatedTransactions[index] = {
+        ...updatedTransactions[index],
+        asset_name: selectedOption?.label || "",
+        asset_symbol: selectedOption?.value || "",
+      };
+      return updatedTransactions;
+    });
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">
@@ -278,6 +296,14 @@ export default function TradePage() {
                         : ""
                     }`}
                     disabled={transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"}
+                  />
+                  {/* 수정필요
+                  korean stock, american stock으로 나누기
+                  이 두개가 아닐땐 그냥 input으로 일단 놔두기 */}
+                  <Select
+                    options={allStocks}
+                    onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
+                    className="w-full"
                   />
                 </td>
                 <td className="border-b py-2">
