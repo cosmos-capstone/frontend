@@ -157,7 +157,11 @@ export default function TradePage() {
                     name="asset_category"
                     value={transaction.asset_category}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${
+                      transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
+                        ? "bg-gray-200 opacity-60 cursor-not-allowed"
+                        : ""
+                    }`}
                     disabled={transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"}
                     required
                   >
@@ -177,7 +181,11 @@ export default function TradePage() {
                     name="asset_name"
                     value={transaction.asset_name || ""}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${
+                      transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
+                        ? "bg-gray-200 opacity-60 cursor-not-allowed"
+                        : ""
+                    }`}
                     disabled={transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"}
                   />
                 </td>
@@ -187,7 +195,11 @@ export default function TradePage() {
                     name="quantity"
                     value={transaction.quantity}
                     onChange={(e) => handleInputChange(index, e)}
-                    className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${
+                      transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
+                        ? "bg-gray-200 opacity-60 cursor-not-allowed"
+                        : ""
+                    }`}
                     disabled={transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"}
                     required
                   />
