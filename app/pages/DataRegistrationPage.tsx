@@ -85,7 +85,12 @@ export default function TradePage() {
     if (res.ok) {
       alert("거래 내역이 성공적으로 저장되었습니다.");
       const updatedTransactions = await res.json();
-      setExistingTransactions([...existingTransactions, ...newTransactions]); // 기존 내역에 추가된 내역 반영
+
+      const combinedTransaction = [...existingTransactions, ...updatedTransactions].sort(
+        (a, b) => new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime()
+      );
+
+      setExistingTransactions(combinedTransaction);
       setNewTransactions([
         {
           id: -1,
