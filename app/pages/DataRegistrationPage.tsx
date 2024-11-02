@@ -11,6 +11,11 @@ interface Transaction {
   transaction_amount: number;
 }
 
+interface StockListElement {
+  symbol: string;
+  name: string;
+}
+
 export default function TradePage() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
   const [newTransactions, setNewTransactions] = useState<Transaction[]>([
@@ -25,6 +30,7 @@ export default function TradePage() {
       transaction_amount: 0,
     },
   ]);
+  const [allStocks, setAllStocks] = useState<StockListElement[]>([]);
 
   useEffect(() => {
     async function fetchTransactions() {
@@ -41,6 +47,17 @@ export default function TradePage() {
       setExistingTransactions(sortedData);
     }
     fetchTransactions();
+  }, []);
+
+  useEffect(() => {
+    async function fetchAllStocks() {
+      const res = await fetch("https://cosmos-backend.cho0h5.org/market_data/stocks");
+      const data = await res.json();
+
+      console.log(data.data);
+      setAllStocks(data.data);
+    }
+    fetchAllStocks();
   }, []);
 
   const handleInputChange = (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
