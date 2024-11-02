@@ -26,7 +26,7 @@ export default function TradePage() {
 
   useEffect(() => {
     async function fetchTransactions() {
-      const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/dumpdata1");
+      const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/test");
       const data = await res.json();
       setExistingTransactions(data.data);
     }
@@ -66,8 +66,8 @@ export default function TradePage() {
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/submit", {
-      method: "POST",
+    const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/test", {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
