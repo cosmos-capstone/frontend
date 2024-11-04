@@ -31,7 +31,7 @@ export default function TradePage() {
       transaction_amount: 0,
     },
   ]);
-  const [allStocks, setAllStocks] = useState<StockListElement[]>([]);
+  const [koreanStocks, setKoreanStocks] = useState<StockListElement[]>([]);
 
   useEffect(() => {
     async function fetchTransactions() {
@@ -51,8 +51,8 @@ export default function TradePage() {
   }, []);
 
   useEffect(() => {
-    async function fetchAllStocks() {
-      const res = await fetch("https://cosmos-backend.cho0h5.org/market_data/stocks");
+    async function fetchKoreanStocks() {
+      const res = await fetch("https://cosmos-backend.cho0h5.org/market_data/korean_stocks");
       const data = await res.json();
 
       const transformedData = data.data.map((stock) => ({
@@ -60,9 +60,9 @@ export default function TradePage() {
         value: stock.symbol,
       }));
 
-      setAllStocks(transformedData);
+      setKoreanStocks(transformedData);
     }
-    fetchAllStocks();
+    fetchKoreanStocks();
   }, []);
 
   const handleInputChange = (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -301,7 +301,7 @@ export default function TradePage() {
                   korean stock, american stock으로 나누기
                   이 두개가 아닐땐 그냥 input으로 일단 놔두기 */}
                   <Select
-                    options={allStocks}
+                    options={koreanStocks}
                     onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
                     className="w-full"
                   />
