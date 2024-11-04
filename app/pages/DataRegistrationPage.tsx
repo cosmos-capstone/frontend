@@ -302,6 +302,7 @@ export default function TradePage() {
                   </select>
                 </td>
                 <td className="border-b py-2">
+                  {(transaction.asset_category !== "korean_stock" && transaction.asset_category !== "american_stock") && (
                   <input
                     type="text"
                     name="asset_name"
@@ -314,19 +315,22 @@ export default function TradePage() {
                     }`}
                     disabled={transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"}
                   />
-                  {/* 수정필요
-                  korean stock, american stock으로 나누기
-                  이 두개가 아닐땐 그냥 input으로 일단 놔두기 */}
+                  )}
+
+                  {transaction.asset_category === "korean_stock" && (
                   <Select
                     options={koreanStocks}
                     onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
                     className="w-full"
                   />
+                  )}
+                  {transaction.asset_category === "american_stock" && (
                   <Select
                     options={americanStocks}
                     onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
                     className="w-full"
                   />
+                  )}
                 </td>
                 <td className="border-b py-2">
                   <input
