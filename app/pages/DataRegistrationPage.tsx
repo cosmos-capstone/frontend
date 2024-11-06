@@ -29,25 +29,21 @@ export default function TradePage() {
     fetchStockData("american_stocks", setAmericanStocks);
   }, []);
 
-
-  async function fetchStockData(endpoint: string, setState: (data: StockListElement[]) => void) {
-    const res = await fetch(`https://cosmos-backend.cho0h5.org/market_data/${endpoint}`);
-    const data = await res.json();
-    const transformedData = data.data.map((stock: any) => ({ label: stock.name, value: stock.symbol }));
-    setState(transformedData);
-  }
-
   async function fetchTransactions() {
     const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/test");
     const data = await res.json();
     const sortedData = data.data.map((item: any) => ({
       ...item,
       transaction_date: new Date(item.transaction_date)
-    })).sort((a: Transaction, b: Transaction) => {
-      return new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime();
-    });
-
+    })).sort((a: Transaction, b: Transaction) => a.transaction_date.getTime() - b.transaction_date.getTime());
     setExistingTransactions(sortedData);
+  }
+
+  async function fetchStockData(endpoint: string, setState: (data: StockListElement[]) => void) {
+    const res = await fetch(`https://cosmos-backend.cho0h5.org/market_data/${endpoint}`);
+    const data = await res.json();
+    const transformedData = data.data.map((stock: any) => ({ label: stock.name, value: stock.symbol }));
+    setState(transformedData);
   }
 
   const handleInputChange = (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
