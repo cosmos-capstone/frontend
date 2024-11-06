@@ -64,19 +64,7 @@ export default function TradePage() {
   };
 
   const addRow = () => {
-    setNewTransactions([
-      ...newTransactions,
-      {
-        id: -1,
-        transaction_date: new Date(),
-        transaction_type: "buy",
-        asset_category: "korean_stock",
-        asset_symbol: "",
-        asset_name: "",
-        quantity: 0,
-        transaction_amount: 0,
-      },
-    ]);
+    setNewTransactions([...newTransactions, createEmptyTransaction()]);
   };
 
   const removeRow = (index: number) => {
@@ -96,39 +84,21 @@ export default function TradePage() {
       }))),
     });
     if (res.ok) {
-      alert("거래 내역이 성공적으로 저장되었습니다.");
-      const updatedTransactions = await res.json();
-
-      const convertedTransactions = updatedTransactions.map((transaction: any) => ({
-        ...transaction,
-        transaction_date: new Date(transaction.transaction_date),
-      }));
-
-      const combinedTransaction = [...existingTransactions, ...convertedTransactions].sort(
-        (a, b) => new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime()
-      );
-
-      setExistingTransactions(combinedTransaction);
-      setNewTransactions([
-        {
-          id: -1,
-          transaction_date: new Date(),
-          transaction_type: "buy",
-          asset_category: "korean_stock",
-          asset_symbol: "",
-          asset_name: "",
-          quantity: 0,
-          transaction_amount: 0,
-        },
-      ]); // 폼 초기화
+      handleSuccessfulSubmit();
     } else {
       const response = await res.json();
       alert("거래 내역 저장을 실패했습니다.\nError: " + response.error);
     }
   };
 
+  async function handleSuccessfulSubmit() {
+    alert("거래 내역이 성공적으로 저장되었습니다.");
+    await fetchTransactions();
+    setNewTransactions([createEmptyTransaction()]);
+  }
+
   const handleDeleteExistingTransaction = async (index: number) => {
-    const transactionId = existingTransactions[index].id; // Assuming each transaction has an `id` field
+    const transactionId = existingTransactions[index].id;
   
     const res = await fetch(`https://cosmos-backend.cho0h5.org/transaction/test?id=${transactionId}`, {
       method: "DELETE",
