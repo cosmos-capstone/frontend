@@ -99,11 +99,9 @@ export default function TradePage() {
 
   const handleDeleteExistingTransaction = async (index: number) => {
     const transactionId = existingTransactions[index].id;
-  
     const res = await fetch(`https://cosmos-backend.cho0h5.org/transaction/test?id=${transactionId}`, {
       method: "DELETE",
     });
-  
     if (res.ok) {
       setExistingTransactions((prev) => prev.filter((_, i) => i !== index));
       alert("거래 내역이 성공적으로 삭제되었습니다.");
@@ -112,16 +110,6 @@ export default function TradePage() {
       alert("거래 내역 삭제를 실패했습니다.\n" + response.error);
     }
   };
-
-  const formatDateForInput = (date: Date) => {
-    const pad = (n: number) => String(n).padStart(2, '0');
-    const year = date.getFullYear();
-    const month = pad(date.getMonth() + 1); // Months are zero-based
-    const day = pad(date.getDate());
-    const hours = pad(date.getHours());
-    const minutes = pad(date.getMinutes());
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  }
 
   const handleAssetNameChange = (index: number, selectedOption: StockListElement | null) => {
     console.info(selectedOption);
@@ -338,4 +326,14 @@ function createEmptyTransaction(): Transaction {
     quantity: 0,
     transaction_amount: 0,
   };
+}
+
+const formatDateForInput = (date: Date) => {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
