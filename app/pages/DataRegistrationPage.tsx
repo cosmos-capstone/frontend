@@ -293,23 +293,7 @@ export default function TradePage() {
           </tbody>
         </table>
 
-        <div className="flex space-x-4 mt-4">
-          <button
-            type="button"
-            onClick={addRow}
-            className="py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-          >
-            행 추가
-          </button>
-
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className="py-2 px-4 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-          >
-            거래 내역 저장
-          </button>
-        </div>
+<ActionButtons/>
       </div>
     </div>
   );
@@ -337,3 +321,23 @@ const formatDateForInput = (date: Date) => {
   const minutes = pad(date.getMinutes());
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
+
+const ActionButtons = ({ addRow, handleSubmit }: any) => (
+        <div className="flex space-x-4 mt-4">
+          <button
+            type="button"
+            onClick={addRow}
+            className="py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            행 추가
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="py-2 px-4 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+          >
+            거래 내역 저장
+          </button>
+        </div>
+)
