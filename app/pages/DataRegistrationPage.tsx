@@ -55,8 +55,8 @@ export default function TradePage() {
         [name]: name === "quantity" || name === "transaction_amount"
           ? Number(value)
           : name === "transaction_date"
-          ? new Date(value)
-          : value,
+            ? new Date(value)
+            : value,
         ...(name === "transaction_type" && (value === "deposit" || value === "withdrawal") ? { asset_category: "cash" } : {}),
       };
       return updatedTransactions;
@@ -146,15 +146,15 @@ export default function TradePage() {
             {existingTransactions.map((transaction, index) => (
               <tr key={index} className="text-gray-600">
                 <td className="border-b py-2">
-                {transaction.transaction_date.toLocaleString("ko-KR", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  weekday: "long",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false // Uses 24-hour format
-                })}
+                  {transaction.transaction_date.toLocaleString("ko-KR", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    weekday: "long",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false // Uses 24-hour format
+                  })}
                 </td>
                 <td className="border-b py-2">{transaction.transaction_type}</td>
                 <td className="border-b py-2">{transaction.asset_category}</td>
@@ -162,7 +162,7 @@ export default function TradePage() {
                 <td className="border-b py-2">{transaction.quantity}</td>
                 <td className="border-b py-2">{transaction.transaction_amount}</td>
                 <td className="border-b py-2">
-                <button
+                  <button
                     type="button"
                     onClick={() => handleDeleteExistingTransaction(index)}
                     className="text-red-500 hover:text-red-700"
@@ -205,11 +205,10 @@ export default function TradePage() {
                     name="asset_category"
                     value={transaction.asset_category}
                     onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${
-                      transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
+                    className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
                         ? "bg-gray-200 opacity-60 cursor-not-allowed"
                         : ""
-                    }`}
+                      }`}
                     disabled={transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"}
                     required
                   >
@@ -225,33 +224,32 @@ export default function TradePage() {
                 </td>
                 <td className="border-b py-2">
                   {(transaction.asset_category !== "korean_stock" && transaction.asset_category !== "american_stock") && (
-                  <input
-                    type="text"
-                    name="asset_name"
-                    value={transaction.asset_name || ""}
-                    onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${
-                      transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
-                        ? "bg-gray-200 opacity-60 cursor-not-allowed"
-                        : ""
-                    }`}
-                    disabled={transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"}
-                  />
+                    <input
+                      type="text"
+                      name="asset_name"
+                      value={transaction.asset_name || ""}
+                      onChange={(e) => handleInputChange(index, e)}
+                      className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
+                          ? "bg-gray-200 opacity-60 cursor-not-allowed"
+                          : ""
+                        }`}
+                      disabled={transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"}
+                    />
                   )}
 
                   {transaction.asset_category === "korean_stock" && (
-                  <Select
-                    options={koreanStocks}
-                    onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
-                    className="w-full"
-                  />
+                    <Select
+                      options={koreanStocks}
+                      onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
+                      className="w-full"
+                    />
                   )}
                   {transaction.asset_category === "american_stock" && (
-                  <Select
-                    options={americanStocks}
-                    onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
-                    className="w-full"
-                  />
+                    <Select
+                      options={americanStocks}
+                      onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
+                      className="w-full"
+                    />
                   )}
                 </td>
                 <td className="border-b py-2">
@@ -260,11 +258,10 @@ export default function TradePage() {
                     name="quantity"
                     value={transaction.quantity}
                     onChange={(e) => handleInputChange(index, e)}
-                    className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${
-                      transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
+                    className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
                         ? "bg-gray-200 opacity-60 cursor-not-allowed"
                         : ""
-                    }`}
+                      }`}
                     disabled={transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"}
                     required
                   />
@@ -293,7 +290,7 @@ export default function TradePage() {
           </tbody>
         </table>
 
-<ActionButtons/>
+        <ActionButtons />
       </div>
     </div>
   );
@@ -323,21 +320,21 @@ const formatDateForInput = (date: Date) => {
 }
 
 const ActionButtons = ({ addRow, handleSubmit }: any) => (
-        <div className="flex space-x-4 mt-4">
-          <button
-            type="button"
-            onClick={addRow}
-            className="py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-          >
-            행 추가
-          </button>
+  <div className="flex space-x-4 mt-4">
+    <button
+      type="button"
+      onClick={addRow}
+      className="py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+    >
+      행 추가
+    </button>
 
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className="py-2 px-4 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-          >
-            거래 내역 저장
-          </button>
-        </div>
+    <button
+      type="button"
+      onClick={handleSubmit}
+      className="py-2 px-4 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+    >
+      거래 내역 저장
+    </button>
+  </div>
 )
