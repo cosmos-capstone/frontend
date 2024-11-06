@@ -19,68 +19,36 @@ interface StockListElement {
 
 export default function TradePage() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
-  const [newTransactions, setNewTransactions] = useState<Transaction[]>([
-    {
-      id: -1,
-      transaction_date: new Date(),
-      transaction_type: "buy",
-      asset_category: "korean_stock",
-      asset_symbol: "",
-      asset_name: "",
-      quantity: 0,
-      transaction_amount: 0,
-    },
-  ]);
+  const [newTransactions, setNewTransactions] = useState<Transaction[]>([createEmptyTransaction()]);
   const [koreanStocks, setKoreanStocks] = useState<StockListElement[]>([]);
   const [americanStocks, setAmericanStocks] = useState<StockListElement[]>([]);
 
   useEffect(() => {
-    async function fetchTransactions() {
-      const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/test");
-      const data = await res.json();
-
-      const sortedData = data.data.map((item: any) => ({
-        ...item,
-        transaction_date: new Date(item.transaction_date)
-      })).sort((a: Transaction, b: Transaction) => {
-        return new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime();
-      });
-
-      setExistingTransactions(sortedData);
-    }
     fetchTransactions();
-  }, []);
-
-  useEffect(() => {
-    async function fetchKoreanStocks() {
-      const res = await fetch("https://cosmos-backend.cho0h5.org/market_data/korean_stocks");
-      const data = await res.json();
-
-      const transformedData = data.data.map((stock) => ({
-        label: stock.name,
-        value: stock.symbol,
-      }));
-
-      setKoreanStocks(transformedData);
-    }
-    fetchKoreanStocks();
+    fetchStockData("korean_stocks", setKoreanStocks);
+    fetchStockData("american_stocks", setAmericanStocks);
   }, []);
 
 
-  useEffect(() => {
-    async function fetchAmericanStocks() {
-      const res = await fetch("https://cosmos-backend.cho0h5.org/market_data/american_stocks");
-      const data = await res.json();
+  async function fetchStockData(endpoint: string, setState: (data: StockListElement[]) => void) {
+    const res = await fetch(`https://cosmos-backend.cho0h5.org/market_data/${endpoint}`);
+    const data = await res.json();
+    const transformedData = data.data.map((stock: any) => ({ label: stock.name, value: stock.symbol }));
+    setState(transformedData);
+  }
 
-      const transformedData = data.data.map((stock) => ({
-        label: stock.name,
-        value: stock.symbol,
-      }));
+  async function fetchTransactions() {
+    const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/test");
+    const data = await res.json();
+    const sortedData = data.data.map((item: any) => ({
+      ...item,
+      transaction_date: new Date(item.transaction_date)
+    })).sort((a: Transaction, b: Transaction) => {
+      return new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime();
+    });
 
-      setAmericanStocks(transformedData);
-    }
-    fetchAmericanStocks();
-  }, []);
+    setExistingTransactions(sortedData);
+  }
 
   const handleInputChange = (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
@@ -391,4 +359,17 @@ export default function TradePage() {
       </div>
     </div>
   );
+}
+
+function createEmptyTransaction(): Transaction {
+  return {
+    id: -1,
+    transaction_date: new Date(),
+    transaction_type: "buy",
+    asset_category: "korean_stock",
+    asset_symbol: "",
+    asset_name: "",
+    quantity: 0,
+    transaction_amount: 0,
+  };
 }
