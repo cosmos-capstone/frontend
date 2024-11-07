@@ -4,46 +4,20 @@ import React, { CSSProperties, useEffect, useState } from 'react';
 import PieChart from '../components/PieChart';
 import { ChartData } from 'chart.js';
 
-const existingPortfolioData = [
-  { name: 'Apple', value: 20.28, color: '#20c997' },
-  { name: 'Broadcom', value: 13.52, color: '#0d6efd' },
-  { name: 'TSLA', value: 4.16, color: '#6f42c1' },
-  { name: 'Nvidia', value: 2.08, color: '#d63384' },
-];
-
-const proposedPortfolioData = [
-  { name: 'Broadcom', value: 26.52, color: '#ffc107' },
-  { name: 'TSLA', value: 5.16, color: '#fd7e14' },
-  { name: 'Apple', value: 4.28, color: '#dc3545' },
-  { name: 'Nvidia', value: 3.08, color: '#6610f2' },
-];
-
-const existingData: ChartData<'pie'> = {
-  labels: existingPortfolioData.map(item => item.name),
-  datasets: [
-    {
-      data: existingPortfolioData.map(item => item.value),
-      backgroundColor: existingPortfolioData.map(item => item.color),
-      borderColor: existingPortfolioData.map(item => item.color),
-      borderWidth: 1,
-    },
-  ],
-};
-
-const proposedData: ChartData<'pie'> = {
-  labels: proposedPortfolioData.map(item => item.name),
-  datasets: [
-    {
-      data: proposedPortfolioData.map(item => item.value),
-      backgroundColor: proposedPortfolioData.map(item => item.color),
-      borderColor: proposedPortfolioData.map(item => item.color),
-      borderWidth: 1,
-    },
-  ],
-};
-
 const PortfolioAnalysis = () => {
   const [existingData, setExistingData] = useState<ChartData<'pie'>>({
+    labels: [],
+    datasets: [
+      {
+        data: [],
+        backgroundColor: [],
+        borderColor: [],
+        borderWidth: 1,
+      },
+    ],
+  });
+
+  const [proposedData, setProposedData] = useState<ChartData<'pie'>>({
     labels: [],
     datasets: [
       {
@@ -79,6 +53,18 @@ const PortfolioAnalysis = () => {
           datasets: [
             {
               data: formattedData.map(item => item.value),
+              backgroundColor: formattedData.map(item => item.color),
+              borderColor: formattedData.map(item => item.color),
+              borderWidth: 1,
+            },
+          ],
+        });
+
+        setProposedData({
+          labels: formattedData.map(item => item.name),
+          datasets: [
+            {
+              data: formattedData.map(item => item.value), // Example modification for proposed portfolio
               backgroundColor: formattedData.map(item => item.color),
               borderColor: formattedData.map(item => item.color),
               borderWidth: 1,
