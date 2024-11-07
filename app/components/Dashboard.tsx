@@ -1,5 +1,3 @@
-import { CSSProperties } from 'react';
-
 export default function Dashboard() {
   return (
     <div className="m-8 bg-white p-8 mb-5 rounded-lg shadow-md">

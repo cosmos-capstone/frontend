@@ -5,8 +5,20 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
+interface PieChartData {
+    cash: string;
+    deposit: string;
+    gold: string;
+    korean_stock: string;
+    korean_bond: string;
+    american_stock: string;
+    american_bound: string;
+    fund: string;
+    commodity: string;
+}
+
 interface PieChartProps {
-    data: any;
+    data: PieChartData;
 }
 
 const PieChart: React.FC<PieChartProps> = ({ data }) => {
