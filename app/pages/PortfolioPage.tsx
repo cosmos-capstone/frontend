@@ -1,7 +1,10 @@
 'use client';
 
 import React, { CSSProperties } from 'react';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+// import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+
+import PieChart from '../components/PieChart';
+import { ChartData } from 'chart.js';
 
 const existingPortfolioData = [
   { name: 'Apple', value: 20.28, color: '#20c997' },
@@ -17,8 +20,28 @@ const proposedPortfolioData = [
   { name: 'Nvidia', value: 3.08, color: '#6610f2' },
 ];
 
-const renderCustomizedLabel = ({ value }) => {
-  return `${value}B`;
+const existingData: ChartData<'pie'> = {
+  labels: existingPortfolioData.map(item => item.name),
+  datasets: [
+    {
+      data: existingPortfolioData.map(item => item.value),
+      backgroundColor: existingPortfolioData.map(item => item.color),
+      borderColor: existingPortfolioData.map(item => item.color),
+      borderWidth: 1,
+    },
+  ],
+};
+
+const proposedData: ChartData<'pie'> = {
+  labels: proposedPortfolioData.map(item => item.name),
+  datasets: [
+    {
+      data: proposedPortfolioData.map(item => item.value),
+      backgroundColor: proposedPortfolioData.map(item => item.color),
+      borderColor: proposedPortfolioData.map(item => item.color),
+      borderWidth: 1,
+    },
+  ],
 };
 
 const PortfolioAnalysis = () => {
@@ -28,44 +51,13 @@ const PortfolioAnalysis = () => {
       <div style={styles.portfolioSection}>
         <div style={styles.portfolio}>
           <h3 style={styles.subtitle}>기존 포트폴리오</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={existingPortfolioData}
-                dataKey="value"
-                labelLine={false}
-                label={renderCustomizedLabel}
-                outerRadius={100}
-                fill="#8884d8"
-              >
-                {existingPortfolioData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-          <div style={styles.details}>sharp ratio<br/>1년 과거 수익률<br/>MDD</div>
+            <PieChart data={existingData} />
+          <div style={styles.details}>sharp ratio<br/>1년 과서 수익률<br/>MDD</div>
         </div>
 
         <div style={styles.portfolio}>
           <h3 style={styles.subtitle}>제안 포트폴리오</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={proposedPortfolioData}
-                dataKey="value"
-                labelLine={false}
-                label={renderCustomizedLabel}
-                outerRadius={100}
-              >
-                {proposedPortfolioData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+            <PieChart data={proposedData} />
           <div style={styles.details}>이렇게 추천하는 이유<br/>예상 수익률<br/>MDD</div>
         </div>
       </div>
