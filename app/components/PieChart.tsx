@@ -14,34 +14,26 @@ const PieChart: React.FC<PieChartProps> = ({ data }) => {
         return <div>Loading...</div>;
     }
 
-    const formattedData = [
-        { name: '현금', value: parseFloat(data.cash) },
-        { name: '예금', value: parseFloat(data.deposit) },
-        { name: '금', value: parseFloat(data.gold) },
-        { name: '한국 주식', value: parseFloat(data.korean_stock) },
-        { name: '한국 채권', value: parseFloat(data.korean_bond) },
-        { name: '미국 주식', value: parseFloat(data.american_stock) },
-        { name: '미국 채권', value: parseFloat(data.american_bound) },
-        { name: '펀드', value: parseFloat(data.fund) },
-        { name: '원자재', value: parseFloat(data.commodity) },
+    const originalData = [
+        { name: '현금', value: parseFloat(data.cash), color: '#dc3545' },
+        { name: '예금', value: parseFloat(data.deposit), color: '#fd7e14' },
+        { name: '금', value: parseFloat(data.gold), color: '#ffc107' },
+        { name: '한국 주식', value: parseFloat(data.korean_stock), color: '#20c997' },
+        { name: '한국 채권', value: parseFloat(data.korean_bond), color: '#198754' },
+        { name: '미국 주식', value: parseFloat(data.american_stock), color: '#0d6efd' },
+        { name: '미국 채권', value: parseFloat(data.american_bound), color: '#003366' },
+        { name: '펀드', value: parseFloat(data.fund), color: '#6610f2' },
+        { name: '원자재', value: parseFloat(data.commodity), color: '#d63384' },
     ];
+
+    const formattedData = originalData.filter(item => item.value > 0); // 값이 0인 항목은 필터링
 
     const chartData = {
         labels: formattedData.map(item => item.name),
         datasets: [
             {
                 data: formattedData.map(item => item.value),
-                backgroundColor: [
-                    '#dc3545',
-                    '#fd7e14',
-                    '#ffc107',
-                    '#20c997',
-                    '#198754',
-                    '#0d6efd',
-                    '#003366',
-                    '#6610f2',
-                    '#d63384',
-                ],
+                backgroundColor: formattedData.map(item => item.color),
                 borderWidth: 1,
             },
         ],
