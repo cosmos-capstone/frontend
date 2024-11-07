@@ -1,6 +1,6 @@
 import React from 'react';
 import TopBar from './components/TopBar';
-import Sidebar from './components/SideBar';
+import SideBar from './components/SideBar';
 import styles from './styles/page.module.css';
 import type { Metadata } from "next";
 import "./styles/globals.css";
@@ -17,7 +17,7 @@ const Layout = ({ children }) => {
         <div className={styles.container}>
           <TopBar />
           <div className={styles.contentContainer}>
-            <Sidebar />
+            <SideBar />
             <div className={styles.mainContent}>{children}</div>
           </div>
         </div>

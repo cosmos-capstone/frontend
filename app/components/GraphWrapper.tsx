@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react';
 import SankeyChart from './Graph';
 
-
-
 const csvData = `source,target,value
 source,target,value
 Agricultural 'waste',Bio-conversion,124.729

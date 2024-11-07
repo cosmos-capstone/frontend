@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Dashboard, PieChart, BarChart, Person, Settings } from '@mui/icons-material';
 
-export default function Sidebar() {
+export default function SideBar() {
   const pathname = usePathname();
 
   return (
