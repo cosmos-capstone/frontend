@@ -1,6 +1,6 @@
 import React from 'react';
-import TopBar from './components/topBar';
-import Sidebar from './components/sideBar';
+import TopBar from './components/TopBar';
+import Sidebar from './components/SideBar';
 import styles from './styles/page.module.css';
 import type { Metadata } from "next";
 import "./styles/globals.css";

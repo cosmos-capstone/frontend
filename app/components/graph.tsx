@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { sankey, sankeyLinkHorizontal, sankeyRight } from 'd3-sankey';
-import Popup from './popup';
+import Popup from './PopUp';
 
 const SankeyChart = ({ data, width = 600, height = 400 }) => {
   const svgRef = useRef(null);
