@@ -5,29 +5,8 @@ import PieChart from '../components/PieChart';
 import { ChartData } from 'chart.js';
 
 const PortfolioAnalysis = () => {
-  const [existingData, setExistingData] = useState<ChartData<'pie'>>({
-    labels: [],
-    datasets: [
-      {
-        data: [],
-        backgroundColor: [],
-        borderColor: [],
-        borderWidth: 1,
-      },
-    ],
-  });
-
-  const [proposedData, setProposedData] = useState<ChartData<'pie'>>({
-    labels: [],
-    datasets: [
-      {
-        data: [],
-        backgroundColor: [],
-        borderColor: [],
-        borderWidth: 1,
-      },
-    ],
-  });
+  const [existingData, setExistingData] = useState<any>(null);
+  const [proposedData, setProposedData] = useState<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,41 +15,8 @@ const PortfolioAnalysis = () => {
         const data = await response.json();
         const portfolioData = data.data;
 
-        const formattedData = [
-          { name: 'Korean Stock', value: parseFloat(portfolioData.korean_stock), color: '#20c997' },
-          { name: 'American Stock', value: parseFloat(portfolioData.american_stock), color: '#0d6efd' },
-          { name: 'Korean Bond', value: parseFloat(portfolioData.korean_bond), color: '#6f42c1' },
-          { name: 'American Bond', value: parseFloat(portfolioData.american_bound), color: '#d63384' },
-          { name: 'Fund', value: parseFloat(portfolioData.fund), color: '#ffc107' },
-          { name: 'Commodity', value: parseFloat(portfolioData.commodity), color: '#fd7e14' },
-          { name: 'Gold', value: parseFloat(portfolioData.gold), color: '#dc3545' },
-          { name: 'Deposit', value: parseFloat(portfolioData.deposit), color: '#6610f2' },
-          { name: 'Cash', value: parseFloat(portfolioData.cash), color: '#198754' },
-        ];
-
-        setExistingData({
-          labels: formattedData.map(item => item.name),
-          datasets: [
-            {
-              data: formattedData.map(item => item.value),
-              backgroundColor: formattedData.map(item => item.color),
-              borderColor: formattedData.map(item => item.color),
-              borderWidth: 1,
-            },
-          ],
-        });
-
-        setProposedData({
-          labels: formattedData.map(item => item.name),
-          datasets: [
-            {
-              data: formattedData.map(item => item.value), // Example modification for proposed portfolio
-              backgroundColor: formattedData.map(item => item.color),
-              borderColor: formattedData.map(item => item.color),
-              borderWidth: 1,
-            },
-          ],
-        });
+        setExistingData(portfolioData);
+        setProposedData(portfolioData); // Example modification for proposed portfolio
       } catch (error) {
         console.error('Error fetching portfolio data:', error);
       }
