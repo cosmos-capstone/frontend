@@ -1,27 +1,60 @@
 'use client';
 
 import React, { CSSProperties } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Dashboard, PieChart, BarChart, Person, Settings } from '@mui/icons-material';
 
 export default function Sidebar() {
-  const location = useLocation();
+  const pathname = usePathname();
 
   return (
     <div style={styles.sidebar}>
       <nav style={styles.nav}>
-        <MenuItem icon={<Dashboard />} text="Dashboard" path="/" isActive={location.pathname === "/"} />
-        <MenuItem icon={<PieChart />} text="Portfolio" path="/portfolio" isActive={location.pathname === "/portfolio"} />
-        <MenuItem icon={<BarChart />} text="Data Registration" path="/data-registration" isActive={location.pathname === "/data-registration"} />
-        <MenuItem icon={<Person />} text="Accounts" path="/accounts" isActive={location.pathname === "/accounts"} />
-        <MenuItem icon={<Settings />} text="Setting" path="/setting" isActive={location.pathname === "/setting"} />
+        <MenuItem
+          icon={<Dashboard />}
+          text="Dashboard"
+          path="/"
+          isActive={pathname === '/'}
+        />
+        <MenuItem
+          icon={<PieChart />}
+          text="Portfolio"
+          path="/portfolio"
+          isActive={pathname === '/portfolio'}
+        />
+        <MenuItem
+          icon={<BarChart />}
+          text="Data Registration"
+          path="/data-registration"
+          isActive={pathname === '/data-registration'}
+        />
+        <MenuItem
+          icon={<Person />}
+          text="Accounts"
+          path="/accounts"
+          isActive={pathname === '/accounts'}
+        />
+        <MenuItem
+          icon={<Settings />}
+          text="Setting"
+          path="/setting"
+          isActive={pathname === '/setting'}
+        />
       </nav>
     </div>
   );
 }
 
-const MenuItem = ({ icon, text, path, isActive }) => (
-  <Link to={path} style={styles.link}>
+interface MenuItemProps {
+  icon: React.ReactNode;
+  text: string;
+  path: string;
+  isActive: boolean;
+}
+
+const MenuItem: React.FC<MenuItemProps> = ({ icon, text, path, isActive }) => (
+  <Link href={path} style={{ textDecoration: 'none', color: 'inherit' }}>
     <div style={isActive ? styles.activeMenuItem : styles.menuItem}>
       <span style={styles.icon}>{icon}</span>
       <span style={isActive ? styles.activeText : styles.text}>{text}</span>
@@ -72,9 +105,5 @@ const styles: { [key: string]: CSSProperties } = {
   activeText: {
     fontSize: '16px',
     fontWeight: 'bold',
-  },
-  link: {
-    textDecoration: 'none',
-    color: 'inherit',
   },
 };
