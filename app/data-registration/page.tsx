@@ -19,6 +19,22 @@ interface StockListElement {
   label: string;
 }
 
+interface TransactionResponseItem {
+  id: number;
+  transaction_date: string; // ISO date string
+  transaction_type: "deposit" | "withdrawal" | "buy" | "sell";
+  asset_category: "korean_stock" | "american_stock" | "korean_bond" | "american_bond" | "fund" | "commodity" | "gold" | "deposit" | "savings" | "cash";
+  asset_symbol?: string;
+  asset_name?: string;
+  quantity: number;
+  transaction_amount: number;
+}
+
+interface StockDataItem {
+  name: string;
+  symbol: string;
+}
+
 export default function TradePage() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
   const [newTransactions, setNewTransactions] = useState<Transaction[]>([createEmptyTransaction()]);
@@ -33,8 +49,8 @@ export default function TradePage() {
 
   async function fetchTransactions() {
     const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/test");
-    const data = await res.json();
-    const sortedData = data.data.map((item: any) => ({
+    const data = await res.json() as { data: TransactionResponseItem[] };
+    const sortedData = data.data.map((item: TransactionResponseItem) => ({
       ...item,
       transaction_date: new Date(item.transaction_date)
     })).sort((a: Transaction, b: Transaction) => a.transaction_date.getTime() - b.transaction_date.getTime());
@@ -43,8 +59,8 @@ export default function TradePage() {
 
   async function fetchStockData(endpoint: string, setState: (data: StockListElement[]) => void) {
     const res = await fetch(`https://cosmos-backend.cho0h5.org/market_data/${endpoint}`);
-    const data = await res.json();
-    const transformedData = data.data.map((stock: any) => ({ label: stock.name, value: stock.symbol }));
+    const data = await res.json() as { data: StockDataItem[] };
+    const transformedData = data.data.map((stock: StockDataItem) => ({ label: stock.name, value: stock.symbol }));
     setState(transformedData);
   }
 
@@ -173,6 +189,17 @@ const formatDateForInput = (date: Date) => {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
+interface TransactionTableProps {
+  existingTransactions: Transaction[];
+  newTransactions: Transaction[];
+  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleAssetNameChange: (index: number, selectedOption: StockListElement | null) => void;
+  removeRow: (index: number) => void;
+  handleDeleteExistingTransaction: (index: number) => void;
+  koreanStocks: StockListElement[];
+  americanStocks: StockListElement[];
+}
+
 const TransactionTable = ({
   existingTransactions,
   newTransactions,
@@ -182,7 +209,7 @@ const TransactionTable = ({
   handleDeleteExistingTransaction,
   koreanStocks,
   americanStocks
-}: any) => (
+}: TransactionTableProps) => (
   <table className="w-full text-left border-collapse">
     <thead>
       <tr className="text-gray-700">
@@ -345,7 +372,12 @@ const TransactionTable = ({
   </table>
 );
 
-const ActionButtons = ({ addRow, handleSubmit }: any) => (
+interface ActionButtonsProps {
+  addRow: () => void;
+  handleSubmit: (event: MouseEvent<HTMLButtonElement>) => void;
+}
+
+const ActionButtons = ({ addRow, handleSubmit }: ActionButtonsProps) => (
   <div className="flex space-x-4 mt-4">
     <button
       type="button"
