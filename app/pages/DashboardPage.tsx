@@ -2,7 +2,7 @@ import React from 'react';
 import SankeyChartWrapper from '../graphWrapper';
 import Dashboard from '../components/Dashboard';
 import styles from '../styles/page.module.css';
-import OptionSelector from '../OptionBoard';
+import OptionSelector from '../components/OptionBoard';
 
 export default function Home() {
   return (

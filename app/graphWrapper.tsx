@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import SankeyChart from './graph';
+import SankeyChart from './components/graph';
 
 
 
@@ -95,8 +95,8 @@ export default function SankeyChartWrapper() {
   useEffect(() => {
     const parsedData = parseCsvData(csvData);
     const nodes = Array.from(
-        new Set(parsedData.flatMap(l => [l.source, l.target])),
-        (name: string) => ({name, category: name.replace(/ .*/, "")})
+      new Set(parsedData.flatMap(l => [l.source, l.target])),
+      (name: string) => ({ name, category: name.replace(/ .*/, "") })
     );
     const links = parsedData.map(d => ({
       source: d.source,

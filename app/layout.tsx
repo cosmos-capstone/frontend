@@ -1,9 +1,9 @@
 import React from 'react';
-import TopBar from './topBar';
-import Sidebar from './sideBar';
+import TopBar from './components/topBar';
+import Sidebar from './components/sideBar';
 import styles from './styles/page.module.css';
 import type { Metadata } from "next";
-import "./globals.css";
+import "./styles/globals.css";
 
 export const metadata: Metadata = {
   title: "Cosmos",
