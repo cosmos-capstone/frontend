@@ -31,9 +31,9 @@ export default function Sidebar() {
         />
         <MenuItem
           icon={<Person />}
-          text="Accounts"
-          path="/accounts"
-          isActive={pathname === '/accounts'}
+          text="Account"
+          path="/account"
+          isActive={pathname === '/account'}
         />
         <MenuItem
           icon={<Settings />}
