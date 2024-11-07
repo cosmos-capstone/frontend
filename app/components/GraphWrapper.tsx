@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import SankeyChart from './components/Graph';
+import SankeyChart from './Graph';
 
 
 

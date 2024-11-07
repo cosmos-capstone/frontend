@@ -1,5 +1,5 @@
 import React from 'react';
-import SankeyChartWrapper from '../graphWrapper';
+import SankeyChartWrapper from '../components/GraphWrapper';
 import Dashboard from '../components/Dashboard';
 import styles from '../styles/page.module.css';
 import OptionSelector from '../components/OptionBoard';
