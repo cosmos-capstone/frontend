@@ -37,9 +37,9 @@ export default function Sidebar() {
         />
         <MenuItem
           icon={<Settings />}
-          text="Setting"
-          path="/setting"
-          isActive={pathname === '/setting'}
+          text="Settings"
+          path="/settings"
+          isActive={pathname === '/settings'}
         />
       </nav>
     </div>
