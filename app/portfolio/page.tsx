@@ -1,10 +1,9 @@
 'use client';
 
-import React, { CSSProperties, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PieChart from '../components/PieChart';
-import { ChartData } from 'chart.js';
 
-const PortfolioAnalysis = () => {
+const Portfolio = () => {
   const [existingData, setExistingData] = useState<any>(null);
   const [proposedData, setProposedData] = useState<any>(null);
 
@@ -53,4 +52,4 @@ const PortfolioAnalysis = () => {
   );
 };
 
-export default PortfolioAnalysis;
+export default Portfolio;
