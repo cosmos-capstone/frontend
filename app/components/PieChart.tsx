@@ -15,15 +15,15 @@ const PieChart: React.FC<PieChartProps> = ({ data }) => {
   }
 
   const formattedData = [
-    { name: 'Korean Stock', value: parseFloat(data.korean_stock) },
-    { name: 'American Stock', value: parseFloat(data.american_stock) },
-    { name: 'Korean Bond', value: parseFloat(data.korean_bond) },
-    { name: 'American Bond', value: parseFloat(data.american_bound) },
-    { name: 'Fund', value: parseFloat(data.fund) },
-    { name: 'Commodity', value: parseFloat(data.commodity) },
-    { name: 'Gold', value: parseFloat(data.gold) },
-    { name: 'Deposit', value: parseFloat(data.deposit) },
-    { name: 'Cash', value: parseFloat(data.cash) },
+    { name: '한국 주식', value: parseFloat(data.korean_stock) },
+    { name: '미국 주식', value: parseFloat(data.american_stock) },
+    { name: '한국 채권', value: parseFloat(data.korean_bond) },
+    { name: '미국 채권', value: parseFloat(data.american_bound) },
+    { name: '펀드', value: parseFloat(data.fund) },
+    { name: '원자재', value: parseFloat(data.commodity) },
+    { name: '금', value: parseFloat(data.gold) },
+    { name: '예금', value: parseFloat(data.deposit) },
+    { name: '현금', value: parseFloat(data.cash) },
   ];
 
   const chartData = {
