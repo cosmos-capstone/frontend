@@ -68,6 +68,13 @@ const COLORS = {
   korean_stock: '#20c997',
   etf: '#6610f2',
 };
+// 카테고리별 레인의 y축 위치를 정의
+const CATEGORY_LANES = {
+  deposit: PADDING + 50,
+  american_stock: PADDING + 250,
+  korean_stock: PADDING + 450,
+  etf: PADDING + 650
+};
 
 // 샘플 데이터 (실제 데이터로 교체 필요)
 const TRANSACTION_DATA: Transaction[] = [
@@ -373,7 +380,145 @@ const TRANSACTION_DATA: Transaction[] = [
 }
 ];
 
+// drawTimelineLanes 함수 추가
+const drawTimelineLanes = (
+  ctx: CanvasRenderingContext2D,
+  transactions: Transaction[],
+  minDate: Date,
+  maxDate: Date
+) => {
+  // 각 카테고리별 레인 그리기
+  Object.entries(CATEGORY_LANES).forEach(([category, yPosition]) => {
+    // 레인 배경
+    ctx.fillStyle = `${COLORS[category as keyof typeof COLORS]}20`;
+    ctx.fillRect(
+      PADDING,
+      yPosition - 40,
+      CANVAS_WIDTH - (PADDING * 2),
+      80
+    );
+
+    // 레인 레이블
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText(
+      formatLegendLabel(category),
+      PADDING,
+      yPosition - 50
+    );
+  });
+
+  // 시간에 따른 보유량 추적
+  const timePoints = getTimePoints(minDate, maxDate);
+  const holdings = calculateHoldingsOverTime(transactions, timePoints);
+
+  // 각 시점별 보유량 표시
+  timePoints.forEach((date, index) => {
+    const x = getXPositionForDate(date, minDate, maxDate);
+    
+    // 각 카테고리별 보유량 표시
+    Object.entries(holdings[index]).forEach(([category, value]) => {
+      const y = CATEGORY_LANES[category as keyof typeof CATEGORY_LANES];
+      
+      // 보유량 표시
+      ctx.fillStyle = '#000';
+      ctx.font = '12px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(
+        formatMoney(value),
+        x,
+        y
+      );
+    });
+  });
+};
+// 시간 포인트 생성 함수
+const getTimePoints = (minDate: Date, maxDate: Date): Date[] => {
+  const timePoints: Date[] = [];
+  const currentDate = new Date(minDate);
+  
+  while (currentDate <= maxDate) {
+    timePoints.push(new Date(currentDate));
+    currentDate.setMonth(currentDate.getMonth() + 1);
+  }
+  
+  return timePoints;
+};
+
+// 시간에 따른 보유량 계산 함수
+const calculateHoldingsOverTime = (
+  transactions: Transaction[],
+  timePoints: Date[]
+) => {
+  const holdings = timePoints.map(() => ({
+    deposit: 0,
+    american_stock: 0,
+    korean_stock: 0,
+    etf: 0
+  }));
+
+  timePoints.forEach((date, index) => {
+    // 이전 시점의 보유량을 복사
+    if (index > 0) {
+      holdings[index] = { ...holdings[index - 1] };
+    }
+
+    // 해당 시점까지의 거래 반영
+    transactions
+      .filter(t => new Date(t.transaction_date) <= date)
+      .forEach(transaction => {
+        const amount = parseFloat(transaction.transaction_amount);
+
+        switch (transaction.transaction_type) {
+          case 'deposit':
+            holdings[index].deposit += amount;
+            break;
+          case 'buy':
+            holdings[index].deposit -= amount;
+            if (transaction.asset_category === 'american_stock') {
+              holdings[index].american_stock += amount;
+            } else if (transaction.asset_category === 'korean_stock') {
+              holdings[index].korean_stock += amount;
+            } else {
+              holdings[index].etf += amount;
+            }
+            break;
+          case 'sell':
+            if (transaction.asset_category === 'american_stock') {
+              holdings[index].american_stock -= amount;
+            } else if (transaction.asset_category === 'korean_stock') {
+              holdings[index].korean_stock -= amount;
+            } else {
+              holdings[index].etf -= amount;
+            }
+            holdings[index].deposit += amount;
+            break;
+        }
+      });
+  });
+
+  return holdings;
+};
+
 const processTransactions = (transactions: Transaction[]) => {
+  const nodes: Node[] = [];
+  const flows: Flow[] = [];
+  const stockHoldings: { [key: string]: number } = {};
+  const depositNodes: { [date: string]: Node } = {};
+  const holdings: {
+    [date: string]: {
+      [symbol: string]: {
+        quantity: number;
+        value: number;
+        category: string;
+        name: string;
+        averagePrice: number;
+      }
+    }
+  } = {};
+
+
   // 거래 데이터 병합
   const mergedTransactions = transactions.reduce((acc: Transaction[], curr) => {
     if (curr.transaction_type === 'deposit') {
@@ -418,10 +563,7 @@ const processTransactions = (transactions: Transaction[]) => {
     (a, b) => new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime()
   );
 
-  const nodes: Node[] = [];
-  const flows: Flow[] = [];
-  const stockHoldings: { [key: string]: number } = {};
-  const depositNodes: { [date: string]: Node } = {};
+
 
   // x 좌표 계산 함수
   const getXPosition = (dateStr: string) => {
@@ -437,17 +579,30 @@ const processTransactions = (transactions: Transaction[]) => {
   // 노드 위치 계산 함수
   const calculateNodePosition = (transaction: Transaction) => {
     const x = getXPosition(transaction.transaction_date);
-
-    // 같은 x 좌표(같은 날짜)에 있는 노드들 찾기
+  
+    // 같은 날짜(또는 매우 가까운 날짜)에 있는 노드들 찾기
     const sameXNodes = nodes.filter(n => 
       Math.abs(n.x - x) < NODE_WIDTH * 2
     );
-
+  
+    // 기본 시작 y 위치를 캔버스의 상단 1/4 지점으로 설정
+    const baseY = CANVAS_HEIGHT * 0.25;
+    
+    // 노드 간격을 캔버스 높이에 비례하도록 설정
+    const spacing = CANVAS_HEIGHT * 0.1; // 캔버스 높이의 10%를 간격으로 사용
+  
     // y 위치 계산
-    const y = PADDING + sameXNodes.reduce((acc, node) => {
-      return acc + (node.height || NODE_HEIGHT) + NODE_SPACING;
-    }, 0);
-
+    let y = baseY;
+    if (sameXNodes.length > 0) {
+      // 같은 x 위치에 있는 노드들의 수에 따라 간격 조정
+      const nodeIndex = sameXNodes.length;
+      y = baseY + (nodeIndex * spacing);
+    }
+  
+    // 최대 y 위치가 캔버스 높이를 넘지 않도록 제한
+    const maxY = CANVAS_HEIGHT - PADDING - NODE_HEIGHT;
+    y = Math.min(y, maxY);
+  
     return { x, y };
   };
 
@@ -456,6 +611,17 @@ const processTransactions = (transactions: Transaction[]) => {
     const dateStr = transaction.transaction_date.split('T')[0];
     const position = calculateNodePosition(transaction);
     const amount = parseFloat(transaction.transaction_amount);
+    // 해당 날짜의 holdings 초기화
+    if (!holdings[dateStr]) {
+      // 이전 날짜의 holdings를 복사
+      const prevDate = Object.keys(holdings).sort().reverse()[0];
+      holdings[dateStr] = {};
+      if (prevDate) {
+          Object.entries(holdings[prevDate]).forEach(([symbol, holding]) => {
+              holdings[dateStr][symbol] = { ...holding };
+          });
+      }
+  }
 
     switch (transaction.transaction_type) {
       case 'deposit': {
@@ -493,10 +659,26 @@ const processTransactions = (transactions: Transaction[]) => {
         nodes.push(stockNode);
 
         // 주식 보유량 업데이트
+        const symbol = transaction.asset_symbol!;
+        if (!holdings[dateStr][symbol]) {
+          holdings[dateStr][symbol] = {
+            quantity: 0,
+            value: 0,
+            category: transaction.asset_category!,
+            name: transaction.asset_name!,
+            averagePrice: 0
+          };
+        }
+        const holding = holdings[dateStr][symbol];
+        holding.quantity += transaction.quantity;
+        holding.value += amount;
+        holding.averagePrice = holding.value / holding.quantity;
+
+
+        // 구매 자금 흐름 생성
         stockHoldings[transaction.asset_symbol] =
           (stockHoldings[transaction.asset_symbol] || 0) + transaction.quantity;
 
-        // 구매 자금 흐름 생성
         let remainingPurchase = amount;
         const availableDeposits = Object.values(depositNodes)
           .filter(node => node.date! <= dateStr && node.remainingValue > 0)
@@ -539,6 +721,21 @@ const processTransactions = (transactions: Transaction[]) => {
         };
         nodes.push(sellDepositNode);
         depositNodes[dateStr] = sellDepositNode;
+        // 보유 자산 업데이트
+        const symbol = transaction.asset_symbol!;
+            if (holdings[dateStr] && holdings[dateStr][symbol]) {
+                const holding = holdings[dateStr][symbol];
+                // 나머지 매도 코드...
+            }
+        if (holdings[dateStr][symbol]) {
+          const holding = holdings[dateStr][symbol];
+          holding.quantity -= transaction.quantity;
+          holding.value = holding.quantity * holding.averagePrice;
+          
+          if (holding.quantity <= 0) {
+            delete holdings[dateStr][symbol];
+          }
+        }
 
         // 판매하는 주식 노드 찾기
         const sourceStockNode = [...nodes]
@@ -565,7 +762,27 @@ const processTransactions = (transactions: Transaction[]) => {
         break;
       }
     }
+
+    const holdingY = position.y + NODE_HEIGHT + NODE_SPACING;
+    Object.entries(holdings[dateStr]).forEach(([symbol, holding], index) => {
+      if (holding.quantity > 0) {
+        nodes.push({
+          id: `holding_${symbol}_${dateStr}`,
+          x: position.x,
+          y: holdingY + (index * (NODE_HEIGHT + NODE_SPACING)),
+          width: NODE_WIDTH,
+          height: NODE_HEIGHT,
+          color: getStockColor(holding.category),
+          value: holding.value,
+          date: dateStr,
+          stockName: holding.name,
+          quantity: holding.quantity,
+          currentHoldings: holding.quantity
+        });
+      }
+    });
   });
+  
 
   // 노드 높이 조정
   const maxY = Math.max(...nodes.map(n => n.y)) + NODE_HEIGHT;
@@ -665,7 +882,7 @@ const Home = () => {
 
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    const { nodes, flows } = processTransactions(TRANSACTION_DATA);
+    const { nodes, flows, firstDate, lastDate } = processTransactions(TRANSACTION_DATA);
     const drawTimeAxis = () => {
       const dates = nodes.map(node => node.date).filter((date): date is string => !!date);
       const minDate = new Date(Math.min(...dates.map(d => new Date(d).getTime())));
@@ -707,6 +924,8 @@ const Home = () => {
     };
 
     const drawNode = (node: Node) => {
+      const ctx = canvasRef.current?.getContext('2d');
+  if (!ctx) return;
       const gradient = ctx.createLinearGradient(node.x, node.y, node.x + node.width, node.y);
       gradient.addColorStop(0, node.color);
       gradient.addColorStop(1, adjustColor(node.color, 20));
@@ -719,6 +938,23 @@ const Home = () => {
       ctx.strokeStyle = adjustColor(node.color, -20);
       ctx.lineWidth = 1;
       ctx.stroke();
+
+      if (node.id.startsWith('holding_')) {
+        ctx.font = 'bold 12px Arial';
+        const label = `${node.stockName}\n${formatMoney(node.value)}\n${node.quantity}주`;
+        const lines = label.split('\n');
+        const lineHeight = 14;
+    
+        ctx.fillStyle = '#000';
+        ctx.textAlign = 'center';
+        lines.forEach((line, i) => {
+          ctx.fillText(
+            line,
+            node.x + (node.width / 2),
+            node.y - (lineHeight * (lines.length - i - 1)) - 6
+          );
+        });
+      } else {
 
       //내용 표시
       ctx.font = 'bold 12px Arial';
@@ -744,7 +980,7 @@ const Home = () => {
           node.x + (node.width / 2),
           node.y - (lineHeight * (lines.length - i - 1)) - 6
         );
-      });
+      });}
     };
 
     const drawFlow = (flow: Flow) => {
@@ -805,7 +1041,7 @@ const Home = () => {
         );
       });
     };
-
+    // drawTimelineLanes(ctx, TRANSACTION_DATA, firstDate, lastDate);
     flows.forEach(drawFlow);
     nodes.forEach(drawNode);
     drawTimeAxis();
@@ -847,10 +1083,26 @@ const Home = () => {
   );
 };
 
-// 유틸리티 함수들
+// 두 날짜 사이의 월별 날짜 배열을 반환하는 헬퍼 함수
+const getMonthsBetween = (startDate: Date, endDate: Date): Date[] => {
+  const months: Date[] = [];
+  const currentDate = new Date(startDate);
+  currentDate.setDate(1); // 매월 1일로 설정
+
+  while (currentDate <= endDate) {
+    months.push(new Date(currentDate));
+    currentDate.setMonth(currentDate.getMonth() + 1);
+  }
+  return months;
+};
+
+
+// 날짜 포맷팅 함수
 const formatDate = (dateStr: string): string => {
   const date = new Date(dateStr);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  return `${year}-${month}`;
 };
 
 const getXPositionForDate = (date: Date, minDate: Date, maxDate: Date): number => {
