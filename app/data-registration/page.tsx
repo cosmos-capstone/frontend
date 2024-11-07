@@ -127,7 +127,7 @@ export default function TradePage() {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-6">
+    <div className="min-h-screen p-6">
       <h2 className="text-2xl font-bold mb-4">거래 내역 관리</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg">
         <h3 className="text-lg font-semibold mb-4">Transactions</h3>

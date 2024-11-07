@@ -25,7 +25,7 @@ const Portfolio = () => {
   }, []);
 
   return (
-    <div className="p-8 bg-gray-100 font-sans">
+    <div className="p-8 font-sans">
       <h2 className="text-center mb-10 font-bold text-2xl">포트폴리오 분석</h2>
       <div className="flex justify-around">
         <div className="w-2/5 bg-gray-200 rounded-lg p-8 shadow-lg text-center">
