@@ -11,9 +11,8 @@ interface Transaction {
   transaction_date: string;
   transaction_type: string;
   asset_category: string | null;
-  stock_code: string | null;
-  stock_name: string | null;
-  bond_name: string | null;
+  asset_symbol: string | null;
+  asset_name: string | null;
   quantity: number;
   transaction_amount: string;
 }
@@ -64,384 +63,347 @@ const NODE_HEIGHT = 60;
 const NODE_SPACING = 80; // 노드 간 세로 간격
 
 const COLORS = {
-  deposit: '#7FB7BE',
-  american_stock: '#F2D0A4',
-  korean_stock: '#F1828D',
-  etf: '#8FBC94',
+  deposit: '#dc3545',
+  american_stock: '#0d6efd',
+  korean_stock: '#20c997',
+  etf: '#6610f2',
 };
 
 // 샘플 데이터 (실제 데이터로 교체 필요)
-const TRANSACTION_DATA: Transaction[] = [
-  {
-    "id": 1,
-    "transaction_date": "2023-01-01T00:00:00Z",
-    "transaction_type": "deposit",
-    "asset_category": null,
-    "stock_code": null,
-    "stock_name": null,
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 0,
-    "transaction_amount": "6000000.00"
-  },
-  {
-    "id": 2,
-    "transaction_date": "2023-05-04T13:23:00Z",
-    "transaction_type": "buy",
-    "asset_category": "american_stock",
-    "stock_code": "SPY",
-    "stock_name": "SPDR S&P500 ETF 트러스트",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "545065.00"
-  },
-  {
-    "id": 3,
-    "transaction_date": "2023-06-02T12:08:00Z",
-    "transaction_type": "buy",
-    "asset_category": "american_stock",
-    "stock_code": "SPY",
-    "stock_name": "SPDR S&P500 ETF 트러스트",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "559699.00"
-  },
-  {
-    "id": 4,
-    "transaction_date": "2023-09-05T13:39:00Z",
-    "transaction_type": "buy",
-    "asset_category": "american_stock",
-    "stock_code": "SPY",
-    "stock_name": "SPDR S&P500 ETF 트러스트",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "593889.00"
-  },
-  {
-    "id": 5,
-    "transaction_date": "2024-04-22T23:07:48Z",
-    "transaction_type": "buy",
-    "asset_category": "american_stock",
-    "stock_code": "VOO",
-    "stock_name": "뱅가드 S&P500 ETF",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "672890.00"
-  },
-  {
-    "id": 6,
-    "transaction_date": "2024-07-30T23:08:40Z",
-    "transaction_type": "buy",
-    "asset_category": "american_stock",
-    "stock_code": "VOO",
-    "stock_name": "뱅가드 S&P500 ETF",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "728123.00"
-  },
-  {
-    "id": 7,
-    "transaction_date": "2024-01-28T23:07:20Z",
-    "transaction_type": "buy",
-    "asset_category": "american_stock",
-    "stock_code": "QQQM",
-    "stock_name": "인베스코 나스닥 100 ETF",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "249091.00"
-  },
-  {
-    "id": 8,
-    "transaction_date": "2024-04-17T15:00:00Z",
-    "transaction_type": "buy",
-    "asset_category": "korean_stock",
-    "stock_code": "088980",
-    "stock_name": "맥쿼리인프라",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 40,
-    "transaction_amount": "501200.00"
-  },
-  {
-    "id": 9,
-    "transaction_date": "2023-12-13T15:00:00Z",
-    "transaction_type": "buy",
-    "asset_category": "korean_stock",
-    "stock_code": "379800",
-    "stock_name": "KODEX 미국S&P500TR",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 20,
-    "transaction_amount": "276400.00"
-  },
-  {
-    "id": 10,
-    "transaction_date": "2024-02-07T15:00:00Z",
-    "transaction_type": "buy",
-    "asset_category": "korean_stock",
-    "stock_code": "379810",
-    "stock_name": "KODEX 미국나스닥100TR",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 20,
-    "transaction_amount": "313700.00"
-  },
-  {
-    "id": 11,
-    "transaction_date": "2024-02-17T15:00:00Z",
-    "transaction_type": "sell",
-    "asset_category": "korean_stock",
-    "stock_code": "379810",
-    "stock_name": "KODEX 미국나스닥100TR",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 5,
-    "transaction_amount": "78425.00"
-  },
-  {
-    "id": 12,
-    "transaction_date": "2024-03-01T15:00:00Z",
-    "transaction_type": "buy",
-    "asset_category": "american_stock",
-    "stock_code": "AAPL",
-    "stock_name": "애플",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 2,
-    "transaction_amount": "456780.00"
-  },
-  {
-    "id": 13,
-    "transaction_date": "2024-03-15T15:00:00Z",
-    "transaction_type": "sell",
-    "asset_category": "american_stock",
-    "stock_code": "SPY",
-    "stock_name": "SPDR S&P500 ETF 트러스트",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "615000.00"
-  },
-  {
-    "id": 14,
-    "transaction_date": "2024-03-20T15:00:00Z",
-    "transaction_type": "buy",
-    "asset_category": "korean_stock",
-    "stock_code": "005930",
-    "stock_name": "삼성전자",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 50,
-    "transaction_amount": "412500.00"
-  },
-  {
-    "id": 15,
-    "transaction_date": "2024-03-25T15:00:00Z",
-    "transaction_type": "sell",
-    "asset_category": "korean_stock",
-    "stock_code": "088980",
-    "stock_name": "맥쿼리인프라",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 10,
-    "transaction_amount": "128000.00"
-  },
-  {
-    "id": 16,
-    "transaction_date": "2024-04-01T15:00:00Z",
-    "transaction_type": "buy",
-    "asset_category": "american_stock",
-    "stock_code": "MSFT",
-    "stock_name": "마이크로소프트",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "527890.00"
-  },
-  {
-    "id": 17,
-    "transaction_date": "2024-04-05T15:00:00Z",
-    "transaction_type": "sell",
-    "asset_category": "american_stock",
-    "stock_code": "QQQM",
-    "stock_name": "인베스코 나스닥 100 ETF",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "262000.00"
-  },
-  {
-    "id": 18,
-    "transaction_date": "2024-04-10T15:00:00Z",
-    "transaction_type": "buy",
-    "asset_category": "korean_stock",
-    "stock_code": "035720",
-    "stock_name": "카카오",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 20,
-    "transaction_amount": "456000.00"
-  },
-  {
-    "id": 19,
-    "transaction_date": "2024-04-15T15:00:00Z",
-    "transaction_type": "sell",
-    "asset_category": "korean_stock",
-    "stock_code": "005930",
-    "stock_name": "삼성전자",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 20,
-    "transaction_amount": "168000.00"
-  },
-  {
-    "id": 20,
-    "transaction_date": "2024-04-20T15:00:00Z",
-    "transaction_type": "buy",
-    "asset_category": "american_stock",
-    "stock_code": "NVDA",
-    "stock_name": "엔비디아",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "892450.00"
-  },
-  {
-    "id": 21,
-    "transaction_date": "2024-05-01T15:00:00Z",
-    "transaction_type": "sell",
-    "asset_category": "american_stock",
-    "stock_code": "AAPL",
-    "stock_name": "애플",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "234500.00"
-  },
-  {
-    "id": 22,
-    "transaction_date": "2024-05-05T15:00:00Z",
-    "transaction_type": "buy",
-    "asset_category": "korean_stock",
-    "stock_code": "373220",
-    "stock_name": "LG에너지솔루션",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 2,
-    "transaction_amount": "856000.00"
-  },
-  {
-    "id": 23,
-    "transaction_date": "2024-05-10T15:00:00Z",
-    "transaction_type": "sell",
-    "asset_category": "korean_stock",
-    "stock_code": "035720",
-    "stock_name": "카카오",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 10,
-    "transaction_amount": "235000.00"
-  },
-  {
-    "id": 24,
-    "transaction_date": "2024-05-15T15:00:00Z",
-    "transaction_type": "buy",
-    "asset_category": "american_stock",
-    "stock_code": "GOOGL",
-    "stock_name": "알파벳",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 2,
-    "transaction_amount": "456780.00"
-  },
-  {
-    "id": 25,
-    "transaction_date": "2024-05-20T15:00:00Z",
-    "transaction_type": "sell",
-    "asset_category": "american_stock",
-    "stock_code": "VOO",
-    "stock_name": "뱅가드 S&P500 ETF",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "745000.00"
-  },
-  {
-    "id": 26,
-    "transaction_date": "2024-06-01T15:00:00Z",
-    "transaction_type": "buy",
-    "asset_category": "korean_stock",
-    "stock_code": "207940",
-    "stock_name": "삼성바이오로직스",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "785000.00"
-  },
-  {
-    "id": 27,
-    "transaction_date": "2024-06-05T15:00:00Z",
-    "transaction_type": "sell",
-    "asset_category": "american_stock",
-    "stock_code": "MSFT",
-    "stock_name": "마이크로소프트",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "567890.00"
-  },
-  {
-    "id": 28,
-    "transaction_date": "2024-06-10T15:00:00Z",
-    "transaction_type": "buy",
-    "asset_category": "korean_stock",
-    "stock_code": "005380",
-    "stock_name": "현대차",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 5,
-    "transaction_amount": "456000.00"
-  },
-  {
-    "id": 29,
-    "transaction_date": "2024-06-15T15:00:00Z",
-    "transaction_type": "sell",
-    "asset_category": "american_stock",
-    "stock_code": "NVDA",
-    "stock_name": "엔비디아",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 1,
-    "transaction_amount": "923450.00"
-  },
-  {
-    "id": 30,
-    "transaction_date": "2024-06-20T15:00:00Z",
-    "transaction_type": "buy",
-    "asset_category": "korean_stock",
-    "stock_code": "051910",
-    "stock_name": "LG화학",
-    "bond_name": null,
-    "fund_name": null,
-    "quantity": 2,
-    "transaction_amount": "892000.00"
-  }
+const TRANSACTION_DATA: Transaction[] = [{
+  "id": 1,
+  "transaction_date": "2023-01-01T00:00:00Z",
+  "transaction_type": "deposit",
+  "asset_category": null,
+  "asset_symbol": null,
+  "asset_name": null,
+  "quantity": 0,
+  "transaction_amount": "6000000.00"
+},
+{
+  "id": 2,
+  "transaction_date": "2023-05-04T13:23:00Z",
+  "transaction_type": "buy",
+  "asset_category": "american_stock",
+  "asset_symbol": "SPY",
+  "asset_name": "SPDR S&P500 ETF 트러스트",
+  "quantity": 1,
+  "transaction_amount": "545065.00"
+},
+{
+  "id": 3,
+  "transaction_date": "2023-06-02T12:08:00Z",
+  "transaction_type": "buy",
+  "asset_category": "american_stock",
+  "asset_symbol": "SPY",
+  "asset_name": "SPDR S&P500 ETF 트러스트",
+  "quantity": 1,
+  "transaction_amount": "559699.00"
+},
+{
+  "id": 4,
+  "transaction_date": "2023-09-05T13:39:00Z",
+  "transaction_type": "buy",
+  "asset_category": "american_stock",
+  "asset_symbol": "SPY",
+  "asset_name": "SPDR S&P500 ETF 트러스트",
+  "quantity": 1,
+  "transaction_amount": "593889.00"
+},
+{
+  "id": 5,
+  "transaction_date": "2024-04-22T23:07:48Z",
+  "transaction_type": "buy",
+  "asset_category": "american_stock",
+  "asset_symbol": "VOO",
+  "asset_name": "뱅가드 S&P500 ETF",
+  "quantity": 1,
+  "transaction_amount": "672890.00"
+},
+{
+  "id": 6,
+  "transaction_date": "2024-07-30T23:08:40Z",
+  "transaction_type": "buy",
+  "asset_category": "american_stock",
+  "asset_symbol": "VOO",
+  "asset_name": "뱅가드 S&P500 ETF",
+  "quantity": 1,
+  "transaction_amount": "728123.00"
+},
+{
+  "id": 7,
+  "transaction_date": "2024-01-28T23:07:20Z",
+  "transaction_type": "buy",
+  "asset_category": "american_stock",
+  "asset_symbol": "QQQM",
+  "asset_name": "인베스코 나스닥 100 ETF",
+  "quantity": 1,
+  "transaction_amount": "249091.00"
+},
+{
+  "id": 8,
+  "transaction_date": "2024-04-17T15:00:00Z",
+  "transaction_type": "buy",
+  "asset_category": "korean_stock",
+  "asset_symbol": "088980.KS",
+  "asset_name": "맥쿼리인프라",
+  "quantity": 40,
+  "transaction_amount": "501200.00"
+},
+{
+  "id": 9,
+  "transaction_date": "2023-12-13T15:00:00Z",
+  "transaction_type": "buy",
+  "asset_category": "korean_stock",
+  "asset_symbol": "379800.KS",
+  "asset_name": "KODEX 미국S&P500TR",
+  "quantity": 20,
+  "transaction_amount": "276400.00"
+},
+{
+  "id": 10,
+  "transaction_date": "2024-02-07T15:00:00Z",
+  "transaction_type": "buy",
+  "asset_category": "korean_stock",
+  "asset_symbol": "379810.KS",
+  "asset_name": "KODEX 미국나스닥100TR",
+  "quantity": 20,
+  "transaction_amount": "313700.00"
+},
+{
+  "id": 11,
+  "transaction_date": "2024-02-17T15:00:00Z",
+  "transaction_type": "sell",
+  "asset_category": "korean_stock",
+  "asset_symbol": "379810.KS",
+  "asset_name": "KODEX 미국나스닥100TR",
+  "quantity": 5,
+  "transaction_amount": "78425.00"
+},
+{
+  "id": 12,
+  "transaction_date": "2024-03-01T15:00:00Z",
+  "transaction_type": "buy",
+  "asset_category": "american_stock",
+  "asset_symbol": "AAPL",
+  "asset_name": "애플",
+  "quantity": 2,
+  "transaction_amount": "456780.00"
+},
+{
+  "id": 13,
+  "transaction_date": "2024-03-15T15:00:00Z",
+  "transaction_type": "sell",
+  "asset_category": "american_stock",
+  "asset_symbol": "SPY",
+  "asset_name": "SPDR S&P500 ETF 트러스트",
+  "quantity": 1,
+  "transaction_amount": "615000.00"
+},
+{
+  "id": 14,
+  "transaction_date": "2024-03-20T15:00:00Z",
+  "transaction_type": "buy",
+  "asset_category": "korean_stock",
+  "asset_symbol": "005930.KS",
+  "asset_name": "삼성전자",
+  "quantity": 50,
+  "transaction_amount": "412500.00"
+},
+{
+  "id": 15,
+  "transaction_date": "2024-03-25T15:00:00Z",
+  "transaction_type": "sell",
+  "asset_category": "korean_stock",
+  "asset_symbol": "088980.KS",
+  "asset_name": "맥쿼리인프라",
+  "quantity": 10,
+  "transaction_amount": "128000.00"
+},
+{
+  "id": 16,
+  "transaction_date": "2024-04-01T15:00:00Z",
+  "transaction_type": "buy",
+  "asset_category": "american_stock",
+  "asset_symbol": "MSFT",
+  "asset_name": "마이크로소프트",
+  "quantity": 1,
+  "transaction_amount": "527890.00"
+},
+{
+  "id": 17,
+  "transaction_date": "2024-04-05T15:00:00Z",
+  "transaction_type": "sell",
+  "asset_category": "american_stock",
+  "asset_symbol": "QQQM",
+  "asset_name": "인베스코 나스닥 100 ETF",
+  "quantity": 1,
+  "transaction_amount": "262000.00"
+},
+{
+  "id": 18,
+  "transaction_date": "2024-04-10T15:00:00Z",
+  "transaction_type": "buy",
+  "asset_category": "korean_stock",
+  "asset_symbol": "035720.KS",
+  "asset_name": "카카오",
+  "quantity": 20,
+  "transaction_amount": "456000.00"
+},
+{
+  "id": 19,
+  "transaction_date": "2024-04-15T15:00:00Z",
+  "transaction_type": "sell",
+  "asset_category": "korean_stock",
+  "asset_symbol": "005930.KS",
+  "asset_name": "삼성전자",
+  "quantity": 20,
+  "transaction_amount": "168000.00"
+},
+{
+  "id": 20,
+  "transaction_date": "2024-04-20T15:00:00Z",
+  "transaction_type": "buy",
+  "asset_category": "american_stock",
+  "asset_symbol": "NVDA",
+  "asset_name": "엔비디아",
+  "quantity": 1,
+  "transaction_amount": "892450.00"
+},
+{
+  "id": 21,
+  "transaction_date": "2024-05-01T15:00:00Z",
+  "transaction_type": "sell",
+  "asset_category": "american_stock",
+  "asset_symbol": "AAPL",
+  "asset_name": "애플",
+  "quantity": 1,
+  "transaction_amount": "234500.00"
+},
+{
+  "id": 22,
+  "transaction_date": "2024-05-05T15:00:00Z",
+  "transaction_type": "buy",
+  "asset_category": "korean_stock",
+  "asset_symbol": "373220.KS",
+  "asset_name": "LG에너지솔루션",
+  "quantity": 2,
+  "transaction_amount": "856000.00"
+},
+{
+  "id": 23,
+  "transaction_date": "2024-05-10T15:00:00Z",
+  "transaction_type": "sell",
+  "asset_category": "korean_stock",
+  "asset_symbol": "035720.KS",
+  "asset_name": "카카오",
+  "quantity": 10,
+  "transaction_amount": "235000.00"
+},
+{
+  "id": 24,
+  "transaction_date": "2024-05-15T15:00:00Z",
+  "transaction_type": "buy",
+  "asset_category": "american_stock",
+  "asset_symbol": "GOOGL",
+  "asset_name": "알파벳",
+  "quantity": 2,
+  "transaction_amount": "456780.00"
+},
+{
+  "id": 25,
+  "transaction_date": "2024-05-20T15:00:00Z",
+  "transaction_type": "sell",
+  "asset_category": "american_stock",
+  "asset_symbol": "VOO",
+  "asset_name": "뱅가드 S&P500 ETF",
+  "quantity": 1,
+  "transaction_amount": "745000.00"
+},
+{
+  "id": 26,
+  "transaction_date": "2024-06-01T15:00:00Z",
+  "transaction_type": "buy",
+  "asset_category": "korean_stock",
+  "asset_symbol": "207940.KS",
+  "asset_name": "삼성바이오로직스",
+  "quantity": 1,
+  "transaction_amount": "785000.00"
+},
+{
+  "id": 27,
+  "transaction_date": "2024-06-05T15:00:00Z",
+  "transaction_type": "sell",
+  "asset_category": "american_stock",
+  "asset_symbol": "MSFT",
+  "asset_name": "마이크로소프트",
+  "quantity": 1,
+  "transaction_amount": "567890.00"
+},
+{
+  "id": 28,
+  "transaction_date": "2024-06-10T15:00:00Z",
+  "transaction_type": "buy",
+  "asset_category": "korean_stock",
+  "asset_symbol": "005380.KS",
+  "asset_name": "현대차",
+  "quantity": 5,
+  "transaction_amount": "456000.00"
+},
+{
+  "id": 29,
+  "transaction_date": "2024-06-15T15:00:00Z",
+  "transaction_type": "sell",
+  "asset_category": "american_stock",
+  "asset_symbol": "NVDA",
+  "asset_name": "엔비디아",
+  "quantity": 1,
+  "transaction_amount": "923450.00"
+},
+{
+  "id": 30,
+  "transaction_date": "2024-06-20T15:00:00Z",
+  "transaction_type": "buy",
+  "asset_category": "korean_stock",
+  "asset_symbol": "051910.KS",
+  "asset_name": "LG화학",
+  "quantity": 2,
+  "transaction_amount": "892000.00"
+}
 ];
 
 
 const processTransactions = (transactions: Transaction[]) => {
-  const sortedTransactions = [...transactions].sort(
-      (a, b) => new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime()
+  // 거래 데이터 병합
+  const mergedTransactions = transactions.reduce((acc: Transaction[], curr) => {
+    const sameTransaction = acc.find(t => 
+      t.transaction_date.split('T')[0] === curr.transaction_date.split('T')[0] && // 같은 날짜
+      t.transaction_type === curr.transaction_type && // 같은 거래 타입
+      t.asset_symbol === curr.asset_symbol // 같은 종목
+    );
+
+    if (sameTransaction) {
+      // 기존 거래 업데이트
+      sameTransaction.quantity += curr.quantity;
+      sameTransaction.transaction_amount = (
+        parseFloat(sameTransaction.transaction_amount) + 
+        parseFloat(curr.transaction_amount)
+      ).toString();
+    } else {
+      // 새로운 거래 추가
+      acc.push({ ...curr });
+    }
+
+    return acc;
+  }, []);
+
+  // 날짜순으로 정렬
+  const sortedTransactions = [...mergedTransactions].sort(
+    (a, b) => new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime()
   );
 
   const monthDiff = (d1: Date, d2: Date) => {
-      return (d2.getFullYear() - d1.getFullYear()) * 12 + d2.getMonth() - d1.getMonth();
+    return (d2.getFullYear() - d1.getFullYear()) * 12 + d2.getMonth() - d1.getMonth();
   };
 
   const firstDate = new Date(sortedTransactions[0].transaction_date);
@@ -455,131 +417,136 @@ const processTransactions = (transactions: Transaction[]) => {
 
   // 노드 위치 계산 함수
   const calculateNodePosition = (index: number, columnIndex: number, totalColumns: number) => {
-      const columnWidth = (CANVAS_WIDTH - (PADDING * 2)) / totalColumns;
-      const x = PADDING + (columnIndex * columnWidth);
-      
-      const columnNodes = nodes.filter(n => 
-          Math.abs(n.x - x) < columnWidth/2
-      ).length;
-      
-      const y = PADDING + (columnNodes * NODE_SPACING);
-      
-      return { x, y };
+    const columnWidth = (CANVAS_WIDTH - (PADDING * 2)) / totalColumns;
+    const x = PADDING + (columnIndex * columnWidth);
+    
+    // 같은 열에 있는 노드들 찾기
+    const columnNodes = nodes.filter(n => 
+      Math.abs(n.x - x) < columnWidth/2
+    );
+    
+    // 이전 노드들의 높이와 간격을 합산하여 y 위치 계산
+    const y = PADDING + columnNodes.reduce((acc, node) => {
+      // 각 노드의 실제 높이와 간격을 더함
+      return acc + (node.height || NODE_HEIGHT) + NODE_SPACING;
+    }, 0);
+    
+    return { x, y };
   };
 
   // 날짜별 deposit 노드 가져오기 또는 생성
   const getOrCreateDepositNode = (dateStr: string, index: number, monthIndex: number) => {
-      if (!depositNodes[dateStr]) {
-          const position = calculateNodePosition(index, monthIndex, totalMonths);
-          depositNodes[dateStr] = {
-              id: `deposit_${dateStr}`,
-              x: position.x,
-              y: position.y,
-              width: NODE_WIDTH,
-              height: NODE_HEIGHT,
-              color: COLORS.deposit,
-              value: 0,
-              date: dateStr,
-              remainingValue: 0
-          };
-          nodes.push(depositNodes[dateStr]);
-      }
-      return depositNodes[dateStr];
+    if (!depositNodes[dateStr]) {
+      const position = calculateNodePosition(index, monthIndex, totalMonths);
+      depositNodes[dateStr] = {
+        id: `deposit_${dateStr}`,
+        x: position.x,
+        y: position.y,
+        width: NODE_WIDTH,
+        height: NODE_HEIGHT,
+        color: COLORS.deposit,
+        value: 0,
+        date: dateStr,
+        remainingValue: 0
+      };
+      nodes.push(depositNodes[dateStr]);
+    }
+    return depositNodes[dateStr];
   };
 
   let currentNodeIndex = 0;
   sortedTransactions.forEach((transaction) => {
-      const date = new Date(transaction.transaction_date);
-      const monthIndex = monthDiff(firstDate, date);
-      const dateStr = date.toISOString().split('T')[0];
-      const amount = parseFloat(transaction.transaction_amount);
+    const date = new Date(transaction.transaction_date);
+    const monthIndex = monthDiff(firstDate, date);
+    const dateStr = date.toISOString().split('T')[0];
+    const amount = parseFloat(transaction.transaction_amount);
 
-      switch (transaction.transaction_type) {
-          case 'deposit': {
-              const depositNode = getOrCreateDepositNode(dateStr, currentNodeIndex, monthIndex);
-              depositNode.value += amount;
-              depositNode.remainingValue = (depositNode.remainingValue || 0) + amount;
-              break;
-          }
-
-          case 'buy': {
-              const position = calculateNodePosition(currentNodeIndex, monthIndex, totalMonths);
-              const stockNode: Node = {
-                  id: `${transaction.stock_code}_${dateStr}`,
-                  x: position.x,
-                  y: position.y,
-                  width: NODE_WIDTH,
-                  height: NODE_HEIGHT,
-                  color: getStockColor(transaction.asset_category),
-                  value: amount,
-                  date: dateStr,
-                  stockName: transaction.stock_name,
-                  quantity: transaction.quantity
-              };
-              nodes.push(stockNode);
-
-              // 주식 보유량 업데이트
-              stockHoldings[transaction.stock_code] = 
-                  (stockHoldings[transaction.stock_code] || 0) + transaction.quantity;
-
-              // 구매 자금 흐름 생성
-              let remainingPurchase = amount;
-              const availableDeposits = Object.values(depositNodes)
-                  .filter(node => node.date! <= dateStr)
-                  .sort((a, b) => new Date(a.date!).getTime() - new Date(b.date!).getTime());
-
-              for (const depositNode of availableDeposits) {
-                  if (remainingPurchase <= 0) break;
-                  if (depositNode.remainingValue <= 0) continue;
-
-                  const flowAmount = Math.min(depositNode.remainingValue, remainingPurchase);
-                  flows.push({
-                      source: depositNode.id,
-                      target: stockNode.id,
-                      value: flowAmount,
-                      color: `${stockNode.color}80`,
-                      sourceNode: depositNode,
-                      targetNode: stockNode,
-                      date: dateStr
-                  });
-
-                  depositNode.remainingValue -= flowAmount;
-                  remainingPurchase -= flowAmount;
-              }
-              break;
-          }
-
-          case 'sell': {
-              const depositNode = getOrCreateDepositNode(dateStr, currentNodeIndex, monthIndex);
-              depositNode.value += amount;
-              depositNode.remainingValue = (depositNode.remainingValue || 0) + amount;
-
-              // 판매하는 주식 노드 찾기
-              const sourceStockNode = [...nodes]
-                  .reverse()
-                  .find(n => n.id.startsWith(transaction.stock_code));
-
-              if (sourceStockNode) {
-                  flows.push({
-                      source: sourceStockNode.id,
-                      target: depositNode.id,
-                      value: amount,
-                      color: `${COLORS.deposit}80`,
-                      isSellFlow: true,
-                      sourceNode: sourceStockNode,
-                      targetNode: depositNode,
-                      date: dateStr
-                  });
-              }
-
-              // 주식 보유량 업데이트
-              stockHoldings[transaction.stock_code] = 
-                  (stockHoldings[transaction.stock_code] || 0) - transaction.quantity;
-              break;
-          }
+    switch (transaction.transaction_type) {
+      case 'deposit': {
+        const depositNode = getOrCreateDepositNode(dateStr, currentNodeIndex, monthIndex);
+        depositNode.value += amount;
+        depositNode.remainingValue = (depositNode.remainingValue || 0) + amount;
+        break;
       }
-      
-      currentNodeIndex++;
+
+      case 'buy': {
+        const position = calculateNodePosition(currentNodeIndex, monthIndex, totalMonths);
+        const stockNode: Node = {
+          id: `${transaction.asset_symbol}_${dateStr}`,
+          x: position.x,
+          y: position.y,
+          width: NODE_WIDTH,
+          height: NODE_HEIGHT,
+          color: getStockColor(transaction.asset_category),
+          value: amount,
+          date: dateStr,
+          stockName: transaction.asset_name,
+          quantity: transaction.quantity
+        };
+        nodes.push(stockNode);
+
+        // 주식 보유량 업데이트
+        stockHoldings[transaction.asset_symbol] = 
+          (stockHoldings[transaction.asset_symbol] || 0) + transaction.quantity;
+
+        // 구매 자금 흐름 생성
+        let remainingPurchase = amount;
+        const availableDeposits = Object.values(depositNodes)
+          .filter(node => node.date! <= dateStr)
+          .sort((a, b) => new Date(a.date!).getTime() - new Date(b.date!).getTime());
+
+        for (const depositNode of availableDeposits) {
+          if (remainingPurchase <= 0) break;
+          if (depositNode.remainingValue <= 0) continue;
+
+          const flowAmount = Math.min(depositNode.remainingValue, remainingPurchase);
+          flows.push({
+            source: depositNode.id,
+            target: stockNode.id,
+            value: flowAmount,
+            color: `${stockNode.color}80`,
+            sourceNode: depositNode,
+            targetNode: stockNode,
+            date: dateStr
+          });
+
+          depositNode.remainingValue -= flowAmount;
+          remainingPurchase -= flowAmount;
+        }
+        break;
+      }
+
+      case 'sell': {
+        const depositNode = getOrCreateDepositNode(dateStr, currentNodeIndex, monthIndex);
+        depositNode.value += amount;
+        depositNode.remainingValue = (depositNode.remainingValue || 0) + amount;
+
+        // 판매하는 주식 노드 찾기
+        const sourceStockNode = [...nodes]
+          .reverse()
+          .find(n => n.id.startsWith(transaction.asset_symbol));
+
+        if (sourceStockNode) {
+          flows.push({
+            source: sourceStockNode.id,
+            target: depositNode.id,
+            value: amount,
+            color: `${COLORS.deposit}80`,
+            isSellFlow: true,
+            sourceNode: sourceStockNode,
+            targetNode: depositNode,
+            date: dateStr
+          });
+        }
+
+        // 주식 보유량 업데이트
+        stockHoldings[transaction.asset_symbol] = 
+          (stockHoldings[transaction.asset_symbol] || 0) - transaction.quantity;
+        break;
+      }
+    }
+    
+    currentNodeIndex++;
   });
 
   // 노드 위치 최종 조정
@@ -587,30 +554,28 @@ const processTransactions = (transactions: Transaction[]) => {
   const scale = Math.min(1, (CANVAS_HEIGHT - PADDING * 2) / maxY);
   
   nodes.forEach(node => {
-      node.y = PADDING + (node.y - PADDING) * scale;
-      node.height = NODE_HEIGHT * scale * node.value * 0.000001;
-      
-
-      if (!node.id.startsWith('deposit')) {
-          const stockCode = node.id.split('_')[0];
-          if (stockHoldings[stockCode] <= 0) {
-              node.color = adjustColor(node.color, 50);
-              node.height = Math.max(20, node.height * 0.5);
-          }
-          node.currentHoldings = stockHoldings[stockCode] || 0;
+    node.y = PADDING + (node.y - PADDING) * scale;
+    node.height = NODE_HEIGHT * scale * node.value * 0.000001;
+    
+    if (!node.id.startsWith('deposit')) {
+      const stockSymbol = node.id.split('_')[0];
+      if (stockHoldings[stockSymbol] <= 0) {
+        node.color = adjustColor(node.color, 50);
+        node.height = Math.max(20, node.height * 0.5);
       }
+      node.currentHoldings = stockHoldings[stockSymbol] || 0;
+    }
   });
 
   return { 
-      nodes, 
-      flows, 
-      totalMonths,
-      firstDate,
-      lastDate,
-      stockHoldings 
+    nodes, 
+    flows, 
+    totalMonths,
+    firstDate,
+    lastDate,
+    stockHoldings 
   };
 };
-
 
 
 
@@ -727,8 +692,10 @@ const Home = () => {
       ctx.lineWidth = 1;
       ctx.stroke();
 
+      //내용 표시
       ctx.font = 'bold 12px Arial';
-      const label = `${node.id.split('_')[0]}\n${formatMoney(node.value)}`;
+      
+      const label = `${node.id.split('_')[0]}\n${formatMoney(node.value)}\n`;
       const lines = label.split('\n');
       const lineHeight = 14;
       const textWidth = Math.max(...lines.map(line => ctx.measureText(line).width));
