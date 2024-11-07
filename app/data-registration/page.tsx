@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
 import Select from 'react-select';
 
