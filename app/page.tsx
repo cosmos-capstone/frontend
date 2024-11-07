@@ -70,106 +70,107 @@ const COLORS = {
 };
 
 // 샘플 데이터 (실제 데이터로 교체 필요)
-const TRANSACTION_DATA: Transaction[] = [{
-  "id": 1,
-  "transaction_date": "2023-01-01T00:00:00Z",
-  "transaction_type": "deposit",
-  "asset_category": null,
-  "asset_symbol": null,
-  "asset_name": null,
-  "quantity": 0,
-  "transaction_amount": "6000000.00"
-},
-{
-  "id": 2,
-  "transaction_date": "2023-05-04T13:23:00Z",
-  "transaction_type": "buy",
-  "asset_category": "american_stock",
-  "asset_symbol": "SPY",
-  "asset_name": "SPDR S&P500 ETF 트러스트",
-  "quantity": 1,
-  "transaction_amount": "545065.00"
-},
-{
-  "id": 3,
-  "transaction_date": "2023-06-02T12:08:00Z",
-  "transaction_type": "buy",
-  "asset_category": "american_stock",
-  "asset_symbol": "SPY",
-  "asset_name": "SPDR S&P500 ETF 트러스트",
-  "quantity": 1,
-  "transaction_amount": "559699.00"
-},
-{
-  "id": 4,
-  "transaction_date": "2023-09-05T13:39:00Z",
-  "transaction_type": "buy",
-  "asset_category": "american_stock",
-  "asset_symbol": "SPY",
-  "asset_name": "SPDR S&P500 ETF 트러스트",
-  "quantity": 1,
-  "transaction_amount": "593889.00"
-},
-{
-  "id": 5,
-  "transaction_date": "2024-04-22T23:07:48Z",
-  "transaction_type": "buy",
-  "asset_category": "american_stock",
-  "asset_symbol": "VOO",
-  "asset_name": "뱅가드 S&P500 ETF",
-  "quantity": 1,
-  "transaction_amount": "672890.00"
-},
-{
-  "id": 6,
-  "transaction_date": "2024-07-30T23:08:40Z",
-  "transaction_type": "buy",
-  "asset_category": "american_stock",
-  "asset_symbol": "VOO",
-  "asset_name": "뱅가드 S&P500 ETF",
-  "quantity": 1,
-  "transaction_amount": "728123.00"
-},
-{
-  "id": 7,
-  "transaction_date": "2024-01-28T23:07:20Z",
-  "transaction_type": "buy",
-  "asset_category": "american_stock",
-  "asset_symbol": "QQQM",
-  "asset_name": "인베스코 나스닥 100 ETF",
-  "quantity": 1,
-  "transaction_amount": "249091.00"
-},
-{
-  "id": 8,
-  "transaction_date": "2024-04-17T15:00:00Z",
-  "transaction_type": "buy",
-  "asset_category": "korean_stock",
-  "asset_symbol": "088980.KS",
-  "asset_name": "맥쿼리인프라",
-  "quantity": 40,
-  "transaction_amount": "501200.00"
-},
-{
-  "id": 9,
-  "transaction_date": "2023-12-13T15:00:00Z",
-  "transaction_type": "buy",
-  "asset_category": "korean_stock",
-  "asset_symbol": "379800.KS",
-  "asset_name": "KODEX 미국S&P500TR",
-  "quantity": 20,
-  "transaction_amount": "276400.00"
-},
-{
-  "id": 10,
-  "transaction_date": "2024-02-07T15:00:00Z",
-  "transaction_type": "buy",
-  "asset_category": "korean_stock",
-  "asset_symbol": "379810.KS",
-  "asset_name": "KODEX 미국나스닥100TR",
-  "quantity": 20,
-  "transaction_amount": "313700.00"
-},
+const TRANSACTION_DATA: Transaction[] = [
+// {
+//   "id": 1,
+//   "transaction_date": "2023-01-01T00:00:00Z",
+//   "transaction_type": "deposit",
+//   "asset_category": null,
+//   "asset_symbol": null,
+//   "asset_name": null,
+//   "quantity": 0,
+//   "transaction_amount": "6000000.00"
+// },
+// {
+//   "id": 2,
+//   "transaction_date": "2023-05-04T13:23:00Z",
+//   "transaction_type": "buy",
+//   "asset_category": "american_stock",
+//   "asset_symbol": "SPY",
+//   "asset_name": "SPDR S&P500 ETF 트러스트",
+//   "quantity": 1,
+//   "transaction_amount": "545065.00"
+// },
+// {
+//   "id": 3,
+//   "transaction_date": "2023-06-02T12:08:00Z",
+//   "transaction_type": "buy",
+//   "asset_category": "american_stock",
+//   "asset_symbol": "SPY",
+//   "asset_name": "SPDR S&P500 ETF 트러스트",
+//   "quantity": 1,
+//   "transaction_amount": "559699.00"
+// },
+// {
+//   "id": 4,
+//   "transaction_date": "2023-09-05T13:39:00Z",
+//   "transaction_type": "buy",
+//   "asset_category": "american_stock",
+//   "asset_symbol": "SPY",
+//   "asset_name": "SPDR S&P500 ETF 트러스트",
+//   "quantity": 1,
+//   "transaction_amount": "593889.00"
+// },
+// {
+//   "id": 5,
+//   "transaction_date": "2024-04-22T23:07:48Z",
+//   "transaction_type": "buy",
+//   "asset_category": "american_stock",
+//   "asset_symbol": "VOO",
+//   "asset_name": "뱅가드 S&P500 ETF",
+//   "quantity": 1,
+//   "transaction_amount": "672890.00"
+// },
+// {
+//   "id": 6,
+//   "transaction_date": "2024-07-30T23:08:40Z",
+//   "transaction_type": "buy",
+//   "asset_category": "american_stock",
+//   "asset_symbol": "VOO",
+//   "asset_name": "뱅가드 S&P500 ETF",
+//   "quantity": 1,
+//   "transaction_amount": "728123.00"
+// },
+// {
+//   "id": 7,
+//   "transaction_date": "2024-01-28T23:07:20Z",
+//   "transaction_type": "buy",
+//   "asset_category": "american_stock",
+//   "asset_symbol": "QQQM",
+//   "asset_name": "인베스코 나스닥 100 ETF",
+//   "quantity": 1,
+//   "transaction_amount": "249091.00"
+// },
+// {
+//   "id": 8,
+//   "transaction_date": "2024-04-17T15:00:00Z",
+//   "transaction_type": "buy",
+//   "asset_category": "korean_stock",
+//   "asset_symbol": "088980.KS",
+//   "asset_name": "맥쿼리인프라",
+//   "quantity": 40,
+//   "transaction_amount": "501200.00"
+// },
+// {
+//   "id": 9,
+//   "transaction_date": "2023-12-13T15:00:00Z",
+//   "transaction_type": "buy",
+//   "asset_category": "korean_stock",
+//   "asset_symbol": "379800.KS",
+//   "asset_name": "KODEX 미국S&P500TR",
+//   "quantity": 20,
+//   "transaction_amount": "276400.00"
+// },
+// {
+//   "id": 10,
+//   "transaction_date": "2024-02-07T15:00:00Z",
+//   "transaction_type": "buy",
+//   "asset_category": "korean_stock",
+//   "asset_symbol": "379810.KS",
+//   "asset_name": "KODEX 미국나스닥100TR",
+//   "quantity": 20,
+//   "transaction_amount": "313700.00"
+// },
 {
   "id": 11,
   "transaction_date": "2024-02-17T15:00:00Z",
@@ -372,25 +373,40 @@ const TRANSACTION_DATA: Transaction[] = [{
 }
 ];
 
-
 const processTransactions = (transactions: Transaction[]) => {
   // 거래 데이터 병합
   const mergedTransactions = transactions.reduce((acc: Transaction[], curr) => {
+    if (curr.transaction_type === 'deposit') {
+      // deposit인 경우 같은 날짜의 기존 deposit을 찾음
+      const existingDeposit = acc.find(t => 
+        t.transaction_type === 'deposit' && 
+        t.transaction_date.split('T')[0] === curr.transaction_date.split('T')[0]
+      );
+
+      if (existingDeposit) {
+        // 기존 deposit이 있으면 금액만 합산
+        existingDeposit.transaction_amount = (
+          parseFloat(existingDeposit.transaction_amount) + 
+          parseFloat(curr.transaction_amount)
+        ).toString();
+        return acc;
+      }
+    }
+
+    // deposit이 아니거나 같은 날짜의 deposit이 없는 경우
     const sameTransaction = acc.find(t => 
-      t.transaction_date.split('T')[0] === curr.transaction_date.split('T')[0] && // 같은 날짜
-      t.transaction_type === curr.transaction_type && // 같은 거래 타입
-      t.asset_symbol === curr.asset_symbol // 같은 종목
+      t.transaction_date.split('T')[0] === curr.transaction_date.split('T')[0] && 
+      t.transaction_type === curr.transaction_type && 
+      t.asset_symbol === curr.asset_symbol
     );
 
-    if (sameTransaction) {
-      // 기존 거래 업데이트
+    if (sameTransaction && curr.transaction_type !== 'deposit') {
       sameTransaction.quantity += curr.quantity;
       sameTransaction.transaction_amount = (
         parseFloat(sameTransaction.transaction_amount) + 
         parseFloat(curr.transaction_amount)
       ).toString();
     } else {
-      // 새로운 거래 추가
       acc.push({ ...curr });
     }
 
@@ -402,75 +418,66 @@ const processTransactions = (transactions: Transaction[]) => {
     (a, b) => new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime()
   );
 
-  const monthDiff = (d1: Date, d2: Date) => {
-    return (d2.getFullYear() - d1.getFullYear()) * 12 + d2.getMonth() - d1.getMonth();
-  };
-
-  const firstDate = new Date(sortedTransactions[0].transaction_date);
-  const lastDate = new Date(sortedTransactions[sortedTransactions.length - 1].transaction_date);
-  const totalMonths = monthDiff(firstDate, lastDate) + 1;
-
   const nodes: Node[] = [];
   const flows: Flow[] = [];
   const stockHoldings: { [key: string]: number } = {};
   const depositNodes: { [date: string]: Node } = {};
 
+  // x 좌표 계산 함수
+  const getXPosition = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const firstDate = new Date(sortedTransactions[0].transaction_date);
+    const lastDate = new Date(sortedTransactions[sortedTransactions.length - 1].transaction_date);
+    const totalTimespan = lastDate.getTime() - firstDate.getTime();
+    const timeFromStart = date.getTime() - firstDate.getTime();
+    
+    return PADDING + ((CANVAS_WIDTH - PADDING * 2) * timeFromStart / totalTimespan);
+  };
+
   // 노드 위치 계산 함수
-  const calculateNodePosition = (index: number, columnIndex: number, totalColumns: number) => {
-    const columnWidth = (CANVAS_WIDTH - (PADDING * 2)) / totalColumns;
-    const x = PADDING + (columnIndex * columnWidth);
-    
-    // 같은 열에 있는 노드들 찾기
-    const columnNodes = nodes.filter(n => 
-      Math.abs(n.x - x) < columnWidth/2
+  const calculateNodePosition = (transaction: Transaction) => {
+    const x = getXPosition(transaction.transaction_date);
+
+    // 같은 x 좌표(같은 날짜)에 있는 노드들 찾기
+    const sameXNodes = nodes.filter(n => 
+      Math.abs(n.x - x) < NODE_WIDTH * 2
     );
-    
-    // 이전 노드들의 높이와 간격을 합산하여 y 위치 계산
-    const y = PADDING + columnNodes.reduce((acc, node) => {
-      // 각 노드의 실제 높이와 간격을 더함
+
+    // y 위치 계산
+    const y = PADDING + sameXNodes.reduce((acc, node) => {
       return acc + (node.height || NODE_HEIGHT) + NODE_SPACING;
     }, 0);
-    
+
     return { x, y };
   };
 
-  // 날짜별 deposit 노드 가져오기 또는 생성
-  const getOrCreateDepositNode = (dateStr: string, index: number, monthIndex: number) => {
-    if (!depositNodes[dateStr]) {
-      const position = calculateNodePosition(index, monthIndex, totalMonths);
-      depositNodes[dateStr] = {
-        id: `deposit_${dateStr}`,
-        x: position.x,
-        y: position.y,
-        width: NODE_WIDTH,
-        height: NODE_HEIGHT,
-        color: COLORS.deposit,
-        value: 0,
-        date: dateStr,
-        remainingValue: 0
-      };
-      nodes.push(depositNodes[dateStr]);
-    }
-    return depositNodes[dateStr];
-  };
-
-  let currentNodeIndex = 0;
+  // 모든 거래 처리
   sortedTransactions.forEach((transaction) => {
-    const date = new Date(transaction.transaction_date);
-    const monthIndex = monthDiff(firstDate, date);
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = transaction.transaction_date.split('T')[0];
+    const position = calculateNodePosition(transaction);
     const amount = parseFloat(transaction.transaction_amount);
 
     switch (transaction.transaction_type) {
       case 'deposit': {
-        const depositNode = getOrCreateDepositNode(dateStr, currentNodeIndex, monthIndex);
-        depositNode.value += amount;
-        depositNode.remainingValue = (depositNode.remainingValue || 0) + amount;
+        // deposit 노드 생성
+        const depositNode = {
+          id: `deposit_${dateStr}`,
+          x: position.x,
+          y: position.y,
+          width: NODE_WIDTH,
+          height: NODE_HEIGHT,
+          color: COLORS.deposit,
+          value: amount,
+          date: dateStr,
+          remainingValue: amount
+        };
+        nodes.push(depositNode);
+        depositNodes[dateStr] = depositNode;
         break;
       }
 
       case 'buy': {
-        const position = calculateNodePosition(currentNodeIndex, monthIndex, totalMonths);
+        // 매수 노드 생성
         const stockNode: Node = {
           id: `${transaction.asset_symbol}_${dateStr}`,
           x: position.x,
@@ -486,18 +493,17 @@ const processTransactions = (transactions: Transaction[]) => {
         nodes.push(stockNode);
 
         // 주식 보유량 업데이트
-        stockHoldings[transaction.asset_symbol] = 
+        stockHoldings[transaction.asset_symbol] =
           (stockHoldings[transaction.asset_symbol] || 0) + transaction.quantity;
 
         // 구매 자금 흐름 생성
         let remainingPurchase = amount;
         const availableDeposits = Object.values(depositNodes)
-          .filter(node => node.date! <= dateStr)
+          .filter(node => node.date! <= dateStr && node.remainingValue > 0)
           .sort((a, b) => new Date(a.date!).getTime() - new Date(b.date!).getTime());
 
         for (const depositNode of availableDeposits) {
           if (remainingPurchase <= 0) break;
-          if (depositNode.remainingValue <= 0) continue;
 
           const flowAmount = Math.min(depositNode.remainingValue, remainingPurchase);
           flows.push({
@@ -507,7 +513,8 @@ const processTransactions = (transactions: Transaction[]) => {
             color: `${stockNode.color}80`,
             sourceNode: depositNode,
             targetNode: stockNode,
-            date: dateStr
+            date: dateStr,
+            stockName: transaction.asset_name
           });
 
           depositNode.remainingValue -= flowAmount;
@@ -517,9 +524,21 @@ const processTransactions = (transactions: Transaction[]) => {
       }
 
       case 'sell': {
-        const depositNode = getOrCreateDepositNode(dateStr, currentNodeIndex, monthIndex);
-        depositNode.value += amount;
-        depositNode.remainingValue = (depositNode.remainingValue || 0) + amount;
+        // 매도 시 deposit 노드 생성
+        const sellDepositNode = {
+          id: `sell_deposit_${dateStr}`,
+          x: position.x,
+          y: position.y,
+          width: NODE_WIDTH,
+          height: NODE_HEIGHT,
+          color: COLORS.deposit,
+          value: amount,
+          date: dateStr,
+          remainingValue: amount,
+          isSellDeposit: true
+        };
+        nodes.push(sellDepositNode);
+        depositNodes[dateStr] = sellDepositNode;
 
         // 판매하는 주식 노드 찾기
         const sourceStockNode = [...nodes]
@@ -529,35 +548,35 @@ const processTransactions = (transactions: Transaction[]) => {
         if (sourceStockNode) {
           flows.push({
             source: sourceStockNode.id,
-            target: depositNode.id,
+            target: sellDepositNode.id,
             value: amount,
             color: `${COLORS.deposit}80`,
             isSellFlow: true,
             sourceNode: sourceStockNode,
-            targetNode: depositNode,
-            date: dateStr
+            targetNode: sellDepositNode,
+            date: dateStr,
+            stockName: transaction.asset_name
           });
         }
 
         // 주식 보유량 업데이트
-        stockHoldings[transaction.asset_symbol] = 
+        stockHoldings[transaction.asset_symbol] =
           (stockHoldings[transaction.asset_symbol] || 0) - transaction.quantity;
         break;
       }
     }
-    
-    currentNodeIndex++;
   });
 
-  // 노드 위치 최종 조정
+  // 노드 높이 조정
   const maxY = Math.max(...nodes.map(n => n.y)) + NODE_HEIGHT;
   const scale = Math.min(1, (CANVAS_HEIGHT - PADDING * 2) / maxY);
-  
+
   nodes.forEach(node => {
     node.y = PADDING + (node.y - PADDING) * scale;
     node.height = NODE_HEIGHT * scale * node.value * 0.000001;
-    
-    if (!node.id.startsWith('deposit')) {
+
+    // 매도된 주식 노드 스타일 조정
+    if (!node.id.startsWith('deposit') && !node.id.startsWith('sell_deposit')) {
       const stockSymbol = node.id.split('_')[0];
       if (stockHoldings[stockSymbol] <= 0) {
         node.color = adjustColor(node.color, 50);
@@ -567,17 +586,14 @@ const processTransactions = (transactions: Transaction[]) => {
     }
   });
 
-  return { 
-    nodes, 
-    flows, 
-    totalMonths,
-    firstDate,
-    lastDate,
-    stockHoldings 
+  return {
+    nodes,
+    flows,
+    firstDate: new Date(sortedTransactions[0].transaction_date),
+    lastDate: new Date(sortedTransactions[sortedTransactions.length - 1].transaction_date),
+    stockHoldings
   };
 };
-
-
 
 const getStockColor = (category: string | null): string => {
   switch (category) {
@@ -650,27 +666,39 @@ const Home = () => {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     const { nodes, flows } = processTransactions(TRANSACTION_DATA);
-
     const drawTimeAxis = () => {
       const dates = nodes.map(node => node.date).filter((date): date is string => !!date);
       const minDate = new Date(Math.min(...dates.map(d => new Date(d).getTime())));
       const maxDate = new Date(Math.max(...dates.map(d => new Date(d).getTime())));
-
+    
+      // 수평선 그리기
       ctx.beginPath();
       ctx.moveTo(PADDING, CANVAS_HEIGHT - 30);
       ctx.lineTo(CANVAS_WIDTH - PADDING, CANVAS_HEIGHT - 30);
       ctx.strokeStyle = '#000';
       ctx.lineWidth = 1;
       ctx.stroke();
-
+    
+      // 각 날짜에 대해 세로선과 날짜 표시
       dates.forEach(date => {
         const x = getXPositionForDate(new Date(date), minDate, maxDate);
-
+    
+        // 세로선 그리기 (전체 높이)
+        ctx.beginPath();
+        ctx.moveTo(x, PADDING); // 상단에서 시작
+        ctx.lineTo(x, CANVAS_HEIGHT - 30); // 타임라인 바로 위까지
+        ctx.strokeStyle = '#eee'; // 연한 회색으로 설정
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    
+        // 눈금 표시
         ctx.beginPath();
         ctx.moveTo(x, CANVAS_HEIGHT - 35);
         ctx.lineTo(x, CANVAS_HEIGHT - 25);
+        ctx.strokeStyle = '#000';
         ctx.stroke();
-
+    
+        // 날짜 텍스트
         ctx.fillStyle = '#000';
         ctx.font = '12px Arial';
         ctx.textAlign = 'center';
@@ -694,7 +722,7 @@ const Home = () => {
 
       //내용 표시
       ctx.font = 'bold 12px Arial';
-      
+
       const label = `${node.id.split('_')[0]}\n${formatMoney(node.value)}\n`;
       const lines = label.split('\n');
       const lineHeight = 14;
