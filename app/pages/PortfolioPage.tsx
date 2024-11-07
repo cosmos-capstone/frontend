@@ -45,8 +45,7 @@ const PortfolioAnalysis = () => {
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
-          <div style={styles.totalValue}>$40.04B</div>
-          <div style={styles.details}>sharp ratio<br/>1년 과서 수익률<br/>MDD</div>
+          <div style={styles.details}>sharp ratio<br/>1년 과거 수익률<br/>MDD</div>
         </div>
 
         <div style={styles.portfolio}>
@@ -67,7 +66,6 @@ const PortfolioAnalysis = () => {
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
-          <div style={styles.totalValue}>$39.04B</div>
           <div style={styles.details}>이렇게 추천하는 이유<br/>예상 수익률<br/>MDD</div>
         </div>
       </div>
