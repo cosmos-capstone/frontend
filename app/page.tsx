@@ -11,10 +11,6 @@ import DataRegistrationPage from './pages/DataRegistrationPage';
 // import SettingPage from './pages/SettingPage';
 
 function App() {
-  if (typeof window === 'undefined') {
-    return null; // Render nothing on the server
-  }
-
   return (
     <Router>
       <div style={{ display: 'flex' }}>
