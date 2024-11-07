@@ -53,7 +53,7 @@ const PortfolioAnalysis = () => {
           <PieChart data={existingData} />
           <div className="mt-8 bg-white p-4 rounded-lg text-left leading-relaxed">
             <p>sharp ratio</p>
-            <p>1년 과서 수익률</p>
+            <p>1년 과거 수익률</p>
             <p>MDD</p>
           </div>
         </div>
