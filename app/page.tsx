@@ -524,34 +524,34 @@ const processTransactions = (transactions: Transaction[]) => {
     !node.id.startsWith('holding_')
   );
   const assetGroups = assetNodes.reduce((groups: { [key: string]: Node[] }, node) => {
-    if (node.stockName) {
-      if (!groups[node.stockName]) {
-        groups[node.stockName] = [];
-      }
-      groups[node.stockName].push(node);
+  if (node.stockName) {
+    if (!groups[node.stockName]) {
+      groups[node.stockName] = [];
     }
-    return groups;
-  }, {});
-  
-  // 각 그룹 내에서 시간순으로 정렬하고 연결선 추가
-  Object.values(assetGroups).forEach(groupNodes => {
-    const sortedNodes = groupNodes.sort((a, b) => 
-      new Date(a.date!).getTime() - new Date(b.date!).getTime()
-    );
-  
-    for (let i = 0; i < sortedNodes.length - 1; i++) {
-      flows.push({
-        source: sortedNodes[i].id,
-        target: sortedNodes[i + 1].id,
-        value: Math.min(sortedNodes[i].value, sortedNodes[i + 1].value) * 0.5, // 연결선 두께 조절
-        color: `${sortedNodes[i].color}40`, // 투명도 조절
-        sourceNode: sortedNodes[i],
-        targetNode: sortedNodes[i + 1],
-        date: sortedNodes[i + 1].date,
-        stockName: sortedNodes[i].stockName
-      });
-    }
-  });
+    groups[node.stockName].push(node);
+  }
+  return groups;
+}, {});
+
+// 각 그룹 내에서 시간순으로 정렬하고 연결선 추가
+Object.values(assetGroups).forEach(groupNodes => {
+  const sortedNodes = groupNodes.sort((a, b) => 
+    new Date(a.date!).getTime() - new Date(b.date!).getTime()
+  );
+
+  for (let i = 0; i < sortedNodes.length - 1; i++) {
+    flows.push({
+      source: sortedNodes[i].id,
+      target: sortedNodes[i + 1].id,
+      value: Math.min(sortedNodes[i].value, sortedNodes[i + 1].value) * 0.5, // 연결선 두께 조절
+      color: `${sortedNodes[i].color}40`, // 투명도 조절
+      sourceNode: sortedNodes[i],
+      targetNode: sortedNodes[i + 1],
+      date: sortedNodes[i + 1].date,
+      stockName: sortedNodes[i].stockName
+    });
+  }
+});
 
   // 거래 데이터 병합
   const mergedTransactions = transactions.reduce((acc: Transaction[], curr) => {
@@ -699,7 +699,6 @@ const processTransactions = (transactions: Transaction[]) => {
             quantity: 0,
             value: 0,
             category: transaction.asset_category!,
-            
             name: transaction.asset_name!,
             averagePrice: 0
           };
