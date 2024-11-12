@@ -10,12 +10,17 @@ const Portfolio = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://cosmos-backend.cho0h5.org/transaction/portfolio');
-        const data = await response.json();
-        const portfolioData: PieChartData = data.data;
+        const por_response = await fetch('https://cosmos-backend.cho0h5.org/transaction/portfolio');
+        const por_data = await por_response.json();
+        
+        const reb_response = await fetch('https://cosmos-backend.cho0h5.org/transaction/rebalancing');
+        const reb_data = await reb_response.json();
+
+        const portfolioData: PieChartData = por_data.data;
+        const rebalancingData: PieChartData = reb_data.data;
 
         setExistingData(portfolioData);
-        setProposedData(portfolioData); // Example modification for proposed portfolio
+        setProposedData(rebalancingData); // Example modification for proposed portfolio
       } catch (error) {
         console.error('Error fetching portfolio data:', error);
       }
