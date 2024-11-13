@@ -79,10 +79,10 @@ const Portfolio = () => {
       {/* 상위 3개의 자산을 표시하는 카드 */}
       <div className="p-8 flex justify-center items-center bg-white">
         <div>
-          <p className="text-xl font-bold mb-4">기존 김코스님의 자산은</p>
+          <p className="text-xl font-bold mb-4 ">기존 <span style={{ color: '#3B82F6' }}>김코스</span>님의 자산은</p>
           <p className="text-lg font-medium mb-4">
               {topAssets.map((asset, index) => (
-                  <span key={index}>
+                  <span style={{ color: '#3B82F6', fontWeight: 'bold'}} key={index}>
                       {asset.name}
                       {index < topAssets.length - 1 && ', '}
                   </span>
@@ -91,13 +91,21 @@ const Portfolio = () => {
         </div>
 
         <div className="bg-gray-100 rounded-2xl shadow-lg p-8 w-96 text-center ml-60">
-          <p className="text-xl font-bold mb-4">TOP3 자산 분포</p>
-          {topAssets.map((asset, index) => (
-              <p key={index} className="text-lg mb-2">
-                  {asset.name}: {asset.value}%
-              </p>
-          ))}
-        </div>
+      <p className="text-xl font-bold mb-4 text-blue-500">TOP3 자산 분포</p>
+        {topAssets.map((asset, index) => (
+            <div key={index} className="mb-4">
+                <p className="text-lg font-semibold mb-1">{asset.name}: {asset.value}%</p>
+                <div className="w-full bg-gray-300 rounded-full h-4">
+                    <div
+                        className="bg-blue-500 h-4 rounded-full"
+                        style={{ width: `${asset.value}%` }}
+                    ></div>
+                </div>
+            </div>
+        ))}
+    </div>
+
+
       </div>
     </>
   );
