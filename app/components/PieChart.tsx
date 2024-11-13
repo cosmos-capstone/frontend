@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pie } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, ChartOptions } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -51,7 +51,7 @@ const PieChart: React.FC<PieChartProps> = ({ data }) => {
         ],
     };
 
-    const options: ChartOptions<'pie'> = {
+    const options: ChartOptions<'doughnut'> = {
         plugins: {
             legend: {
                 display: true,
@@ -80,9 +80,10 @@ const PieChart: React.FC<PieChartProps> = ({ data }) => {
                 },
             },
         },
+        cutout: '50%', // 도넛 차트의 가운데 구멍 크기 조절 (50%는 중간 크기)
     };
 
-    return <Pie data={chartData} options={options} />;
+    return <Doughnut data={chartData} options={options} />;
 };
 
 export default PieChart;

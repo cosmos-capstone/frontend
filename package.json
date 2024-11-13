@@ -23,7 +23,8 @@
     "react-datepicker": "^7.4.0",
     "react-dom": "^18",
     "react-select": "^5.8.2",
-    "recharts": "^2.13.0"
+    "recharts": "^2.13.0",
+    "three": "^0.170.0"
   },
   "devDependencies": {
     "@types/node": "^20",
