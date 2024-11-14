@@ -5,6 +5,11 @@ export const getCurrentPrice = async (symbol: string): Promise<number> => {
       'SPY': 500000,
       'VOO': 480000,
       'AAPL': 200000,
+      '005930.KS' : 49900,
+      '035720.KS': 120000,
+      'MSFT':90000,
+      'NVDA':90000,
+      'GOOGL': 320000,
       // ... 다른 자산들의 가격
     };
     return mockPrices[symbol] || 0;

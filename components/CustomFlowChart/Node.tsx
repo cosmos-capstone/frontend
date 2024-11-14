@@ -1,7 +1,10 @@
 // components/CustomFlowChart/Node.tsx
+import { useState } from 'react';
 import { NodeProps } from './types';
 
 export const Node = ({ node }: NodeProps) => {
+    const [isHovered, setIsHovered] = useState(false);
+
     const getBackgroundColor = (type: string) => {
         switch (type) {
             case 'deposit': return '#e6f3ff';
@@ -12,31 +15,64 @@ export const Node = ({ node }: NodeProps) => {
     };
 
     const backgroundColor = getBackgroundColor(node.type);
-    const label = `${node.asset_symbol}\n${node.amount}주\n₩${node.value?.toLocaleString() ?? '0'}`;
+    const simpleLabel = `${node.asset_symbol}`;
+    const detailLabel = `${node.asset_symbol}\n${node.amount}주\n₩${node.value?.toLocaleString() ?? '0'}`;
 
     return (
-        <g transform={`translate(${node.position.x_position},${node.position.y_position})`}>
+        <g
+            transform={`translate(${node.position.x_position},${node.position.y_position})`}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            {/* 기본 노드 */}
             <rect
                 width={node.size.width}
                 height={node.size.height}
-                rx="5"
-                ry="5"
                 fill={backgroundColor}
                 stroke="#1a192b"
                 strokeWidth="1"
                 filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
             />
-            {label.split('\n').map((line, i) => (
-                <text
-                    key={i}
-                    x={node.size.width / 2}
-                    y={node.size.height / 2 + (i - 1) * 15}
-                    textAnchor="middle"
-                    fontSize="12"
-                >
-                    {line}
-                </text>
-            ))}
+            <text
+                x={node.size.width / 2}
+                y={node.size.height / 2}
+                textAnchor="middle"
+                fontSize="12"
+                dy=".3em"
+            >
+                {simpleLabel}
+            </text>
+
+            {/* 호버 시 표시되는 상세 정보 */}
+            {isHovered && (
+                <g transform={`translate(${node.size.width + 10}, ${-10})`}>
+                    <rect
+                        width={150}
+                        height={80}
+                        fill="white"
+                        stroke="#1a192b"
+                        strokeWidth="1"
+                        rx="5"
+                        ry="5"
+                        filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
+                        style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)', // 불투명하게 하얗게 변경
+                        }}
+                    />
+                    {detailLabel.split('\n').map((line, i) => (
+                        <text
+                            key={i}
+                            x={75}
+                            y={20 + i * 20}
+                            textAnchor="middle"
+                            fontSize="12"
+                            fill="#000"
+                        >
+                            {line}
+                        </text>
+                    ))}
+                </g>
+            )}
         </g>
     );
 };

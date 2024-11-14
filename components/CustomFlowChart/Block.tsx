@@ -8,7 +8,7 @@ export const Block = ({ block, children }: BlockProps) => {
                 width={block.position.width}
                 height={block.position.height}
                 fill="none"
-                stroke="#ddd"
+                // stroke="#ddd"
                 strokeWidth="1"
             />
             <text 
@@ -18,7 +18,7 @@ export const Block = ({ block, children }: BlockProps) => {
                 fontSize="14" 
                 fontWeight="bold"
             >
-                {new Date(block.date).toLocaleDateString()}
+                {new Date(block.date).toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })}
             </text>
             <line
                 x1={block.position.width / 2}
