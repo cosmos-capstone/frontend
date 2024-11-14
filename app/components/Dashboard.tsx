@@ -32,7 +32,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://cosmos-backend.cho0h5.org/transaction/portfolio');
+        const response = await fetch('https://cosmos-backend.cho0h5.org/transaction/portfolio_sum');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -63,7 +63,7 @@ export default function Dashboard() {
           dashboardData[key] > 0 && (
             <div key={key} className="flex justify-between items-center p-4 bg-gray-200 text-gray-800 rounded-lg shadow-md w-full md:w-1/2 lg:w-1/4">
               <div className="text-lg font-medium">{assetNameMap[key]}</div>
-              <div className="text-3xl font-bold">{dashboardData[key].toLocaleString()}%</div>
+              <div className="text-3xl font-bold">{dashboardData[key].toLocaleString()}원</div>
             </div>
           )
         ))}
