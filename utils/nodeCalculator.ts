@@ -6,8 +6,8 @@ export const calculateNodeSize = async (
     node: Omit<Node, 'size'>,
     maxAssetValue: number
 ): Promise<NodeSize> => {
-    const baseWidth = 120;
-    const baseHeight = 200;
+    const baseWidth = 40;
+    const baseHeight = 100;
 
     let assetValue: number;
 
