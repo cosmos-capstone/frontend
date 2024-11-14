@@ -24,6 +24,7 @@ export const Node = ({ node }: NodeProps) => {
                 fill={backgroundColor}
                 stroke="#1a192b"
                 strokeWidth="1"
+                filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
             />
             {label.split('\n').map((line, i) => (
                 <text

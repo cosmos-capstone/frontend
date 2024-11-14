@@ -31,20 +31,21 @@ export const Edge = ({ edge, blocks }: EdgeProps) => {
     const cp1x = startX + distance * curvature;
     const cp2x = endX - distance * curvature;
 
-    const topPath = `
-        M ${startX} ${startY}
-        C ${cp1x} ${startY},
-          ${cp2x} ${endY},
-          ${endX} ${endY}
-    `;
-
-    const bottomPath = `
-        L ${endX} ${endY + endHeight}
-        C ${cp2x} ${endY + endHeight},
-          ${cp1x} ${startY + startHeight},
-          ${startX} ${startY + startHeight}
-        Z
-    `;
+    const curveHeight = Math.max(startHeight, endHeight) * 0.5; // 곡선의 높이
+  const topPath = `
+    M ${startX} ${startY}
+    C ${startX + distance * 0.25} ${startY},
+      ${endX - distance * 0.25} ${endY},
+      ${endX} ${endY}
+  `;
+  const bottomPath = `
+    L ${endX} ${endY + endHeight}
+    C ${endX - distance * 0.25} ${endY + endHeight},
+      ${startX + distance * 0.25} ${startY + startHeight},
+      ${startX} ${startY + startHeight}
+    Z
+  `;
+  
 
     const gradientId = `gradient-${edge.id}`;
 

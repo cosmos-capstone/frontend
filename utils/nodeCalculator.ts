@@ -1,13 +1,13 @@
 // utils/nodeCalculator.ts
 import { Node, NodeSize } from '../types/types';
 import { getCurrentPrice } from './priceAPI';
+import { nodeBaseWidth, nodeBaseHeight } from '../constants/globalConfig';
 
 export const calculateNodeSize = async (
     node: Omit<Node, 'size'>,
     maxAssetValue: number
 ): Promise<NodeSize> => {
-    const baseWidth = 40;
-    const baseHeight = 100;
+    
 
     let assetValue: number;
 
@@ -18,10 +18,10 @@ export const calculateNodeSize = async (
         assetValue = currentPrice * node.amount;
     }
 
-    const height = (assetValue / maxAssetValue) * baseHeight;
+    const height = (assetValue / maxAssetValue) * nodeBaseHeight;
 
     return {
-        width: baseWidth,
+        width: nodeBaseWidth,
         height
     };
 };

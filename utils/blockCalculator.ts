@@ -2,14 +2,9 @@
 import { Block, AssetHistory, Transaction, Node } from '../types/types';
 import { calculateNodeSize } from './nodeCalculator';
 import { getCurrentPrice } from './priceAPI';
+import { BLOCK_CONFIG } from '../constants/globalConfig';
 
-const BLOCK_CONFIG = {
-    width: 400,
-    gap: 10,
-    minHeight: 500,
-    leftMargin: 50,
-    rightMargin: 230, // 400 - 170
-};
+
 
 async function calculateMaxAssetValue(history: AssetHistory): Promise<number> {
     let maxValue = history.state.cash;
