@@ -16,8 +16,7 @@ const calculateNodeSize = async (
     maxAssetValue: number
 ): Promise<NodeSize> => {
     const baseWidth = 120;
-    const maxHeight = 200;
-    const minHeight = 60;
+    const baseHeight = 200; // 기준 높이 설정
 
     let assetValue: number;
 
@@ -28,14 +27,12 @@ const calculateNodeSize = async (
         assetValue = currentPrice * node.amount;
     }
 
-    const height = Math.max(
-        minHeight,
-        Math.min(maxHeight, (assetValue / maxAssetValue) * maxHeight)
-    );
+    // 순수하게 자산 가치에 비례하여 높이 계산
+    const height = (assetValue / maxAssetValue) * baseHeight;
 
     return {
         width: baseWidth,
-        height
+        height: height
     };
 };
 
@@ -66,12 +63,12 @@ const createBlock = async (
     previousBlock?: BlockType,
     transactions?: Transaction[]  // 거래 데이터 추가
 ): Promise<BlockType> => {
-    const blockWidth = 400;  // 블록 너비 증가
-    const blockXPosition = index * (blockWidth + 50);
+    const blockWidth = 400;  // 블록 너비는 유지
+    const blockGap = 10;    // 블록 간 간격을 50에서 20으로 줄임
+    const blockXPosition = index * (blockWidth + blockGap);  // 간격 적용
     const blockHeight = 500;
-    const leftMargin = 50;  // 왼쪽 여백 증가
-    const rightMargin = blockWidth - 170;  // 오른쪽 여백 조정
-    const centerX = blockWidth / 2;  // 중앙 위치
+    const leftMargin = 50;
+    const rightMargin = blockWidth - 170;
 
 
     const beforeNodes: Node[] = [];
@@ -81,14 +78,17 @@ const createBlock = async (
     let maxAssetValue = history.state.cash;
     if (history.previousState) {
         maxAssetValue = Math.max(maxAssetValue, history.previousState.cash);
+        // 이전 상태의 주식 가치 계산
         for (const [symbol, quantity] of Object.entries(history.previousState.holdings)) {
             const price = await getCurrentPrice(symbol);
-            maxAssetValue = Math.max(maxAssetValue, price * quantity);
+            const stockValue = price * quantity;
+            maxAssetValue = Math.max(maxAssetValue, stockValue);
         }
     }
     for (const [symbol, quantity] of Object.entries(history.state.holdings)) {
         const price = await getCurrentPrice(symbol);
-        maxAssetValue = Math.max(maxAssetValue, price * quantity);
+        const stockValue = price * quantity;
+        maxAssetValue = Math.max(maxAssetValue, stockValue);
     }
 
     // 이전 상태(왼쪽) 노드 생성
@@ -129,17 +129,15 @@ const createBlock = async (
         for (const [symbol, quantity] of Object.entries(history.previousState.holdings)) {
 
             const currentTransaction = transactions?.find(t => t.transaction_date === history.date);
-            
-            if (currentTransaction?.transaction_type === 'sell' && 
+
+            if (currentTransaction?.transaction_type === 'sell' &&
                 symbol === currentTransaction.asset_symbol) {
-                    // currentPrice 정의 추가
-    const currentPrice = await getCurrentPrice(symbol);
-                
+                // currentPrice 정의 추가
+                const currentPrice = await getCurrentPrice(symbol);
+
                 // 매도되는 수량에 대한 노드
                 const sellQuantity = currentTransaction.quantity;
-                const remainingQuantity = quantity - sellQuantity;
-                
-                // 매도 노드 생성
+                const sellValue = currentPrice * sellQuantity;
                 const sellNodeSize = await calculateNodeSize({
                     id: `${symbol}-${index}-before-sell`,
                     date: history.date,
@@ -150,7 +148,12 @@ const createBlock = async (
                     action: 'sell',
                     state: 'before'
                 }, maxAssetValue);
-        
+
+                const remainingQuantity = quantity - sellQuantity;
+                const remainingValue = currentPrice * remainingQuantity;
+
+                
+
                 beforeNodes.push({
                     id: `${symbol}-${index}-before-sell`,
                     date: history.date,
@@ -166,9 +169,9 @@ const createBlock = async (
                     size: sellNodeSize,
                     value: currentPrice * sellQuantity
                 });
-        
+
                 currentY += sellNodeSize.height + 20;
-        
+
                 // 유지되는 수량에 대한 노드
                 if (remainingQuantity > 0) {
                     const holdNodeSize = await calculateNodeSize({
@@ -181,7 +184,7 @@ const createBlock = async (
                         action: 'buy',
                         state: 'before'
                     }, maxAssetValue);
-        
+
                     beforeNodes.push({
                         id: `${symbol}-${index}-before-hold`,
                         date: history.date,
@@ -197,41 +200,40 @@ const createBlock = async (
                         size: holdNodeSize,
                         value: currentPrice * remainingQuantity
                     });
-        
+
                     currentY += holdNodeSize.height + 20;
                 }
-            } else 
+            } else {
+                const currentPrice = await getCurrentPrice(symbol);
+                const nodeSize = await calculateNodeSize({
+                    id: `${symbol}-${index}-before`,
+                    date: history.date,
+                    amount: quantity,
+                    asset_symbol: symbol,
+                    position: { x_position: 0, y_position: 0 },
+                    type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+                    action: 'buy',
+                    state: 'before'
+                }, maxAssetValue);
 
-            
-            {const currentPrice = await getCurrentPrice(symbol);
-            const nodeSize = await calculateNodeSize({
-                id: `${symbol}-${index}-before`,
-                date: history.date,
-                amount: quantity,
-                asset_symbol: symbol,
-                position: { x_position: 0, y_position: 0 },
-                type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
-                action: 'buy',
-                state: 'before'
-            }, maxAssetValue);
+                beforeNodes.push({
+                    id: `${symbol}-${index}-before`,
+                    date: history.date,
+                    amount: quantity,
+                    asset_symbol: symbol,
+                    position: {
+                        x_position: leftMargin,
+                        y_position: currentY
+                    },
+                    type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+                    action: 'buy',
+                    state: 'before',
+                    size: nodeSize,
+                    value: currentPrice * quantity
+                });
 
-            beforeNodes.push({
-                id: `${symbol}-${index}-before`,
-                date: history.date,
-                amount: quantity,
-                asset_symbol: symbol,
-                position: {
-                    x_position: leftMargin,
-                    y_position: currentY
-                },
-                type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
-                action: 'buy',
-                state: 'before',
-                size: nodeSize,
-                value: currentPrice * quantity
-            });
-
-            currentY += nodeSize.height + 20;}
+                currentY += nodeSize.height + 20;
+            }
         }
     }
 
@@ -272,7 +274,7 @@ const createBlock = async (
     for (const [symbol, quantity] of Object.entries(history.state.holdings)) {
 
 
-         
+
 
 
 
@@ -314,20 +316,20 @@ const createBlock = async (
     );
 
     return {
-         date: history.date,
-    position: {
-      x_position: blockXPosition,
-      width: blockWidth,
-      height: Math.max(
-        Math.max(
-          beforeNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0),
-          afterNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0)
-        ) + 50,
-        500
-      )
-    },
-    beforeNodes,
-    afterNodes
+        date: history.date,
+        position: {
+            x_position: blockXPosition,
+            width: blockWidth,
+            height: Math.max(
+                Math.max(
+                    beforeNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0),
+                    afterNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0)
+                ) + 50,
+                500
+            )
+        },
+        beforeNodes,
+        afterNodes
     };
 };
 
@@ -392,39 +394,39 @@ const CustomFlowChart = ({ transactions }: { transactions: Transaction[] }) => {
                         });
                     }
                 } else if (currentTransaction?.transaction_type === 'sell') {
-                     // 매도되는 부분의 노드
-    const sellSourceNode = currentBlock.beforeNodes.find(
-        n => n.asset_symbol === currentTransaction.asset_symbol && n.action === 'sell'
-    );
-    const depositTargetNode = currentBlock.afterNodes.find(
-        n => n.asset_symbol === 'DEPOSIT'
-    );
-    
-    if (sellSourceNode && depositTargetNode) {
-        newEdges.push({
-            id: `trade-sell-${index}-${currentTransaction.asset_symbol}`,
-            source: sellSourceNode.id,
-            target: depositTargetNode.id,
-            type: 'sell'
-        });
-    }
+                    // 매도되는 부분의 노드
+                    const sellSourceNode = currentBlock.beforeNodes.find(
+                        n => n.asset_symbol === currentTransaction.asset_symbol && n.action === 'sell'
+                    );
+                    const depositTargetNode = currentBlock.afterNodes.find(
+                        n => n.asset_symbol === 'DEPOSIT'
+                    );
 
-    // 유지되는 부분의 노드
-    const holdSourceNode = currentBlock.beforeNodes.find(
-        n => n.asset_symbol === currentTransaction.asset_symbol && n.action === 'buy'
-    );
-    const holdTargetNode = currentBlock.afterNodes.find(
-        n => n.asset_symbol === currentTransaction.asset_symbol
-    );
-    
-    if (holdSourceNode && holdTargetNode) {
-        newEdges.push({
-            id: `hold-${index}-${currentTransaction.asset_symbol}`,
-            source: holdSourceNode.id,
-            target: holdTargetNode.id,
-            type: 'buy'
-        });
-    }
+                    if (sellSourceNode && depositTargetNode) {
+                        newEdges.push({
+                            id: `trade-sell-${index}-${currentTransaction.asset_symbol}`,
+                            source: sellSourceNode.id,
+                            target: depositTargetNode.id,
+                            type: 'sell'
+                        });
+                    }
+
+                    // 유지되는 부분의 노드
+                    const holdSourceNode = currentBlock.beforeNodes.find(
+                        n => n.asset_symbol === currentTransaction.asset_symbol && n.action === 'buy'
+                    );
+                    const holdTargetNode = currentBlock.afterNodes.find(
+                        n => n.asset_symbol === currentTransaction.asset_symbol
+                    );
+
+                    if (holdSourceNode && holdTargetNode) {
+                        newEdges.push({
+                            id: `hold-${index}-${currentTransaction.asset_symbol}`,
+                            source: holdSourceNode.id,
+                            target: holdTargetNode.id,
+                            type: 'buy'
+                        });
+                    }
                 }
 
                 // 3. 블록 내 변화 없는 자산들의 연속성 표시
@@ -495,78 +497,110 @@ const CustomFlowChart = ({ transactions }: { transactions: Transaction[] }) => {
             .find(n => n.id === edge.source);
         const targetNode = blocks.flatMap(b => [...b.beforeNodes, ...b.afterNodes])
             .find(n => n.id === edge.target);
-    
+
         if (!sourceNode || !targetNode) return null;
-    
+
         const sourceBlock = blocks.find(b =>
             [...b.beforeNodes, ...b.afterNodes].some(n => n.id === edge.source)
         );
         const targetBlock = blocks.find(b =>
             [...b.beforeNodes, ...b.afterNodes].some(n => n.id === edge.target)
         );
-    
+
         if (!sourceBlock || !targetBlock) return null;
-    
-        // 소스와 타겟 노드의 전역 좌표 및 크기 계산
+
+        // 소스와 타겟 노드의 좌표 및 크기 계산
         const startX = sourceBlock.position.x_position + sourceNode.position.x_position + sourceNode.size.width;
         const startY = sourceNode.position.y_position;
         const startHeight = sourceNode.size.height;
-        
+
         const endX = targetBlock.position.x_position + targetNode.position.x_position;
         const endY = targetNode.position.y_position;
         const endHeight = targetNode.size.height;
-    
-        // 컨트롤 포인트 계산
-        const isInterBlockEdge = sourceBlock.date !== targetBlock.date;
+
+        // 곡선의 강도 계산
         const distance = endX - startX;
-        const cp1x = startX + distance * 0.25;
-        const cp2x = endX - distance * 0.25;
-    
-        // 곡선의 위아래 경로 생성
-        const topCurve = `M ${startX} ${startY}
-            C ${cp1x} ${startY}, 
-              ${cp2x} ${endY}, 
-              ${endX} ${endY}`;
-        
-        const bottomCurve = `M ${startX} ${startY + startHeight}
-            C ${cp1x} ${startY + startHeight}, 
-              ${cp2x} ${endY + endHeight}, 
-              ${endX} ${endY + endHeight}`;
-    
-        // 전체 패스 생성
-        const path = `${topCurve} 
-                      L ${endX} ${endY + endHeight}
-                      ${bottomCurve} 
-                      L ${startX} ${startY}
-                      Z`;
-    
+        const curvature = 0.5;
+
+        // 컨트롤 포인트 계산
+        const cp1x = startX + distance * curvature;
+        const cp2x = endX - distance * curvature;
+
+        // 상단 경로
+        const topPath = `
+            M ${startX} ${startY}
+            C ${cp1x} ${startY},
+              ${cp2x} ${endY},
+              ${endX} ${endY}
+        `;
+
+        // 하단 경로
+        const bottomPath = `
+            L ${endX} ${endY + endHeight}
+            C ${cp2x} ${endY + endHeight},
+              ${cp1x} ${startY + startHeight},
+              ${startX} ${startY + startHeight}
+            Z
+        `;
+
+        const gradientId = `gradient-${edge.id}`;
+
         return (
             <g>
+                <defs>
+                    <linearGradient
+                        id={gradientId}
+                        gradientUnits="userSpaceOnUse"
+                        x1={startX}
+                        y1={startY + startHeight / 2}
+                        x2={endX}
+                        y2={endY + endHeight / 2}
+                    >
+                        <stop
+                            offset="0%"
+                            stopColor={edge.type === 'buy' ? 'rgb(0, 200, 0)' : 'rgb(200, 0, 0)'}
+                            stopOpacity="0.3"
+                        />
+                        <stop
+                            offset="100%"
+                            stopColor={edge.type === 'buy' ? 'rgb(0, 150, 0)' : 'rgb(150, 0, 0)'}
+                            stopOpacity="0.3"
+                        />
+                    </linearGradient>
+                </defs>
                 <path
-                    d={path}
-                    fill={edge.type === 'buy' ? 'rgba(0, 255, 0, 0.2)' : 'rgba(255, 0, 0, 0.2)'}
-                    stroke={edge.type === 'buy' ? 'green' : 'red'}
+                    d={`${topPath} ${bottomPath}`}
+                    fill={`url(#${gradientId})`}
+                    stroke={edge.type === 'buy' ? 'rgba(0, 150, 0, 0.5)' : 'rgba(150, 0, 0, 0.5)'}
                     strokeWidth="1"
                     style={{
-                        opacity: isInterBlockEdge ? 0.7 : 1,
+                        transition: 'all 0.3s ease',
+                        filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))',
                     }}
                 />
-                {/* 화살표 방향 표시를 위한 마커 */}
-                <path
-                    d={`M ${(startX + endX) / 2 - 5} ${(startY + endY) / 2 - 5}
-                        L ${(startX + endX) / 2 + 5} ${(startY + endY) / 2}
-                        L ${(startX + endX) / 2 - 5} ${(startY + endY) / 2 + 5}`}
-                    fill={edge.type === 'buy' ? 'green' : 'red'}
-                    style={{
-                        opacity: isInterBlockEdge ? 0.7 : 1,
-                    }}
-                />
+                {/* 흐름 방향을 나타내는 패턴 */}
+                <pattern
+                    id={`flow-${edge.id}`}
+                    width="15"
+                    height="10"
+                    patternUnits="userSpaceOnUse"
+                    patternTransform="rotate(45)"
+                >
+                    <line
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="10"
+                        stroke={edge.type === 'buy' ? 'rgba(0, 100, 0, 0.2)' : 'rgba(100, 0, 0, 0.2)'}
+                        strokeWidth="8"
+                    />
+                </pattern>
             </g>
         );
     };
     return (
         <div style={{ overflowX: 'auto' }}>
-            <svg width={Math.max(1000, blocks.length * 350)} height={800}>
+            <svg width={Math.max(1000, blocks.length * (400 + 20))} height={800}>  {/* 너비 계산 수정 */}
                 <defs>
                     <marker
                         id="arrow-buy"
