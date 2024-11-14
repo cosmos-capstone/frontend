@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <main className="container mx-auto">
       <CustomFlowChart transactions={TRANSACTION_DATA} />
-      <AssetFlowChart transactions={TRANSACTION_DATA} />
+      {/* <AssetFlowChart transactions={TRANSACTION_DATA} /> */}
       
       <AssetTracker transactionData={TRANSACTION_DATA} />
     </main>
