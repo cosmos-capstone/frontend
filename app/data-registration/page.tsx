@@ -3,11 +3,7 @@
 import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
 import Select from 'react-select';
 import { Transaction } from '../types/transaction';
-
-interface StockListElement {
-  value: string;
-  label: string;
-}
+import { StockListElement } from '../types/stockListElement';
 
 interface TransactionResponseItem {
   id: number;
