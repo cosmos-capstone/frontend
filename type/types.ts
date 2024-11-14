@@ -22,8 +22,11 @@ export interface Node {
   type: 'deposit' | 'american_stock' | 'korean_stock';
   action: 'buy' | 'sell';
   state: 'before' | 'after';
+  size: {
+    width: number;
+    height: number;
+  };
 }
-
 export interface Edge {
   id: string;
   source: string;
