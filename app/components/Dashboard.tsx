@@ -57,7 +57,6 @@ export default function Dashboard() {
     <div className="m-8 bg-gradient-to-br from-gray-100 to-white p-10 rounded-3xl shadow-2xl">
       <div className="mb-10 text-center">
         <h2 className="text-4xl font-extrabold text-gray-800">자산 개요</h2>
-        <p className="mt-3 text-lg text-gray-500">현재 자산 상태를 요약한 정보입니다</p>
       </div>
       <div className="flex flex-wrap justify-between gap-4">
         {dashboardData && Object.keys(assetNameMap).map((key) => (
