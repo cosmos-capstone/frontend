@@ -16,17 +16,19 @@ export interface Node {
   amount: number;
   asset_symbol: string;
   position: {
-    x_position: number;
-    y_position: number;
+      x_position: number;
+      y_position: number;
   };
   type: 'deposit' | 'american_stock' | 'korean_stock';
   action: 'buy' | 'sell';
   state: 'before' | 'after';
   size: {
-    width: number;
-    height: number;
+      width: number;
+      height: number;
   };
+  value?: number;
 }
+
 export interface Edge {
   id: string;
   source: string;
@@ -37,9 +39,9 @@ export interface Edge {
 export interface Block {
   date: string;
   position: {
-    x_position: number;
-    width: number;
-    height: number;
+      x_position: number;
+      width: number;
+      height: number;
   };
   beforeNodes: Node[];
   afterNodes: Node[];
@@ -48,7 +50,7 @@ export interface Block {
 export interface AssetState {
   cash: number;
   holdings: {
-    [symbol: string]: number;
+      [symbol: string]: number;
   };
 }
 

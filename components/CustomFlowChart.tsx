@@ -3,13 +3,23 @@
 import { useEffect, useState } from 'react';
 import { trackAssets } from '../utils/assetTracker';
 import { Block } from './Block';
-import { Transaction, Node, Edge, Block as BlockType, AssetHistory } from '../type/types';
+import { Transaction, Node, Edge, Block as BlockType, AssetHistory } from '../types/types';
 import { getCurrentPrice } from '../utils/priceAPI';
 
 interface NodeSize {
     width: number;
     height: number;
 }
+interface NodeGroup {
+    symbol: string;
+    nodes: Node[];
+    totalHeight: number;
+    position: {
+        x_position: number;
+        y_position: number;
+    };
+}
+
 
 const calculateNodeSize = async (
     node: Omit<Node, 'size'>,

@@ -1,4 +1,4 @@
-import { Transaction } from '../type/types';
+import { Transaction } from '../types/types';
 import AssetTracker from '../components/AssetTracker';
 
 import { 
@@ -9,7 +9,8 @@ import {
 } from '../data/transactions';
 
 import AssetFlowChart from '../components/AssetFlowChart';
-import CustomFlowChart from '../components/CustomFlowChart';
+// import CustomFlowChart from '../components/CustomFlowChart';
+import CustomFlowChart from '../components/CustomFlowChart/index';
 
 
 // 예시 사용

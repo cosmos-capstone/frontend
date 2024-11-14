@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Transaction, AssetHistory } from '../type/types';
+import { Transaction, AssetHistory } from '../types/types';
 import { trackAssets } from '../utils/assetTracker';
 
 interface AssetTrackerProps {
