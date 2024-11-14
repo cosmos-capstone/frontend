@@ -1,190 +1,214 @@
 // components/CustomFlowChart.tsx
 'use client';
 import { useEffect, useState } from 'react';
-import { trackAssets } from '../utils/assetTracker'
-interface Node {
-    id: string;
-    date: string;
-    amount: number;
-    asset_symbol: string;
-    position: {
-      x_position: number;
-      y_position: number;
-    };
-    type: 'deposit' | 'american_stock' | 'korean_stock';
-    action: 'buy' | 'sell';
+import { trackAssets } from '../utils/assetTracker';
+import { Block } from './Block';
+import { Transaction, Node, Edge, Block as BlockType, AssetHistory } from '../types/types';
+
+const calculateNodePosition = (
+  assetSymbol: string,
+  previousBlock?: BlockType,
+  state: 'before' | 'after' = 'before'
+) => {
+  const defaultYPosition = 100;
+  const yGap = 80;
+
+  if (previousBlock) {
+    const nodes = state === 'before' ? previousBlock.afterNodes : previousBlock.beforeNodes;
+    const existingNode = nodes.find(node => node.asset_symbol === assetSymbol);
+    if (existingNode) {
+      return existingNode.position.y_position;
+    }
   }
-  
-  const CustomFlowChart = ({ transactions }: { transactions: Transaction[] }) => {
-    const [nodes, setNodes] = useState<Node[]>([]);
-    const [edges, setEdges] = useState<Edge[]>([]);
-  
-    useEffect(() => {
-      const assetHistory = trackAssets(transactions);
-      const newNodes: Node[] = [];
-      const newEdges: Edge[] = [];
-  
-      // 각 거래 시점마다 노드 생성
-      // Edge 생성 로직
-      assetHistory.forEach((history, timeIndex) => {
-        const xPosition = timeIndex * 200;
-        let yPosition = 100;
-        const yGap = 100;
-  
-        // deposit 노드 생성
-        const depositNode: Node = {
-          id: `deposit-${timeIndex}`,
-          date: history.date,
-          amount: history.state.cash,
-          asset_symbol: 'DEPOSIT',
-          position: {
-            x_position: xPosition,
-            y_position: yPosition
-          },
-          type: 'deposit',
-          action: 'buy'
-        };
-        newNodes.push(depositNode);
-  
-        // 보유 주식 노드 생성
-        Object.entries(history.state.holdings).forEach(([symbol, quantity], assetIndex) => {
-          const stockNode: Node = {
-            id: `${symbol}-${timeIndex}`,
-            date: history.date,
-            amount: quantity,
-            asset_symbol: symbol,
-            position: {
-              x_position: xPosition,
-              y_position: yPosition + ((assetIndex + 1) * yGap)
-            },
-            type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
-            action: 'buy'
-          };
-          newNodes.push(stockNode);
-        });
+
+  // 새로운 자산의 경우 적절한 Y 위치 계산
+  if (assetSymbol === 'DEPOSIT') return defaultYPosition;
+  return defaultYPosition + (yGap * (previousBlock?.afterNodes.length || 1));
+};
+
+const createBlock = (
+  history: AssetHistory,
+  index: number,
+  previousBlock?: BlockType
+): BlockType => {
+  const blockWidth = 300;
+  const blockXPosition = index * (blockWidth + 50);
+  const blockHeight = 500;
+  const leftMargin = 30;  // 왼쪽 여백
+  const rightMargin = blockWidth - 150;  // 오른쪽 여백
+
+  const beforeNodes: Node[] = [];
+  const afterNodes: Node[] = [];
+
+  // 이전 시점의 상태를 왼쪽에 표시
+  if (history.previousState) {
+    // Deposit 노드
+    beforeNodes.push({
+      id: `DEPOSIT-${index}-before`,
+      date: history.date,
+      amount: history.previousState.cash,
+      asset_symbol: 'DEPOSIT',
+      position: {
+        x_position: leftMargin,
+        y_position: calculateNodePosition('DEPOSIT', previousBlock, 'before')
+      },
+      type: 'deposit',
+      action: 'buy',
+      state: 'before'
+    });
+
+    // 보유 자산 노드들
+    Object.entries(history.previousState.holdings).forEach(([symbol, quantity]) => {
+      beforeNodes.push({
+        id: `${symbol}-${index}-before`,
+        date: history.date,
+        amount: quantity,
+        asset_symbol: symbol,
+        position: {
+          x_position: leftMargin,
+          y_position: calculateNodePosition(symbol, previousBlock, 'before')
+        },
+        type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+        action: 'buy',
+        state: 'before'
       });
-  
-      // Edge 생성 로직
-    assetHistory.forEach((history, timeIndex) => {
-        if (timeIndex === 0) return; // 첫 번째 시점은 건너뜀
-  
-        // 현재 시점의 거래 찾기
-        const currentTransaction = transactions.find(t => t.transaction_date === history.date);
-        
-// deposit 노드 간 연결
-      const previousDepositNode = newNodes.find(n => 
-        n.asset_symbol === 'DEPOSIT' && 
-        n.date === assetHistory[timeIndex - 1].date
-      );
-      const currentDepositNode = newNodes.find(n => 
-        n.asset_symbol === 'DEPOSIT' && 
-        n.date === history.date
-      );
-      
-      // deposit 연속성 엣지 추가
-      if (previousDepositNode && currentDepositNode) {
-        newEdges.push({
-          id: `deposit-continuity-${timeIndex}`,
-          source: previousDepositNode.id,
-          target: currentDepositNode.id,
-          type: 'buy'  // deposit 연속성도 'buy'로 표시
+    });
+  }
+
+  // 현재 시점(거래 후)의 상태를 오른쪽에 표시
+  // Deposit 노드
+  afterNodes.push({
+    id: `DEPOSIT-${index}-after`,
+    date: history.date,
+    amount: history.state.cash,
+    asset_symbol: 'DEPOSIT',
+    position: {
+      x_position: rightMargin,
+      y_position: calculateNodePosition('DEPOSIT', previousBlock, 'after')
+    },
+    type: 'deposit',
+    action: 'buy',
+    state: 'after'
+  });
+
+  // 보유 자산 노드들
+  Object.entries(history.state.holdings).forEach(([symbol, quantity]) => {
+    afterNodes.push({
+      id: `${symbol}-${index}-after`,
+      date: history.date,
+      amount: quantity,
+      asset_symbol: symbol,
+      position: {
+        x_position: rightMargin,
+        y_position: calculateNodePosition(symbol, previousBlock, 'after')
+      },
+      type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+      action: 'buy',
+      state: 'after'
+    });
+  });
+
+  // 블록 생성
+  return {
+    date: history.date,
+    position: {
+      x_position: blockXPosition,
+      width: blockWidth,
+      height: Math.max(
+        (Math.max(beforeNodes.length, afterNodes.length) + 1) * 80,  // 노드 간격 고려
+        blockHeight
+      )
+    },
+    beforeNodes,
+    afterNodes
+  };
+};
+
+const CustomFlowChart = ({ transactions }: { transactions: Transaction[] }) => {
+  const [blocks, setBlocks] = useState<BlockType[]>([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
+
+  useEffect(() => {
+    const assetHistory = trackAssets(transactions);
+    const newBlocks: BlockType[] = [];
+    const newEdges: Edge[] = [];
+
+    assetHistory.forEach((history, index) => {
+      const previousBlock = index > 0 ? newBlocks[index - 1] : undefined;
+      const block = createBlock(history, index, previousBlock);
+      newBlocks.push(block);
+
+      // 블록 간 연속성 엣지 생성
+      if (previousBlock) {
+        block.beforeNodes.forEach(currentNode => {
+          const previousNode = previousBlock.afterNodes.find(
+            n => n.asset_symbol === currentNode.asset_symbol
+          );
+          if (previousNode) {
+            newEdges.push({
+              id: `continuity-${index}-${currentNode.asset_symbol}`,
+              source: previousNode.id,
+              target: currentNode.id,
+              type: 'buy'
+            });
+          }
         });
       }
 
-        if (currentTransaction && (currentTransaction.transaction_type === 'buy' || currentTransaction.transaction_type === 'sell')) {
-          if (currentTransaction.transaction_type === 'buy') {
-            // 매수: 이전 deposit -> 현재 매수 자산
-            const previousDepositNode = newNodes.find(n => 
-              n.asset_symbol === 'DEPOSIT' && 
-              n.date === assetHistory[timeIndex - 1].date
-            );
-            const targetNode = newNodes.find(n =>
-              n.asset_symbol === currentTransaction.asset_symbol && 
-              n.date === history.date
-            );
-  
-            if (previousDepositNode && targetNode) {
-              newEdges.push({
-                id: `trade-buy-${timeIndex}-${currentTransaction.asset_symbol}`,
-                source: previousDepositNode.id,
-                target: targetNode.id,
-                type: 'buy'
-              });
-            }
-          } else if (currentTransaction.transaction_type === 'sell' && timeIndex < assetHistory.length - 1) {
-            // 매도: 현재 매도 자산 -> 다음 시점 deposit
-            const sourceNode = newNodes.find(n =>
-              n.asset_symbol === currentTransaction.asset_symbol && 
-              n.date === history.date
-            );
-            const nextDepositNode = newNodes.find(n => 
-              n.asset_symbol === 'DEPOSIT' && 
-              n.date === assetHistory[timeIndex + 1].date
-            );
-  
-            if (sourceNode && nextDepositNode) {
-              newEdges.push({
-                id: `trade-sell-${timeIndex}-${currentTransaction.asset_symbol}`,
-                source: sourceNode.id,
-                target: nextDepositNode.id,
-                type: 'sell'
-              });
-            }
-          }
-        }
-  
-        // 시점 간 자산 연속성 연결
-        newNodes
-          .filter(node => node.date === history.date)
-          .forEach(currentNode => {
-            const previousNode = newNodes.find(n => 
-              n.asset_symbol === currentNode.asset_symbol && 
-              n.date === assetHistory[timeIndex - 1].date
-            );
-  
-            if (previousNode) {
-              // 거래가 없는 경우에만 시점 간 연결
-              const hasTransaction = currentTransaction && 
-                (currentTransaction.asset_symbol === currentNode.asset_symbol ||
-                 currentNode.asset_symbol === 'DEPOSIT');
-  
-              if (!hasTransaction) {
-                newEdges.push({
-                  id: `continuity-${timeIndex}-${currentNode.asset_symbol}`,
-                  source: previousNode.id,
-                  target: currentNode.id,
-                  type: 'buy' // 연속성을 나타내는 엣지는 'buy'로 표시
-                });
-              }
-            }
+      // 블록 내 거래 엣지 생성
+      const currentTransaction = transactions.find(
+        t => t.transaction_date === history.date
+      );
+
+      if (currentTransaction?.transaction_type === 'buy') {
+        const sourceNode = block.beforeNodes.find(n => n.asset_symbol === 'DEPOSIT');
+        const targetNode = block.afterNodes.find(
+          n => n.asset_symbol === currentTransaction.asset_symbol
+        );
+        
+        if (sourceNode && targetNode) {
+          newEdges.push({
+            id: `trade-${index}-${currentTransaction.asset_symbol}`,
+            source: sourceNode.id,
+            target: targetNode.id,
+            type: 'buy'
           });
+        }
+      } else if (currentTransaction?.transaction_type === 'sell') {
+        const sourceNode = block.beforeNodes.find(
+          n => n.asset_symbol === currentTransaction.asset_symbol
+        );
+        const targetNode = block.afterNodes.find(n => n.asset_symbol === 'DEPOSIT');
+        
+        if (sourceNode && targetNode) {
+          newEdges.push({
+            id: `trade-${index}-${currentTransaction.asset_symbol}`,
+            source: sourceNode.id,
+            target: targetNode.id,
+            type: 'sell'
+          });
+        }
+      }
+
+      // 블록 내 연속성 엣지 생성
+      block.beforeNodes.forEach(beforeNode => {
+        const afterNode = block.afterNodes.find(
+          n => n.asset_symbol === beforeNode.asset_symbol
+        );
+        if (afterNode && !currentTransaction?.asset_symbol?.includes(beforeNode.asset_symbol)) {
+          newEdges.push({
+            id: `internal-${index}-${beforeNode.asset_symbol}`,
+            source: beforeNode.id,
+            target: afterNode.id,
+            type: 'buy'
+          });
+        }
       });
-  
-      setNodes(newNodes);
-      setEdges(newEdges);
-    }, [transactions]);
+    });
 
-  const Edge = ({ edge }: { edge: Edge }) => {
-    const sourceNode = nodes.find(n => n.id === edge.source);
-    const targetNode = nodes.find(n => n.id === edge.target);
-
-    if (!sourceNode || !targetNode) return null;
-
-    const startX = sourceNode.position.x_position + 60;
-    const startY = sourceNode.position.y_position + 30;
-    const endX = targetNode.position.x_position;
-    const endY = targetNode.position.y_position + 30;
-
-    return (
-      <path
-        d={`M ${startX} ${startY} Q ${(startX + endX) / 2} ${(startY + endY) / 2} ${endX} ${endY}`}
-        stroke={edge.type === 'buy' ? 'green' : 'red'}
-        strokeWidth="2"
-        fill="none"
-        markerEnd={`url(#arrow-${edge.type})`}
-      />
-    );
-  };
+    setBlocks(newBlocks);
+    setEdges(newEdges);
+  }, [transactions]);
 
   const Node = ({ node }: { node: Node }) => {
     const getBackgroundColor = (type: string) => {
@@ -197,16 +221,13 @@ interface Node {
     };
 
     const backgroundColor = getBackgroundColor(node.type);
-    const formattedDate = new Date(node.date).toLocaleDateString();
-    const label = node.type === 'deposit' 
-      ? `Deposit\n${formattedDate}\n₩${node.amount.toLocaleString()}`
-      : `${node.asset_symbol}\n${formattedDate}\n수량: ${node.amount}`;
+    const label = `${node.asset_symbol}\n₩${node.amount.toLocaleString()}`;
 
     return (
       <g transform={`translate(${node.position.x_position},${node.position.y_position})`}>
         <rect
           width="120"
-          height="70"
+          height="60"
           rx="5"
           ry="5"
           fill={backgroundColor}
@@ -227,9 +248,39 @@ interface Node {
       </g>
     );
   };
+
+  const Edge = ({ edge }: { edge: Edge }) => {
+    const sourceNode = blocks.flatMap(b => [...b.beforeNodes, ...b.afterNodes])
+      .find(n => n.id === edge.source);
+    const targetNode = blocks.flatMap(b => [...b.beforeNodes, ...b.afterNodes])
+      .find(n => n.id === edge.target);
+
+    if (!sourceNode || !targetNode) return null;
+
+    const startX = sourceNode.position.x_position + 120;
+    const startY = sourceNode.position.y_position + 30;
+    const endX = targetNode.position.x_position;
+    const endY = targetNode.position.y_position + 30;
+
+    const isInterBlockEdge = sourceNode.state === 'after' && targetNode.state === 'before';
+    const path = isInterBlockEdge
+      ? `M ${startX} ${startY} C ${startX + 50} ${startY}, ${endX - 50} ${endY}, ${endX} ${endY}`
+      : `M ${startX} ${startY} Q ${(startX + endX) / 2} ${(startY + endY) / 2} ${endX} ${endY}`;
+
+    return (
+      <path
+        d={path}
+        stroke={edge.type === 'buy' ? 'green' : 'red'}
+        strokeWidth="2"
+        fill="none"
+        markerEnd={`url(#arrow-${edge.type})`}
+      />
+    );
+  };
+
   return (
     <div style={{ overflowX: 'auto' }}>
-      <svg width={Math.max(1000, nodes.length * 200)} height={800}>
+      <svg width={Math.max(1000, blocks.length * 350)} height={600}>
         <defs>
           <marker
             id="arrow-buy"
@@ -254,11 +305,20 @@ interface Node {
             <path d="M 0 0 L 10 5 L 0 10 z" fill="red" />
           </marker>
         </defs>
+        
+        {blocks.map((block) => (
+          <Block key={block.date} block={block}>
+            {block.beforeNodes.map(node => (
+              <Node key={node.id} node={node} />
+            ))}
+            {block.afterNodes.map(node => (
+              <Node key={node.id} node={node} />
+            ))}
+          </Block>
+        ))}
+
         {edges.map(edge => (
           <Edge key={edge.id} edge={edge} />
-        ))}
-        {nodes.map(node => (
-          <Node key={node.id} node={node} />
         ))}
       </svg>
     </div>
