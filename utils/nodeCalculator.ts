@@ -7,8 +7,6 @@ export const calculateNodeSize = async (
     node: Omit<Node, 'size'>,
     maxAssetValue: number
 ): Promise<NodeSize> => {
-    
-
     let assetValue: number;
 
     if (node.type === 'deposit') {
@@ -22,7 +20,7 @@ export const calculateNodeSize = async (
 
     return {
         width: nodeBaseWidth,
-        height
+        height,
     };
 };
 
@@ -32,7 +30,7 @@ export const calculateNodePosition = (
     state: 'before' | 'after' = 'before'
 ) => {
     const defaultYPosition = 100;
-    const yGap = 80;
+    const yGap = 0;
 
     if (previousBlock) {
         const nodes = state === 'before' ? previousBlock.afterNodes : previousBlock.beforeNodes;
@@ -43,5 +41,6 @@ export const calculateNodePosition = (
     }
 
     if (assetSymbol === 'DEPOSIT') return defaultYPosition;
+    
     return defaultYPosition + (yGap * (previousBlock?.afterNodes.length || 1));
 };

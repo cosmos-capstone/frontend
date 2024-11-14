@@ -1,20 +1,27 @@
 // components/CustomFlowChart/Node.tsx
 import { useState } from 'react';
 import { NodeProps } from './types';
+import { ASSET_COLORS } from '../../constants/assetColors';
 
 export const Node = ({ node }: NodeProps) => {
     const [isHovered, setIsHovered] = useState(false);
 
-    const getBackgroundColor = (type: string) => {
-        switch (type) {
-            case 'deposit': return '#e6f3ff';
-            case 'american_stock': return '#f0fff0';
-            case 'korean_stock': return '#fff0f0';
-            default: return '#ffffff';
-        }
-    };
+    const getBackgroundColor = () => {
+        return ASSET_COLORS[node.asset_symbol] || '#ffffff';
+      };
+    
+      const backgroundColor = getBackgroundColor();
 
-    const backgroundColor = getBackgroundColor(node.type);
+    // const getBackgroundColor = (type: string) => {
+    //     switch (type) {
+    //         case 'deposit': return '#e6f3ff';
+    //         case 'american_stock': return '#f0fff0';
+    //         case 'korean_stock': return '#fff0f0';
+    //         default: return '#ffffff';
+    //     }
+    // };
+
+    // const backgroundColor = getBackgroundColor(node.type);
     const simpleLabel = `${node.asset_symbol}`;
     const detailLabel = `${node.asset_symbol}\n${node.amount}주\n₩${node.value?.toLocaleString() ?? '0'}`;
 
@@ -30,7 +37,7 @@ export const Node = ({ node }: NodeProps) => {
                 height={node.size.height}
                 fill={backgroundColor}
                 stroke="#1a192b"
-                strokeWidth="1"
+                strokeWidth="0.1"
                 filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
             />
             <text
@@ -49,7 +56,7 @@ export const Node = ({ node }: NodeProps) => {
                     <rect
                         width={150}
                         height={80}
-                        fill="white"
+                        fill={backgroundColor}
                         stroke="#1a192b"
                         strokeWidth="1"
                         rx="5"

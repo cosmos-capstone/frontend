@@ -1,5 +1,7 @@
 // components/CustomFlowChart/Edge.tsx
 import { EdgeProps } from './types';
+import { ASSET_COLORS } from '../../constants/assetColors';
+
 
 export const Edge = ({ edge, blocks }: EdgeProps) => {
     const sourceNode = blocks.flatMap(b => [...b.beforeNodes, ...b.afterNodes])
@@ -8,6 +10,9 @@ export const Edge = ({ edge, blocks }: EdgeProps) => {
         .find(n => n.id === edge.target);
 
     if (!sourceNode || !targetNode) return null;
+    const sourceColor = ASSET_COLORS[sourceNode.asset_symbol] || '#000000';
+    const targetColor = ASSET_COLORS[targetNode.asset_symbol] || '#000000';
+
 
     const sourceBlock = blocks.find(b =>
         [...b.beforeNodes, ...b.afterNodes].some(n => n.id === edge.source)
@@ -21,7 +26,7 @@ export const Edge = ({ edge, blocks }: EdgeProps) => {
     const startX = sourceBlock.position.x_position + sourceNode.position.x_position + sourceNode.size.width;
     const startY = sourceNode.position.y_position;
     const startHeight = sourceNode.size.height;
-    
+
     const endX = targetBlock.position.x_position + targetNode.position.x_position;
     const endY = targetNode.position.y_position;
     const endHeight = targetNode.size.height;
@@ -32,20 +37,36 @@ export const Edge = ({ edge, blocks }: EdgeProps) => {
     const cp2x = endX - distance * curvature;
 
     const curveHeight = Math.max(startHeight, endHeight) * 0.5; // 곡선의 높이
-  const topPath = `
+    const topPath = `
     M ${startX} ${startY}
     C ${startX + distance * 0.25} ${startY},
       ${endX - distance * 0.25} ${endY},
       ${endX} ${endY}
   `;
-  const bottomPath = `
+    const bottomPath = `
     L ${endX} ${endY + endHeight}
     C ${endX - distance * 0.25} ${endY + endHeight},
       ${startX + distance * 0.25} ${startY + startHeight},
       ${startX} ${startY + startHeight}
     Z
   `;
-  
+    // 거래 유형에 따른 그라데이션 색상 반환
+    const getGradientColor = (baseColor: string, type: 'buy' | 'sell') => {
+        if (type === 'buy') {
+            return `rgba(${hexToRgb(baseColor).r}, ${hexToRgb(baseColor).g}, ${hexToRgb(baseColor).b}, 0.3)`;
+        } else {
+            return `rgba(${hexToRgb(baseColor).r}, ${hexToRgb(baseColor).b}, ${hexToRgb(baseColor).g}, 0.3)`;
+        }
+    };
+    // 16진수 색상을 RGB로 변환
+    const hexToRgb = (hex: string) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : { r: 0, g: 0, b: 0 };
+    };
 
     const gradientId = `gradient-${edge.id}`;
 
@@ -61,27 +82,40 @@ export const Edge = ({ edge, blocks }: EdgeProps) => {
                     y2={endY + endHeight / 2}
                 >
                     <stop
-                        offset="0%"
-                        stopColor={edge.type === 'buy' ? 'rgb(0, 200, 0)' : 'rgb(200, 0, 0)'}
-                        stopOpacity="0.3"
-                    />
-                    <stop
-                        offset="100%"
-                        stopColor={edge.type === 'buy' ? 'rgb(0, 150, 0)' : 'rgb(150, 0, 0)'}
-                        stopOpacity="0.3"
-                    />
+                            offset="0%"
+                            stopColor={getGradientColor(sourceColor, edge.type)}
+                        />
+                        <stop
+                            offset="100%"
+                            stopColor={getGradientColor(targetColor, edge.type)}
+                        />
                 </linearGradient>
             </defs>
             <path
                 d={`${topPath} ${bottomPath}`}
-                fill={`url(#${gradientId})`}
-                stroke={edge.type === 'buy' ? 'rgba(0, 150, 0, 0.5)' : 'rgba(150, 0, 0, 0.5)'}
-                strokeWidth="1"
-                style={{
-                    transition: 'all 0.3s ease',
-                    filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))',
-                }}
-            />
+                fill={`url(#gradient-${edge.id})`}
+                stroke="none"
+            >
+                <defs>
+                    <linearGradient
+                        id={`gradient-${edge.id}`}
+                        x1={startX}
+                        y1={startY}
+                        x2={endX}
+                        y2={endY}
+                    >
+
+                        <stop
+                            offset="0%"
+                            stopColor={getGradientColor(sourceColor, edge.type)}
+                        />
+                        <stop
+                            offset="100%"
+                            stopColor={getGradientColor(targetColor, edge.type)}
+                        />
+                    </linearGradient>
+                </defs>
+            </path>
         </g>
     );
 };
