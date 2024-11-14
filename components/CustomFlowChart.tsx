@@ -495,51 +495,68 @@ const CustomFlowChart = ({ transactions }: { transactions: Transaction[] }) => {
             .find(n => n.id === edge.source);
         const targetNode = blocks.flatMap(b => [...b.beforeNodes, ...b.afterNodes])
             .find(n => n.id === edge.target);
-
+    
         if (!sourceNode || !targetNode) return null;
-
-        // 실제 전역 좌표 계산
+    
         const sourceBlock = blocks.find(b =>
             [...b.beforeNodes, ...b.afterNodes].some(n => n.id === edge.source)
         );
         const targetBlock = blocks.find(b =>
             [...b.beforeNodes, ...b.afterNodes].some(n => n.id === edge.target)
         );
-
+    
         if (!sourceBlock || !targetBlock) return null;
-
-        // 전역 좌표 계산
+    
+        // 소스와 타겟 노드의 전역 좌표 및 크기 계산
         const startX = sourceBlock.position.x_position + sourceNode.position.x_position + sourceNode.size.width;
-        const startY = sourceNode.position.y_position + sourceNode.size.height / 2;
+        const startY = sourceNode.position.y_position;
+        const startHeight = sourceNode.size.height;
+        
         const endX = targetBlock.position.x_position + targetNode.position.x_position;
-        const endY = targetNode.position.y_position + targetNode.size.height / 2;
-
+        const endY = targetNode.position.y_position;
+        const endHeight = targetNode.size.height;
+    
+        // 컨트롤 포인트 계산
         const isInterBlockEdge = sourceBlock.date !== targetBlock.date;
-        let path: string;
-
-        if (isInterBlockEdge) {
-            // 블록 간 연결은 더 완만한 곡선으로
-            const controlPoint1X = startX + 50;
-            const controlPoint2X = endX - 50;
-            path = `M ${startX} ${startY} 
-                  C ${controlPoint1X} ${startY}, 
-                    ${controlPoint2X} ${endY}, 
-                    ${endX} ${endY}`;
-        } else {
-            // 블록 내 연결은 간단한 곡선으로
-            path = `M ${startX} ${startY} 
-                  Q ${(startX + endX) / 2} ${(startY + endY) / 2} 
-                    ${endX} ${endY}`;
-        }
-
+        const distance = endX - startX;
+        const cp1x = startX + distance * 0.25;
+        const cp2x = endX - distance * 0.25;
+    
+        // 곡선의 위아래 경로 생성
+        const topCurve = `M ${startX} ${startY}
+            C ${cp1x} ${startY}, 
+              ${cp2x} ${endY}, 
+              ${endX} ${endY}`;
+        
+        const bottomCurve = `M ${startX} ${startY + startHeight}
+            C ${cp1x} ${startY + startHeight}, 
+              ${cp2x} ${endY + endHeight}, 
+              ${endX} ${endY + endHeight}`;
+    
+        // 전체 패스 생성
+        const path = `${topCurve} 
+                      L ${endX} ${endY + endHeight}
+                      ${bottomCurve} 
+                      L ${startX} ${startY}
+                      Z`;
+    
         return (
             <g>
                 <path
                     d={path}
+                    fill={edge.type === 'buy' ? 'rgba(0, 255, 0, 0.2)' : 'rgba(255, 0, 0, 0.2)'}
                     stroke={edge.type === 'buy' ? 'green' : 'red'}
-                    strokeWidth="2"
-                    fill="none"
-                    markerEnd={`url(#arrow-${edge.type})`}
+                    strokeWidth="1"
+                    style={{
+                        opacity: isInterBlockEdge ? 0.7 : 1,
+                    }}
+                />
+                {/* 화살표 방향 표시를 위한 마커 */}
+                <path
+                    d={`M ${(startX + endX) / 2 - 5} ${(startY + endY) / 2 - 5}
+                        L ${(startX + endX) / 2 + 5} ${(startY + endY) / 2}
+                        L ${(startX + endX) / 2 - 5} ${(startY + endY) / 2 + 5}`}
+                    fill={edge.type === 'buy' ? 'green' : 'red'}
                     style={{
                         opacity: isInterBlockEdge ? 0.7 : 1,
                     }}
