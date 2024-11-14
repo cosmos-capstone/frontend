@@ -27,25 +27,45 @@ const PieChart: React.FC<PieChartProps> = ({ data }) => {
     }
 
     const originalData = [
-        { name: '현금', value: parseFloat(data.cash), color: '#dc3545' },
-        { name: '예금', value: parseFloat(data.deposit), color: '#fd7e14' },
-        { name: '금', value: parseFloat(data.gold), color: '#ffc107' },
-        { name: '한국 주식', value: parseFloat(data.korean_stock), color: '#20c997' },
-        { name: '한국 채권', value: parseFloat(data.korean_bond), color: '#198754' },
-        { name: '미국 주식', value: parseFloat(data.american_stock), color: '#0d6efd' },
-        { name: '미국 채권', value: parseFloat(data.american_bound), color: '#003366' },
-        { name: '펀드', value: parseFloat(data.fund), color: '#6610f2' },
-        { name: '원자재', value: parseFloat(data.commodity), color: '#d63384' },
+        { name: '현금', value: parseFloat(data.cash || '0'), color: '#dc3545' },
+        { name: '예금', value: parseFloat(data.deposit || '0'), color: '#fd7e14' },
+        { name: '금', value: parseFloat(data.gold || '0'), color: '#ffc107' },
+        { name: '한국 주식', value: parseFloat(data.korean_stock || '0'), color: '#20c997' },
+        { name: '한국 채권', value: parseFloat(data.korean_bond || '0'), color: '#198754' },
+        { name: '미국 주식', value: parseFloat(data.american_stock || '0'), color: '#0d6efd' },
+        { name: '미국 채권', value: parseFloat(data.american_bound || '0'), color: '#003366' },
+        { name: '펀드', value: parseFloat(data.fund || '0'), color: '#6610f2' },
+        { name: '원자재', value: parseFloat(data.commodity || '0'), color: '#d63384' },
     ];
 
-    const formattedData = originalData.filter(item => item.value > 0); // 값이 0인 항목은 필터링
+    // 3% 이하 항목을 기타로 묶기
+    const threshold = 3;
+    let othersValue = 0;
+    const othersLabel: { name: string; value: number }[] = []; // 기타 항목에 포함된 자산 이름과 비율 저장
+    const filteredData = originalData.filter(item => {
+        if (item.value <= threshold) {
+            othersValue += item.value;
+            othersLabel.push({ name: item.name, value: item.value }); // 기타 항목에 포함된 자산과 비율 저장
+            return false; // "기타"로 묶기 위해 필터에서 제외
+        }
+        return true; // 3%보다 큰 항목은 유지
+    });
+
+    // "기타" 항목을 추가하고 소수점 두 자리로 제한
+    if (othersValue > 0) {
+        filteredData.push({
+            name: '기타',
+            value: parseFloat(othersValue.toFixed(2)), // 소수점 두 자리로 제한
+            color: '#6c757d' // '기타' 항목의 색상
+        });
+    }
 
     const chartData = {
-        labels: formattedData.map(item => item.name),
+        labels: filteredData.map(item => item.name),
         datasets: [
             {
-                data: formattedData.map(item => item.value),
-                backgroundColor: formattedData.map(item => item.color),
+                data: filteredData.map(item => item.value),
+                backgroundColor: filteredData.map(item => item.color),
                 borderWidth: 1,
             },
         ],
@@ -79,6 +99,21 @@ const PieChart: React.FC<PieChartProps> = ({ data }) => {
                     return `${label}: ${value}%`;
                 },
             },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        // '기타' 항목일 때 포함된 항목들 표시
+                        if (context.label === '기타' && othersLabel.length > 0) {
+                            const othersTooltip = othersLabel.map(
+                                item => `- ${item.name}: ${item.value.toFixed(2)}%`
+                            );
+                            return [`기타: ${context.raw}%`, ...othersTooltip];
+                        }
+                        // 일반 항목일 때 기본 tooltip 표시
+                        return `${context.label}: ${context.raw}%`;
+                    }
+                }
+            }
         },
         cutout: '50%', // 도넛 차트의 가운데 구멍 크기 조절 (50%는 중간 크기)
     };
