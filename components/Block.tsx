@@ -6,7 +6,7 @@ export const Block = ({ block, children }: { block: BlockType; children: React.R
                 width={block.position.width}
                 height={block.position.height}
                 fill="none"
-                stroke="#ddd"
+                // stroke="#ddd"
                 strokeWidth="1"
             />
             {/* 날짜 표시 */}

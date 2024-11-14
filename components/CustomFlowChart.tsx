@@ -128,9 +128,82 @@ const createBlock = async (
         // 이전 상태의 보유 자산 노드들
         for (const [symbol, quantity] of Object.entries(history.previousState.holdings)) {
 
+            const currentTransaction = transactions?.find(t => t.transaction_date === history.date);
+            
+            if (currentTransaction?.transaction_type === 'sell' && 
+                symbol === currentTransaction.asset_symbol) {
+                    // currentPrice 정의 추가
+    const currentPrice = await getCurrentPrice(symbol);
+                
+                // 매도되는 수량에 대한 노드
+                const sellQuantity = currentTransaction.quantity;
+                const remainingQuantity = quantity - sellQuantity;
+                
+                // 매도 노드 생성
+                const sellNodeSize = await calculateNodeSize({
+                    id: `${symbol}-${index}-before-sell`,
+                    date: history.date,
+                    amount: sellQuantity,
+                    asset_symbol: symbol,
+                    position: { x_position: 0, y_position: 0 },
+                    type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+                    action: 'sell',
+                    state: 'before'
+                }, maxAssetValue);
+        
+                beforeNodes.push({
+                    id: `${symbol}-${index}-before-sell`,
+                    date: history.date,
+                    amount: sellQuantity,
+                    asset_symbol: symbol,
+                    position: {
+                        x_position: leftMargin,
+                        y_position: currentY
+                    },
+                    type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+                    action: 'sell',
+                    state: 'before',
+                    size: sellNodeSize,
+                    value: currentPrice * sellQuantity
+                });
+        
+                currentY += sellNodeSize.height + 20;
+        
+                // 유지되는 수량에 대한 노드
+                if (remainingQuantity > 0) {
+                    const holdNodeSize = await calculateNodeSize({
+                        id: `${symbol}-${index}-before-hold`,
+                        date: history.date,
+                        amount: remainingQuantity,
+                        asset_symbol: symbol,
+                        position: { x_position: 0, y_position: 0 },
+                        type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+                        action: 'buy',
+                        state: 'before'
+                    }, maxAssetValue);
+        
+                    beforeNodes.push({
+                        id: `${symbol}-${index}-before-hold`,
+                        date: history.date,
+                        amount: remainingQuantity,
+                        asset_symbol: symbol,
+                        position: {
+                            x_position: leftMargin,
+                            y_position: currentY
+                        },
+                        type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+                        action: 'buy',
+                        state: 'before',
+                        size: holdNodeSize,
+                        value: currentPrice * remainingQuantity
+                    });
+        
+                    currentY += holdNodeSize.height + 20;
+                }
+            } else 
 
             
-            const currentPrice = await getCurrentPrice(symbol);
+            {const currentPrice = await getCurrentPrice(symbol);
             const nodeSize = await calculateNodeSize({
                 id: `${symbol}-${index}-before`,
                 date: history.date,
@@ -158,7 +231,7 @@ const createBlock = async (
                 value: currentPrice * quantity
             });
 
-            currentY += nodeSize.height + 20;
+            currentY += nodeSize.height + 20;}
         }
     }
 
@@ -197,6 +270,13 @@ const createBlock = async (
 
     // 현재 상태의 보유 자산 노드들
     for (const [symbol, quantity] of Object.entries(history.state.holdings)) {
+
+
+         
+
+
+
+
         const currentPrice = await getCurrentPrice(symbol);
         const nodeSize = await calculateNodeSize({
             id: `${symbol}-${index}-after`,
@@ -234,14 +314,20 @@ const createBlock = async (
     );
 
     return {
-        date: history.date,
-        position: {
-            x_position: blockXPosition,
-            width: blockWidth,
-            height: Math.max(maxNodesHeight + 50, blockHeight)
-        },
-        beforeNodes,
-        afterNodes
+         date: history.date,
+    position: {
+      x_position: blockXPosition,
+      width: blockWidth,
+      height: Math.max(
+        Math.max(
+          beforeNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0),
+          afterNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0)
+        ) + 50,
+        500
+      )
+    },
+    beforeNodes,
+    afterNodes
     };
 };
 
@@ -259,7 +345,8 @@ const CustomFlowChart = ({ transactions }: { transactions: Transaction[] }) => {
             for (let index = 0; index < assetHistory.length; index++) {
                 const history = assetHistory[index];
                 const previousBlock = index > 0 ? newBlocks[index - 1] : undefined;
-                const block = await createBlock(history, index, previousBlock);
+                // transactions 파라미터 추가
+                const block = await createBlock(history, index, previousBlock, transactions);
                 newBlocks.push(block);
             }
 
@@ -305,19 +392,39 @@ const CustomFlowChart = ({ transactions }: { transactions: Transaction[] }) => {
                         });
                     }
                 } else if (currentTransaction?.transaction_type === 'sell') {
-                    const sourceNode = currentBlock.beforeNodes.find(
-                        n => n.asset_symbol === currentTransaction.asset_symbol
-                    );
-                    const targetNode = currentBlock.afterNodes.find(n => n.asset_symbol === 'DEPOSIT');
+                     // 매도되는 부분의 노드
+    const sellSourceNode = currentBlock.beforeNodes.find(
+        n => n.asset_symbol === currentTransaction.asset_symbol && n.action === 'sell'
+    );
+    const depositTargetNode = currentBlock.afterNodes.find(
+        n => n.asset_symbol === 'DEPOSIT'
+    );
+    
+    if (sellSourceNode && depositTargetNode) {
+        newEdges.push({
+            id: `trade-sell-${index}-${currentTransaction.asset_symbol}`,
+            source: sellSourceNode.id,
+            target: depositTargetNode.id,
+            type: 'sell'
+        });
+    }
 
-                    if (sourceNode && targetNode) {
-                        newEdges.push({
-                            id: `trade-sell-${index}-${currentTransaction.asset_symbol}`,
-                            source: sourceNode.id,
-                            target: targetNode.id,
-                            type: 'sell'
-                        });
-                    }
+    // 유지되는 부분의 노드
+    const holdSourceNode = currentBlock.beforeNodes.find(
+        n => n.asset_symbol === currentTransaction.asset_symbol && n.action === 'buy'
+    );
+    const holdTargetNode = currentBlock.afterNodes.find(
+        n => n.asset_symbol === currentTransaction.asset_symbol
+    );
+    
+    if (holdSourceNode && holdTargetNode) {
+        newEdges.push({
+            id: `hold-${index}-${currentTransaction.asset_symbol}`,
+            source: holdSourceNode.id,
+            target: holdTargetNode.id,
+            type: 'buy'
+        });
+    }
                 }
 
                 // 3. 블록 내 변화 없는 자산들의 연속성 표시
