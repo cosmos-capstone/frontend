@@ -2,17 +2,7 @@
 
 import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
 import Select from 'react-select';
-
-interface Transaction {
-  id: number;
-  transaction_date: Date;
-  transaction_type: "deposit" | "withdrawal" | "buy" | "sell";
-  asset_category: "korean_stock" | "american_stock" | "korean_bond" | "american_bond" | "fund" | "commodity" | "gold" | "deposit" | "savings" | "cash";
-  asset_symbol?: string;
-  asset_name?: string;
-  quantity: number;
-  transaction_amount: number;
-}
+import { Transaction } from '../types/transaction';
 
 interface StockListElement {
   value: string;
