@@ -106,19 +106,46 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                 }
 
                 // 3. 변화 없는 자산들의 연속성 엣지
+                // 블록 내 연속성 엣지 생성 부분 수정
                 currentBlock.beforeNodes.forEach(beforeNode => {
                     const afterNode = currentBlock.afterNodes.find(
                         n => n.asset_symbol === beforeNode.asset_symbol
                     );
-                    if (afterNode &&
-                        (!currentTransaction ||
-                            currentTransaction.asset_symbol !== beforeNode.asset_symbol)) {
-                        newEdges.push({
-                            id: `internal-continuity-${index}-${beforeNode.asset_symbol}`,
-                            source: beforeNode.id,
-                            target: afterNode.id,
-                            type: 'buy'
-                        });
+
+                    if (afterNode) {
+                        // 현재 거래가 이 자산의 매수거래인 경우
+                        if (currentTransaction?.transaction_type === 'buy' &&
+                            currentTransaction.asset_symbol === beforeNode.asset_symbol) {
+                            // 기존 보유 자산에서 새로운 보유량으로의 연결
+                            newEdges.push({
+                                id: `internal-continuity-${index}-${beforeNode.asset_symbol}`,
+                                source: beforeNode.id,
+                                target: afterNode.id,
+                                type: 'buy'
+                            });
+                        }
+                        // 현재 거래가 이 자산의 매도거래인 경우
+                        else if (currentTransaction?.transaction_type === 'sell' &&
+                            currentTransaction.asset_symbol === beforeNode.asset_symbol) {
+                            // 매도 후에도 자산이 남아있는 경우에만 연결
+                            if (afterNode.amount > 0) {
+                                newEdges.push({
+                                    id: `internal-continuity-${index}-${beforeNode.asset_symbol}`,
+                                    source: beforeNode.id,
+                                    target: afterNode.id,
+                                    type: 'buy'
+                                });
+                            }
+                        }
+                        // 현재 거래가 다른 자산의 거래인 경우 (영향 받지 않는 자산)
+                        else if (currentTransaction?.asset_symbol !== beforeNode.asset_symbol) {
+                            newEdges.push({
+                                id: `internal-continuity-${index}-${beforeNode.asset_symbol}`,
+                                source: beforeNode.id,
+                                target: afterNode.id,
+                                type: 'buy'
+                            });
+                        }
                     }
                 });
             }
@@ -132,8 +159,8 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
 
     return (
         <div style={{ overflowX: 'auto' }}>
-            <svg 
-                width={Math.max(1000, blocks.length * 420)} 
+            <svg
+                width={Math.max(1000, blocks.length * 420)}
                 height={800}
                 className="flow-chart"
             >
