@@ -1,13 +1,12 @@
 import React from 'react';
-import SankeyChartWrapper from '../components/GraphWrapper';
 import Dashboard from '../components/Dashboard';
 import OptionSelector from '../components/OptionBoard';
 import CustomFlowChart from '../components/CustomFlowChart/index';
 import { 
   TRANSACTION_DATA, 
-  getTransactionsByType, 
-  getTransactionStats,
-  getAssetTransactionSummary 
+  // getTransactionsByType,  // unused variable error
+  // getTransactionStats,  // unused variable error
+  // getAssetTransactionSummary  // unused variable error
 } from '../data/transactions';
 
 export default function Home() {
