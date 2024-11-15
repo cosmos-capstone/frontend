@@ -1,4 +1,5 @@
-import { Transaction, AssetHistory, AssetState } from '../types/types';
+import { AssetHistory, AssetState } from '../types/types';
+import { Transaction } from '../types/transaction';
 
 export function trackAssets(transactions: Transaction[]): AssetHistory[] {
   const currentState: AssetState = {
@@ -17,10 +18,10 @@ export function trackAssets(transactions: Transaction[]): AssetHistory[] {
 
     // 현재 거래 처리
     if (transaction.transaction_type === 'deposit') {
-      currentState.cash += parseFloat(transaction.transaction_amount);
+      currentState.cash += transaction.transaction_amount;
     } 
     else if (transaction.transaction_type === 'buy') {
-      currentState.cash -= parseFloat(transaction.transaction_amount);
+      currentState.cash -= transaction.transaction_amount;
       
       if (!currentState.holdings[transaction.asset_symbol!]) {
         currentState.holdings[transaction.asset_symbol!] = transaction.quantity;
@@ -29,7 +30,7 @@ export function trackAssets(transactions: Transaction[]): AssetHistory[] {
       }
     }
     else if (transaction.transaction_type === 'sell') {
-      currentState.cash += parseFloat(transaction.transaction_amount);
+      currentState.cash += transaction.transaction_amount;
       currentState.holdings[transaction.asset_symbol!] -= transaction.quantity;
       
       if (currentState.holdings[transaction.asset_symbol!] === 0) {
@@ -39,7 +40,7 @@ export function trackAssets(transactions: Transaction[]): AssetHistory[] {
 
     // 거래 기록 추가
     assetHistory.push({
-      date: transaction.transaction_date,
+      date: transaction.transaction_date.toISOString(),
       state: {
         cash: currentState.cash,
         holdings: { ...currentState.holdings }
