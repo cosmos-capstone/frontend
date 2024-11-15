@@ -281,6 +281,7 @@ interface NewTransactionRowProps {
   koreanStocks: StockListElement[];
   americanStocks: StockListElement[];
 }
+
 const NewTransactionRow = ({
   transaction,
   index,
