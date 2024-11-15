@@ -5,9 +5,9 @@ import Dashboard from '../components/Dashboard';
 import OptionSelector from '../components/OptionBoard';
 import CustomFlowChart from '../components/CustomFlowChart/index';
 import { Transaction } from '../types/transaction';
-import { TransactionResponseItem } from '../types/transactionResponseItem';
 import { StockListElement } from '../types/stockListElement';
 import { formatDateForInput } from '../utils/dateUtils';
+import { fetchTransactions } from '../utils/api';
 import {
   // getTransactionsByType,  // unused variable error
   // getTransactionStats,  // unused variable error
@@ -18,18 +18,8 @@ export default function Home() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
-    fetchTransactions();
+    fetchTransactions(setExistingTransactions);
   }, []);
-
-  async function fetchTransactions() {
-    const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/test");
-    const data = await res.json() as { data: TransactionResponseItem[] };
-    const sortedData = data.data.map((item: TransactionResponseItem) => ({
-      ...item,
-      transaction_date: new Date(item.transaction_date)
-    })).sort((a: Transaction, b: Transaction) => a.transaction_date.getTime() - b.transaction_date.getTime());
-    setExistingTransactions(sortedData);
-  }
 
   return (
     <>
@@ -39,7 +29,7 @@ export default function Home() {
         <CustomFlowChart transactions={existingTransactions} />
         <OptionSelector />
       </div>
-        <CustomFlowChart transactions={existingTransactions} />
+      <CustomFlowChart transactions={existingTransactions} />
     </>
   );
 }
