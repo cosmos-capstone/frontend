@@ -4,17 +4,7 @@ import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
 import Select from 'react-select';
 import { Transaction } from '../types/transaction';
 import { StockListElement } from '../types/stockListElement';
-
-interface TransactionResponseItem {
-  id: number;
-  transaction_date: string; // ISO date string
-  transaction_type: "deposit" | "withdrawal" | "buy" | "sell";
-  asset_category: "korean_stock" | "american_stock" | "korean_bond" | "american_bond" | "fund" | "commodity" | "gold" | "deposit" | "savings" | "cash";
-  asset_symbol?: string;
-  asset_name?: string;
-  quantity: number;
-  transaction_amount: number;
-}
+import { TransactionResponseItem } from '../types/transactionResponseItem';
 
 interface StockDataItem {
   name: string;

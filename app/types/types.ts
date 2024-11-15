@@ -1,15 +1,4 @@
 // types/types.ts
-export interface Transaction {
-  id: number;
-  transaction_date: string;
-  transaction_type: 'deposit' | 'buy' | 'sell';
-  asset_category: string | null;
-  asset_symbol: string | null;
-  asset_name: string | null;
-  quantity: number;
-  transaction_amount: string;
-}
-
 export interface Node {
   id: string;
   date: string;
@@ -37,7 +26,7 @@ export interface Edge {
 }
 
 export interface Block {
-  date: string;
+  date: Date;
   position: {
       x_position: number;
       width: number;

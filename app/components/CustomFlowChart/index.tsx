@@ -190,7 +190,7 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                 </defs>
 
                 {blocks.map((block) => (
-                    <Block key={block.date} block={block}>
+                    <Block key={block.date.toISOString()} block={block}>
                         {block.beforeNodes.map(node => (
                             <Node key={node.id} node={node} />
                         ))}
