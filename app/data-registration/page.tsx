@@ -6,11 +6,7 @@ import { Transaction } from '../types/transaction';
 import { StockListElement } from '../types/stockListElement';
 import { formatDateForInput } from '../utils/dateUtils';
 import { fetchTransactions } from '../utils/api';
-
-interface StockDataItem {
-  name: string;
-  symbol: string;
-}
+import { fetchStockData } from '../utils/api';
 
 export default function TradePage() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
@@ -23,13 +19,6 @@ export default function TradePage() {
     fetchStockData("korean_stocks", setKoreanStocks);
     fetchStockData("american_stocks", setAmericanStocks);
   }, []);
-
-  async function fetchStockData(endpoint: string, setState: (data: StockListElement[]) => void) {
-    const res = await fetch(`https://cosmos-backend.cho0h5.org/market_data/${endpoint}`);
-    const data = await res.json() as { data: StockDataItem[] };
-    const transformedData = data.data.map((stock: StockDataItem) => ({ label: stock.name, value: stock.symbol }));
-    setState(transformedData);
-  }
 
   const handleInputChange = (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
