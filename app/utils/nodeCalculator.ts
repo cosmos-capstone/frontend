@@ -1,5 +1,6 @@
 // utils/nodeCalculator.ts
-import { Node, NodeSize } from '../types/types';
+import { Node, Block } from '../types/types';
+import { NodeSize } from '../components/CustomFlowChart/types';
 import { getCurrentPrice } from './priceAPI';
 import { nodeBaseWidth, nodeBaseHeight } from '../constants/globalConfig';
 
