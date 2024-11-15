@@ -8,6 +8,7 @@ import { Transaction } from '../types/transaction';
 import { StockListElement } from '../types/stockListElement';
 import { formatDateForInput } from '../utils/dateUtils';
 import { fetchTransactions } from '../utils/api';
+import { fetchStockData } from '../utils/api';
 import {
   // getTransactionsByType,  // unused variable error
   // getTransactionStats,  // unused variable error
@@ -16,9 +17,15 @@ import {
 
 export default function Home() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
+  const [modifiedTransactions, setModifiedTransactions] = useState<Transaction[]>();
+  const [koreanStocks, setKoreanStocks] = useState<StockListElement[]>([]);
+  const [americanStocks, setAmericanStocks] = useState<StockListElement[]>([]);
 
   useEffect(() => {
     fetchTransactions(setExistingTransactions);
+    fetchTransactions(setModifiedTransactions);
+    fetchStockData("korean_stocks", setKoreanStocks);
+    fetchStockData("american_stocks", setAmericanStocks);
   }, []);
 
   return (
@@ -29,10 +36,26 @@ export default function Home() {
         <CustomFlowChart transactions={existingTransactions} />
         <OptionSelector />
       </div>
-      <CustomFlowChart transactions={existingTransactions} />
+      {modifiedTransactions && modifiedTransactions[0] && (
+        <EditTransactionRow
+          transaction={modifiedTransactions[0]}
+          index={0}
+          handleInputChange={handleInputChange}
+          handleAssetNameChange={handleAssetNameChange}
+          koreanStocks={koreanStocks}
+          americanStocks={americanStocks}
+        />
+      )}
+      <CustomFlowChart transactions={modifiedTransactions} />
     </>
   );
 }
+
+const handleInputChange = (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+};
+
+const handleAssetNameChange = (index: number, selectedOption: StockListElement | null) => {
+};
 
 interface EditTransactionRowProps {
   transaction: Transaction;
