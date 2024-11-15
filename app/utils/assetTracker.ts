@@ -1,3 +1,5 @@
+import { Transaction, AssetHistory, AssetState } from '../types/types';
+
 export function trackAssets(transactions: Transaction[]): AssetHistory[] {
   const currentState: AssetState = {
     cash: 0,
