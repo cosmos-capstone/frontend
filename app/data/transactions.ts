@@ -1,15 +1,4 @@
-// data/transactions.ts
-
-export interface Transaction {
-  id: number;
-  transaction_date: string;
-  transaction_type: 'deposit' | 'buy' | 'sell';
-  asset_category: string | null;
-  asset_symbol: string | null;
-  asset_name: string | null;
-  quantity: number;
-  transaction_amount: string;
-}
+import { Transaction } from '../types/transaction';
 
 // 데이터 조회를 위한 유틸리티 함수들
 export const getTransactionById = (data: Transaction[], id: number): Transaction | undefined => {
@@ -35,19 +24,19 @@ export const getTransactionsByDateRange = (data: Transaction[], startDate: Date,
 export const getTotalDeposits = (data: Transaction[]): number => {
   return data
     .filter(t => t.transaction_type === 'deposit')
-    .reduce((sum, t) => sum + parseFloat(t.transaction_amount), 0);
+    .reduce((sum, t) => sum + t.transaction_amount, 0);
 };
 
 export const getTotalInvestment = (data: Transaction[]): number => {
   return data
     .filter(t => t.transaction_type === 'buy')
-    .reduce((sum, t) => sum + parseFloat(t.transaction_amount), 0);
+    .reduce((sum, t) => sum + t.transaction_amount, 0);
 };
 
 export const getTotalSales = (data: Transaction[]): number => {
   return data
     .filter(t => t.transaction_type === 'sell')
-    .reduce((sum, t) => sum + parseFloat(t.transaction_amount), 0);
+    .reduce((sum, t) => sum + t.transaction_amount, 0);
 };
 
 // 거래 통계 함수
@@ -95,11 +84,11 @@ export const getAssetTransactionSummary = (data: Transaction[]) => {
       if (t.transaction_type === 'buy') {
         summary[t.asset_symbol].buys++;
         summary[t.asset_symbol].totalQuantity += t.quantity;
-        summary[t.asset_symbol].totalInvested += parseFloat(t.transaction_amount);
+        summary[t.asset_symbol].totalInvested += t.transaction_amount;
       } else if (t.transaction_type === 'sell') {
         summary[t.asset_symbol].sells++;
         summary[t.asset_symbol].totalQuantity -= t.quantity;
-        summary[t.asset_symbol].totalSold += parseFloat(t.transaction_amount);
+        summary[t.asset_symbol].totalSold += t.transaction_amount;
       }
     }
   });
