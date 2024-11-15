@@ -1,5 +1,5 @@
 export function trackAssets(transactions: Transaction[]): AssetHistory[] {
-  let currentState: AssetState = {
+  const currentState: AssetState = {
     cash: 0,
     holdings: {}
   };
