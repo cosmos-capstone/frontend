@@ -1,10 +1,9 @@
 // utils/blockCalculator.ts
-import { Block, AssetHistory, Transaction, Node } from '../types/types';
+import { Block, AssetHistory, Node } from '../types/types';
 import { calculateNodeSize } from './nodeCalculator';
 import { getCurrentPrice } from './priceAPI';
 import { BLOCK_CONFIG } from '../constants/globalConfig';
-
-
+import { Transaction } from '../types/transaction';
 
 async function calculateMaxAssetValue(history: AssetHistory): Promise<number> {
     let maxValue = history.state.cash;
@@ -105,7 +104,7 @@ async function createNormalNode(
     const currentPrice = await getCurrentPrice(symbol);
     const nodeSize = await calculateNodeSize({
         id: `${symbol}-${index}-${state}`,
-        date: '',  // Will be set in the node creation
+        date: new Date(),  // Will be set in the node creation
         amount: quantity,
         asset_symbol: symbol,
         position: { x_position: 0, y_position: 0 },
@@ -116,7 +115,7 @@ async function createNormalNode(
 
     nodes.push({
         id: `${symbol}-${index}-${state}`,
-        date: '',  // Will be set when used
+        date: new Date(),  // Will be set when used
         amount: quantity,
         asset_symbol: symbol,
         position: {

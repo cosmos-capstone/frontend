@@ -1,7 +1,7 @@
 // types/types.ts
 export interface Node {
   id: string;
-  date: string;
+  date: Date;
   amount: number;
   asset_symbol: string;
   position: {
@@ -44,7 +44,7 @@ export interface AssetState {
 }
 
 export interface AssetHistory {
-  date: string;
+  date: Date;
   state: AssetState;
   previousState?: AssetState;
 }

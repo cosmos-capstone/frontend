@@ -40,7 +40,7 @@ export function trackAssets(transactions: Transaction[]): AssetHistory[] {
 
     // 거래 기록 추가
     assetHistory.push({
-      date: transaction.transaction_date.toISOString(),
+      date: transaction.transaction_date,
       state: {
         cash: currentState.cash,
         holdings: { ...currentState.holdings }
