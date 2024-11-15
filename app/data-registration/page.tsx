@@ -4,7 +4,8 @@ import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
 import Select from 'react-select';
 import { Transaction } from '../types/transaction';
 import { StockListElement } from '../types/stockListElement';
-import { TransactionResponseItem } from '../types/transactionResponseItem';
+import { formatDateForInput } from '../utils/dateUtils';
+import { fetchTransactions } from '../utils/api';
 
 interface StockDataItem {
   name: string;
@@ -18,20 +19,10 @@ export default function TradePage() {
   const [americanStocks, setAmericanStocks] = useState<StockListElement[]>([]);
 
   useEffect(() => {
-    fetchTransactions();
+    fetchTransactions(setExistingTransactions);
     fetchStockData("korean_stocks", setKoreanStocks);
     fetchStockData("american_stocks", setAmericanStocks);
   }, []);
-
-  async function fetchTransactions() {
-    const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/test");
-    const data = await res.json() as { data: TransactionResponseItem[] };
-    const sortedData = data.data.map((item: TransactionResponseItem) => ({
-      ...item,
-      transaction_date: new Date(item.transaction_date)
-    })).sort((a: Transaction, b: Transaction) => a.transaction_date.getTime() - b.transaction_date.getTime());
-    setExistingTransactions(sortedData);
-  }
 
   async function fetchStockData(endpoint: string, setState: (data: StockListElement[]) => void) {
     const res = await fetch(`https://cosmos-backend.cho0h5.org/market_data/${endpoint}`);
@@ -87,7 +78,7 @@ export default function TradePage() {
 
   async function handleSuccessfulSubmit() {
     alert("거래 내역이 성공적으로 저장되었습니다.");
-    await fetchTransactions();
+    await fetchTransactions(setExistingTransactions);
     setNewTransactions([createEmptyTransaction()]);
   }
 
@@ -153,16 +144,6 @@ function createEmptyTransaction(): Transaction {
     quantity: 0,
     transaction_amount: 0,
   };
-}
-
-const formatDateForInput = (date: Date) => {
-  const pad = (n: number) => String(n).padStart(2, '0');
-  const year = date.getFullYear();
-  const month = pad(date.getMonth() + 1);
-  const day = pad(date.getDate());
-  const hours = pad(date.getHours());
-  const minutes = pad(date.getMinutes());
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
 interface TransactionTableProps {
