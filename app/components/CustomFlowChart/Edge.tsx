@@ -32,11 +32,11 @@ export const Edge = ({ edge, blocks }: EdgeProps) => {
     const endHeight = targetNode.size.height;
 
     const distance = endX - startX;
-    const curvature = 0.5;
-    const cp1x = startX + distance * curvature;
-    const cp2x = endX - distance * curvature;
+    // const curvature = 0.5;   // unused variable error
+    // const cp1x = startX + distance * curvature;  // unused variable error
+    // const cp2x = endX - distance * curvature;    // unused variable error
 
-    const curveHeight = Math.max(startHeight, endHeight) * 0.5; // 곡선의 높이
+    // const curveHeight = Math.max(startHeight, endHeight) * 0.5; // 곡선의 높이    // unused variable error
     const topPath = `
     M ${startX} ${startY}
     C ${startX + distance * 0.25} ${startY},

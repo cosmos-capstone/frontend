@@ -1,7 +1,7 @@
 // components/CustomFlowChart/index.tsx
 'use client';
 import { useEffect, useState } from 'react';
-import { Transaction, Block as BlockType, Edge as EdgeType } from '../../types/types';
+import { Block as BlockType, Edge as EdgeType } from '../../types/types';
 import { trackAssets } from '../../utils/assetTracker';
 import { createBlock } from '../../utils/blockCalculator';
 import { Block } from './Block';
