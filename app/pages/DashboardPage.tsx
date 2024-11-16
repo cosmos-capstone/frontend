@@ -9,7 +9,7 @@ import { StockListElement } from '../types/stockListElement';
 import { formatDateForInput } from '../utils/dateUtils';
 import { fetchTransactions } from '../utils/api';
 import { fetchStockData } from '../utils/api';
-import { handleAssetNameChange } from '../utils/dataRegistration';
+import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
 
 export default function Home() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
@@ -49,11 +49,6 @@ export default function Home() {
   );
 }
 
-const handleInputChange = (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-  console.log(index);
-  console.log(event);
-};
-
 const EditTransactionRow = ({
   transaction,
   index,
@@ -65,7 +60,7 @@ const EditTransactionRow = ({
 }: {
   transaction: Transaction;
   index: number;
-  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
   handleAssetNameChange: (index: number, selectedOption: StockListElement | null, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
   koreanStocks: StockListElement[];
   americanStocks: StockListElement[];
@@ -79,7 +74,7 @@ const EditTransactionRow = ({
             type="datetime-local"
             name="transaction_date"
             value={formatDateForInput(transaction.transaction_date)}
-            onChange={(e) => handleInputChange(index, e)}
+            onChange={(e) => handleInputChange(index, e, setModifiedTransactions)}
             className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
             required
           />
@@ -88,7 +83,7 @@ const EditTransactionRow = ({
           <select
             name="transaction_type"
             value={transaction.transaction_type}
-            onChange={(e) => handleInputChange(index, e)}
+            onChange={(e) => handleInputChange(index, e, setModifiedTransactions)}
             className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
             required
           >
@@ -102,7 +97,7 @@ const EditTransactionRow = ({
           <select
             name="asset_category"
             value={transaction.asset_category}
-            onChange={(e) => handleInputChange(index, e)}
+            onChange={(e) => handleInputChange(index, e, setModifiedTransactions)}
             className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
               ? "bg-gray-200 opacity-60 cursor-not-allowed"
               : ""
@@ -126,7 +121,7 @@ const EditTransactionRow = ({
               type="text"
               name="asset_name"
               value={transaction.asset_name || ""}
-              onChange={(e) => handleInputChange(index, e)}
+              onChange={(e) => handleInputChange(index, e, setModifiedTransactions)}
               className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
                 ? "bg-gray-200 opacity-60 cursor-not-allowed"
                 : ""
@@ -155,7 +150,7 @@ const EditTransactionRow = ({
             type="number"
             name="quantity"
             value={transaction.quantity}
-            onChange={(e) => handleInputChange(index, e)}
+            onChange={(e) => handleInputChange(index, e, setModifiedTransactions)}
             className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
               ? "bg-gray-200 opacity-60 cursor-not-allowed"
               : ""
@@ -169,7 +164,7 @@ const EditTransactionRow = ({
             type="number"
             name="transaction_amount"
             value={transaction.transaction_amount}
-            onChange={(e) => handleInputChange(index, e)}
+            onChange={(e) => handleInputChange(index, e, setModifiedTransactions)}
             className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
             required
           />
