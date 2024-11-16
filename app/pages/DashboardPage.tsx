@@ -10,9 +10,6 @@ import { formatDateForInput } from '../utils/dateUtils';
 import { fetchTransactions } from '../utils/api';
 import { fetchStockData } from '../utils/api';
 import {
-  // getTransactionsByType,  // unused variable error
-  // getTransactionStats,  // unused variable error
-  // getAssetTransactionSummary  // unused variable error
 } from '../data/transactions';
 
 export default function Home() {
@@ -32,7 +29,6 @@ export default function Home() {
     <>
       <Dashboard />
       <div className="flex flex-row p-5 overflow-y-auto m-8 bg-gradient-to-br from-gray-100 to-white p-10 rounded-3xl shadow-2xl">
-        {/* <SankeyChartWrapper /> */}
         <CustomFlowChart transactions={existingTransactions} />
         <OptionSelector />
       </div>
