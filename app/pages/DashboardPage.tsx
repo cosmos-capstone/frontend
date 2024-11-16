@@ -50,6 +50,8 @@ export default function Home() {
 }
 
 const handleInputChange = (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  console.log(index);
+  console.log(event);
 };
 
 interface EditTransactionRowProps {
