@@ -50,7 +50,9 @@ export default function Home() {
         )}
       </div>
       <div className="flex flex-row p-5 m-8 bg-gradient-to-br from-gray-100 to-white p-10 rounded-3xl shadow-2xl">
-        <CustomFlowChart transactions={modifiedTransactions} />
+        {currentEditIndex >= 0 && modifiedTransactions && (
+          <CustomFlowChart transactions={modifiedTransactions} />
+        )}
       </div>
     </>
   );
