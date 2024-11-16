@@ -30,7 +30,7 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <div className="flex flex-col space-y-8 bg-gray-100">
       <Dashboard />
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
         <CustomFlowChart transactions={existingTransactions} />
@@ -54,7 +54,7 @@ export default function Home() {
           <CustomFlowChart transactions={modifiedTransactions} />
         )}
       </div>
-    </>
+    </div>
   );
 }
 
