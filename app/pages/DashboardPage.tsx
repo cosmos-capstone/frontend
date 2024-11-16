@@ -16,12 +16,17 @@ export default function Home() {
   const [modifiedTransactions, setModifiedTransactions] = useState<Transaction[]>();
   const [koreanStocks, setKoreanStocks] = useState<StockListElement[]>([]);
   const [americanStocks, setAmericanStocks] = useState<StockListElement[]>([]);
+  const [currentEditIndex, setCurrentEditIndex] = useState(-1);
 
   useEffect(() => {
     fetchTransactions(setExistingTransactions);
     fetchTransactions(setModifiedTransactions);
     fetchStockData("korean_stocks", setKoreanStocks);
     fetchStockData("american_stocks", setAmericanStocks);
+  }, []);
+
+  useEffect(() => {
+    setCurrentEditIndex(2);
   }, []);
 
   return (
@@ -31,11 +36,11 @@ export default function Home() {
         <CustomFlowChart transactions={existingTransactions} />
         <OptionSelector />
       </div>
-      {modifiedTransactions && modifiedTransactions[0] && (
+      {currentEditIndex >= 0 && modifiedTransactions && modifiedTransactions[currentEditIndex] && (
         <>
           <EditTransactionRow
-            transaction={modifiedTransactions[1]}
-            index={1}
+            transaction={modifiedTransactions[currentEditIndex]}
+            index={currentEditIndex}
             handleInputChange={handleInputChange}
             handleAssetNameChange={handleAssetNameChange}
             koreanStocks={koreanStocks}
