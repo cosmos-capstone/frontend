@@ -7,6 +7,7 @@ import { StockListElement } from '../types/stockListElement';
 import { formatDateForInput } from '../utils/dateUtils';
 import { fetchTransactions } from '../utils/api';
 import { fetchStockData } from '../utils/api';
+import { handleAssetNameChange } from '../utils/dataRegistration';
 
 export default function TradePage() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
@@ -85,19 +86,6 @@ export default function TradePage() {
     }
   };
 
-  const handleAssetNameChange = (index: number, selectedOption: StockListElement | null) => {
-    console.info(selectedOption);
-    setNewTransactions((prev) => {
-      const updatedTransactions = [...prev];
-      updatedTransactions[index] = {
-        ...updatedTransactions[index],
-        asset_name: selectedOption?.label || "",
-        asset_symbol: selectedOption?.value || "",
-      };
-      return updatedTransactions;
-    });
-  };
-
   return (
     <div className="min-h-screen p-6">
       <h2 className="text-2xl font-bold mb-4">거래 내역 관리</h2>
@@ -112,6 +100,7 @@ export default function TradePage() {
           handleDeleteExistingTransaction={handleDeleteExistingTransaction}
           koreanStocks={koreanStocks}
           americanStocks={americanStocks}
+          setNewTransactions={setNewTransactions}
         />
         <ActionButtons
           addRow={addRow}
@@ -139,11 +128,12 @@ interface TransactionTableProps {
   existingTransactions: Transaction[];
   newTransactions: Transaction[];
   handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleAssetNameChange: (index: number, selectedOption: StockListElement | null) => void;
+  handleAssetNameChange: (index: number, selectedOption: StockListElement | null, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
   removeRow: (index: number) => void;
   handleDeleteExistingTransaction: (index: number) => void;
   koreanStocks: StockListElement[];
   americanStocks: StockListElement[];
+  setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
 }
 
 const TransactionTable = ({
@@ -154,7 +144,8 @@ const TransactionTable = ({
   removeRow,
   handleDeleteExistingTransaction,
   koreanStocks,
-  americanStocks
+  americanStocks,
+  setNewTransactions
 }: TransactionTableProps) => (
   <table className="w-full text-left border-collapse">
     <thead>
@@ -211,6 +202,7 @@ const TransactionTable = ({
           removeRow={removeRow}
           koreanStocks={koreanStocks}
           americanStocks={americanStocks}
+          setNewTransactions={setNewTransactions}
         />
       ))}
     </tbody>
@@ -246,10 +238,11 @@ interface NewTransactionRowProps {
   transaction: Transaction;
   index: number;
   handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleAssetNameChange: (index: number, selectedOption: StockListElement | null) => void;
+  handleAssetNameChange: (index: number, selectedOption: StockListElement | null, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
   removeRow: (index: number) => void;
   koreanStocks: StockListElement[];
   americanStocks: StockListElement[];
+  setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
 }
 
 const NewTransactionRow = ({
@@ -259,7 +252,8 @@ const NewTransactionRow = ({
   handleAssetNameChange,
   removeRow,
   koreanStocks,
-  americanStocks
+  americanStocks,
+  setNewTransactions
 }: NewTransactionRowProps) => (
   <tr key={index} className="text-gray-600 bg-gray-50">
     <td className="border-b py-2">
@@ -326,14 +320,14 @@ const NewTransactionRow = ({
       {transaction.asset_category === "korean_stock" && (
         <Select
           options={koreanStocks}
-          onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
+          onChange={(selectedOption) => handleAssetNameChange(index, selectedOption, setNewTransactions)}
           className="w-full"
         />
       )}
       {transaction.asset_category === "american_stock" && (
         <Select
           options={americanStocks}
-          onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
+          onChange={(selectedOption) => handleAssetNameChange(index, selectedOption, setNewTransactions)}
           className="w-full"
         />
       )}

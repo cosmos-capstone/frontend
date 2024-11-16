@@ -9,6 +9,7 @@ import { StockListElement } from '../types/stockListElement';
 import { formatDateForInput } from '../utils/dateUtils';
 import { fetchTransactions } from '../utils/api';
 import { fetchStockData } from '../utils/api';
+import { handleAssetNameChange } from '../utils/dataRegistration';
 import {
 } from '../data/transactions';
 
@@ -34,12 +35,13 @@ export default function Home() {
       </div>
       {modifiedTransactions && modifiedTransactions[0] && (
         <EditTransactionRow
-          transaction={modifiedTransactions[0]}
-          index={0}
+          transaction={modifiedTransactions[1]}
+          index={1}
           handleInputChange={handleInputChange}
           handleAssetNameChange={handleAssetNameChange}
           koreanStocks={koreanStocks}
           americanStocks={americanStocks}
+          setModifiedTransactions={setModifiedTransactions}
         />
       )}
       <CustomFlowChart transactions={modifiedTransactions} />
@@ -50,16 +52,14 @@ export default function Home() {
 const handleInputChange = (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 };
 
-const handleAssetNameChange = (index: number, selectedOption: StockListElement | null) => {
-};
-
 interface EditTransactionRowProps {
   transaction: Transaction;
   index: number;
   handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleAssetNameChange: (index: number, selectedOption: StockListElement | null) => void;
+  handleAssetNameChange: (index: number, selectedOption: StockListElement | null, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
   koreanStocks: StockListElement[];
   americanStocks: StockListElement[];
+  setModifiedTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
 }
 
 const EditTransactionRow = ({
@@ -68,7 +68,8 @@ const EditTransactionRow = ({
   handleInputChange,
   handleAssetNameChange,
   koreanStocks,
-  americanStocks
+  americanStocks,
+  setModifiedTransactions
 }: EditTransactionRowProps) => (
   <tr key={index} className="text-gray-600 bg-gray-50">
     <td className="border-b py-2">
@@ -135,14 +136,14 @@ const EditTransactionRow = ({
       {transaction.asset_category === "korean_stock" && (
         <Select
           options={koreanStocks}
-          onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
+          onChange={(selectedOption) => handleAssetNameChange(index, selectedOption, setModifiedTransactions)}
           className="w-full"
         />
       )}
       {transaction.asset_category === "american_stock" && (
         <Select
           options={americanStocks}
-          onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
+          onChange={(selectedOption) => handleAssetNameChange(index, selectedOption, setModifiedTransactions)}
           className="w-full"
         />
       )}
