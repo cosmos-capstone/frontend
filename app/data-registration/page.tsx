@@ -7,7 +7,7 @@ import { StockListElement } from '../types/stockListElement';
 import { formatDateForInput } from '../utils/dateUtils';
 import { fetchTransactions } from '../utils/api';
 import { fetchStockData } from '../utils/api';
-import { handleAssetNameChange } from '../utils/dataRegistration';
+import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
 
 export default function TradePage() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
@@ -20,23 +20,6 @@ export default function TradePage() {
     fetchStockData("korean_stocks", setKoreanStocks);
     fetchStockData("american_stocks", setAmericanStocks);
   }, []);
-
-  const handleInputChange = (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = event.target;
-    setNewTransactions((prev) => {
-      const updatedTransactions = [...prev];
-      updatedTransactions[index] = {
-        ...updatedTransactions[index],
-        [name]: name === "quantity" || name === "transaction_amount"
-          ? Number(value)
-          : name === "transaction_date"
-            ? new Date(value)
-            : value,
-        ...(name === "transaction_type" && (value === "deposit" || value === "withdrawal") ? { asset_category: "cash" } : {}),
-      };
-      return updatedTransactions;
-    });
-  };
 
   const addRow = () => {
     setNewTransactions([...newTransactions, createEmptyTransaction()]);
@@ -137,7 +120,7 @@ const TransactionTable = ({
 }: {
   existingTransactions: Transaction[];
   newTransactions: Transaction[];
-  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
   handleAssetNameChange: (index: number, selectedOption: StockListElement | null, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
   removeRow: (index: number) => void;
   handleDeleteExistingTransaction: (index: number) => void;
@@ -232,17 +215,6 @@ const ActionButtons = ({ addRow, handleSubmit }: ActionButtonsProps) => (
   </div>
 )
 
-interface NewTransactionRowProps {
-  transaction: Transaction;
-  index: number;
-  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleAssetNameChange: (index: number, selectedOption: StockListElement | null, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
-  removeRow: (index: number) => void;
-  koreanStocks: StockListElement[];
-  americanStocks: StockListElement[];
-  setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
-}
-
 const NewTransactionRow = ({
   transaction,
   index,
@@ -252,14 +224,23 @@ const NewTransactionRow = ({
   koreanStocks,
   americanStocks,
   setNewTransactions
-}: NewTransactionRowProps) => (
+}: {
+  transaction: Transaction;
+  index: number;
+  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
+  handleAssetNameChange: (index: number, selectedOption: StockListElement | null, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
+  removeRow: (index: number) => void;
+  koreanStocks: StockListElement[];
+  americanStocks: StockListElement[];
+  setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
+}) => (
   <tr key={index} className="text-gray-600 bg-gray-50">
     <td className="border-b py-2">
       <input
         type="datetime-local"
         name="transaction_date"
         value={formatDateForInput(transaction.transaction_date)}
-        onChange={(e) => handleInputChange(index, e)}
+        onChange={(e) => handleInputChange(index, e, setNewTransactions)}
         className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
         required
       />
@@ -268,7 +249,7 @@ const NewTransactionRow = ({
       <select
         name="transaction_type"
         value={transaction.transaction_type}
-        onChange={(e) => handleInputChange(index, e)}
+        onChange={(e) => handleInputChange(index, e, setNewTransactions)}
         className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
         required
       >
@@ -282,7 +263,7 @@ const NewTransactionRow = ({
       <select
         name="asset_category"
         value={transaction.asset_category}
-        onChange={(e) => handleInputChange(index, e)}
+        onChange={(e) => handleInputChange(index, e, setNewTransactions)}
         className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
           ? "bg-gray-200 opacity-60 cursor-not-allowed"
           : ""
@@ -306,7 +287,7 @@ const NewTransactionRow = ({
           type="text"
           name="asset_name"
           value={transaction.asset_name || ""}
-          onChange={(e) => handleInputChange(index, e)}
+          onChange={(e) => handleInputChange(index, e, setNewTransactions)}
           className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
             ? "bg-gray-200 opacity-60 cursor-not-allowed"
             : ""
@@ -335,7 +316,7 @@ const NewTransactionRow = ({
         type="number"
         name="quantity"
         value={transaction.quantity}
-        onChange={(e) => handleInputChange(index, e)}
+        onChange={(e) => handleInputChange(index, e, setNewTransactions)}
         className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
           ? "bg-gray-200 opacity-60 cursor-not-allowed"
           : ""
@@ -349,7 +330,7 @@ const NewTransactionRow = ({
         type="number"
         name="transaction_amount"
         value={transaction.transaction_amount}
-        onChange={(e) => handleInputChange(index, e)}
+        onChange={(e) => handleInputChange(index, e, setNewTransactions)}
         className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
         required
       />
