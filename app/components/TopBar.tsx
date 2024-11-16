@@ -5,61 +5,20 @@ import { Search, Settings, Notifications } from '@mui/icons-material';
 
 export default function TopBar() {
   return (
-    <div style={styles.topBar}>
-      <span style={styles.title}>Overview</span>
-      <div style={styles.searchBar}>
-        <Search style={styles.icon} />
+    <div className="flex items-center justify-between px-5 py-3 border-b-2 border-blue-500 bg-white">
+      <span className="text-xl font-bold text-gray-800">Overview</span>
+      <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 mr-4 w-full max-w-lg">
+        <Search className="text-gray-400 text-lg mr-2" />
         <input
           type="text"
           placeholder="Search for something"
-          style={styles.input}
+          className="border-none outline-none bg-transparent text-gray-400 w-full"
         />
       </div>
-      <div style={styles.icons}>
-        <Settings style={styles.icon} />
-        <Notifications style={styles.icon} />
+      <div className="flex items-center">
+        <Settings className="text-gray-400 text-lg mx-2 cursor-pointer" />
+        <Notifications className="text-gray-400 text-lg mx-2 cursor-pointer" />
       </div>
     </div>
   );
 }
-
-const styles = {
-  topBar: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '10px 20px',
-    borderBottom: '2px solid #007bff',
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: '24px',
-    color: '#303030',
-    fontWeight: 'bold',
-  },
-  searchBar: {
-    display: 'flex',
-    alignItems: 'center',
-    backgroundColor: '#f3f5f9',
-    borderRadius: '20px',
-    padding: '5px 10px',
-    marginRight: '15px',
-  },
-  input: {
-    border: 'none',
-    outline: 'none',
-    backgroundColor: 'transparent',
-    color: '#a0a4a8',
-    width: '1000px',
-  },
-  icons: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  icon: {
-    fontSize: '20px',
-    color: '#a0a4a8',
-    margin: '0 10px',
-    cursor: 'pointer',
-  },
-};
