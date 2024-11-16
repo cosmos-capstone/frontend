@@ -34,17 +34,19 @@ export default function Home() {
         <OptionSelector />
       </div>
       {modifiedTransactions && modifiedTransactions[0] && (
-        <EditTransactionRow
-          transaction={modifiedTransactions[1]}
-          index={1}
-          handleInputChange={handleInputChange}
-          handleAssetNameChange={handleAssetNameChange}
-          koreanStocks={koreanStocks}
-          americanStocks={americanStocks}
-          setModifiedTransactions={setModifiedTransactions}
-        />
+        <>
+          <EditTransactionRow
+            transaction={modifiedTransactions[1]}
+            index={1}
+            handleInputChange={handleInputChange}
+            handleAssetNameChange={handleAssetNameChange}
+            koreanStocks={koreanStocks}
+            americanStocks={americanStocks}
+            setModifiedTransactions={setModifiedTransactions}
+          />
+          <CustomFlowChart transactions={modifiedTransactions} />
+        </>
       )}
-      <CustomFlowChart transactions={modifiedTransactions} />
     </>
   );
 }
