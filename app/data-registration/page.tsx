@@ -124,18 +124,6 @@ function createEmptyTransaction(): Transaction {
   };
 }
 
-interface TransactionTableProps {
-  existingTransactions: Transaction[];
-  newTransactions: Transaction[];
-  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleAssetNameChange: (index: number, selectedOption: StockListElement | null, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
-  removeRow: (index: number) => void;
-  handleDeleteExistingTransaction: (index: number) => void;
-  koreanStocks: StockListElement[];
-  americanStocks: StockListElement[];
-  setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
-}
-
 const TransactionTable = ({
   existingTransactions,
   newTransactions,
@@ -145,8 +133,18 @@ const TransactionTable = ({
   handleDeleteExistingTransaction,
   koreanStocks,
   americanStocks,
-  setNewTransactions
-}: TransactionTableProps) => (
+  setNewTransactions,
+}: {
+  existingTransactions: Transaction[];
+  newTransactions: Transaction[];
+  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleAssetNameChange: (index: number, selectedOption: StockListElement | null, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
+  removeRow: (index: number) => void;
+  handleDeleteExistingTransaction: (index: number) => void;
+  koreanStocks: StockListElement[];
+  americanStocks: StockListElement[];
+  setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
+}) => (
   <table className="w-full text-left border-collapse">
     <thead>
       <tr className="text-gray-700">

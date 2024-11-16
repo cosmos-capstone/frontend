@@ -10,8 +10,6 @@ import { formatDateForInput } from '../utils/dateUtils';
 import { fetchTransactions } from '../utils/api';
 import { fetchStockData } from '../utils/api';
 import { handleAssetNameChange } from '../utils/dataRegistration';
-import {
-} from '../data/transactions';
 
 export default function Home() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
@@ -56,16 +54,6 @@ const handleInputChange = (index: number, event: ChangeEvent<HTMLInputElement | 
   console.log(event);
 };
 
-interface EditTransactionRowProps {
-  transaction: Transaction;
-  index: number;
-  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleAssetNameChange: (index: number, selectedOption: StockListElement | null, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
-  koreanStocks: StockListElement[];
-  americanStocks: StockListElement[];
-  setModifiedTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
-}
-
 const EditTransactionRow = ({
   transaction,
   index,
@@ -73,8 +61,16 @@ const EditTransactionRow = ({
   handleAssetNameChange,
   koreanStocks,
   americanStocks,
-  setModifiedTransactions
-}: EditTransactionRowProps) => (
+  setModifiedTransactions,
+}: {
+  transaction: Transaction;
+  index: number;
+  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleAssetNameChange: (index: number, selectedOption: StockListElement | null, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
+  koreanStocks: StockListElement[];
+  americanStocks: StockListElement[];
+  setModifiedTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
+}) => (
   <table>
     <tbody>
       <tr key={index} className="text-gray-600 bg-gray-50">
