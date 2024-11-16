@@ -36,8 +36,8 @@ export default function Home() {
         <CustomFlowChart transactions={existingTransactions} />
         <OptionSelector />
       </div>
-      {currentEditIndex >= 0 && modifiedTransactions && modifiedTransactions[currentEditIndex] && (
-        <>
+      <div className="flex flex-row p-5 overflow-y-auto m-8 bg-gradient-to-br from-gray-100 to-white p-10 rounded-3xl shadow-2xl">
+        {currentEditIndex >= 0 && modifiedTransactions && modifiedTransactions[currentEditIndex] && (
           <EditTransactionRow
             transaction={modifiedTransactions[currentEditIndex]}
             index={currentEditIndex}
@@ -47,9 +47,11 @@ export default function Home() {
             americanStocks={americanStocks}
             setModifiedTransactions={setModifiedTransactions}
           />
-          <CustomFlowChart transactions={modifiedTransactions} />
-        </>
-      )}
+        )}
+      </div>
+      <div className="flex flex-row p-5 overflow-y-auto m-8 bg-gradient-to-br from-gray-100 to-white p-10 rounded-3xl shadow-2xl">
+        <CustomFlowChart transactions={modifiedTransactions} />
+      </div>
     </>
   );
 }
