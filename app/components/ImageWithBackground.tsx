@@ -10,7 +10,7 @@ const ImageWithBackground: React.FC<ImageWithBackgroundProps> = ({ src, alt }) =
   return (
     <div
       style={{
-        backgroundColor: '#a86228', // 배경색 설정
+        backgroundColor: '#F3F4F6', // 배경색 설정
         borderRadius: '15px', // 모서리를 둥글게
         padding: '20px', // 이미지 주변 여백
         display: 'flex',

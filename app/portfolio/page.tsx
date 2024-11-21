@@ -24,6 +24,20 @@ const assetNameMap = {
   "cash": "현금"
 };
 
+const sectorTranslations = {
+  "Communication Services": "커뮤니케이션 서비스",
+  "Utilities": "유틸리티",
+  "Basic Materials": "기초 자재",
+  "Industrials": "산업재",
+  "Energy": "에너지",
+  "Financial Services": "금융 서비스",
+  "Real Estate": "부동산",
+  "Healthcare": "헬스케어",
+  "Consumer Defensive": "소비재(방어적)",
+  "Technology": "기술",
+  "Consumer Cyclical": "소비재(순환적)"
+};
+
 const Portfolio = () => {
   const [existingData, setExistingData] = useState<PieChartData | null>(null);
   const [proposedData, setProposedData] = useState<PieChartData | null>(null);
@@ -52,12 +66,11 @@ const Portfolio = () => {
         const sharpe_ratios: SharpeRatioData = {
           korean_stock: 0.6,
           american_stock: 0.8,
-          korean_bond: 0.79,
-          american_bond: 0.05,
+          korean_bond: 0.42,
+          american_bond: 0.57,
           fund: 0.3,
           commodity: 0.2,
           gold: 0.2,
-          deposit: 0.03
         };
         setSharpeData(sharpe_ratios);
         setExistingData(portfolioData);
@@ -161,7 +174,9 @@ const Portfolio = () => {
       </div>
       
       <div className="p-8 rounded-lg shadow-lg">
-  <h2 className="text-center font-bold text-2xl mb-10">그 중에서도 다음 상품에 주로 투자하셨어요</h2>
+  <h2 className="text-center font-bold text-xl mb-10">그 중에서도 다음 상품에 주로 투자하셨어요</h2>
+
+  <div className="ml-40">
   {stocksData ? (
     Object.entries(stocksData)
       .filter(([, value]) => value.sector !== "N/A" && value.industry !== "N/A" && value.sector !== "none")
@@ -174,16 +189,17 @@ const Portfolio = () => {
             alt={value.sector && value.sector !== "none" ? `${value.sector} Sector` : "Other Sector"}
           />
           <div className="ml-4">
-            <p className="text-lg font-bold">{key}</p>
-            <p>Rate: {value.rate}</p>
-            <p>Sector: {value.sector}</p>
-            <p>Industry: {value.industry}</p>
+            <p className="text-xl font-bold text-blue-600">{index +1}위</p>
+            <p className="text-lg text-gray-600">{key}</p>
+            <p className='font-bold'>{sectorTranslations[value.sector] || value.sector}</p>
+            <p className='text-red-500 font-bold'>{value.rate}%</p>
           </div>
         </div>
       ))
   ) : (
     <p className="text-center">No stocks data available.</p>
   )}
+  </div>
 </div>
 
 
