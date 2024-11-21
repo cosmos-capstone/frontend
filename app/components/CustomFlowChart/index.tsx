@@ -1,7 +1,7 @@
 // components/CustomFlowChart/index.tsx
 'use client';
 import { useEffect, useState } from 'react';
-import { Transaction, Block as BlockType, Edge as EdgeType } from '../../types/types';
+import { Block as BlockType, Edge as EdgeType } from '../../types/types';
 import { trackAssets } from '../../utils/assetTracker';
 import { createBlock } from '../../utils/blockCalculator';
 import { Block } from './Block';
@@ -161,7 +161,7 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
         <div style={{ overflowX: 'auto' }}>
             <svg
                 width={Math.max(1000, blocks.length * 420)}
-                height={800}
+                height={400}
                 className="flow-chart"
             >
                 <defs>
@@ -190,7 +190,7 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                 </defs>
 
                 {blocks.map((block) => (
-                    <Block key={block.date} block={block}>
+                    <Block key={block.date.toISOString()} block={block}>
                         {block.beforeNodes.map(node => (
                             <Node key={node.id} node={node} />
                         ))}

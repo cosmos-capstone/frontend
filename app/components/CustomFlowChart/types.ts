@@ -1,5 +1,6 @@
 // components/CustomFlowChart/types.ts
-import { Node, Edge, Block, Transaction } from '../../types/types';
+import { Node, Edge, Block } from '../../types/types';
+import { Transaction } from '@/app/types/transaction';
 
 export interface NodeSize {
     width: number;

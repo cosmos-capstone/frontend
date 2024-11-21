@@ -1,7 +1,6 @@
 import React from 'react';
 import TopBar from './components/TopBar';
 import SideBar from './components/SideBar';
-import styles from './styles/page.module.css';
 import type { Metadata } from "next";
 import "./styles/globals.css";
 
@@ -14,11 +13,11 @@ const Layout = ({ children }) => {
   return (
     <html lang="en">
       <body>
-        <div className={styles.container}>
+        <div className="flex flex-col h-screen">
           <TopBar />
-          <div className={styles.contentContainer}>
+          <div className="flex flex-1 overflow-hidden">
             <SideBar />
-            <div className={styles.mainContent}>{children}</div>
+            <div className="flex flex-col flex-1 overflow-y-auto">{children}</div>
           </div>
         </div>
       </body>

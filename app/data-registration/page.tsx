@@ -4,22 +4,10 @@ import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
 import Select from 'react-select';
 import { Transaction } from '../types/transaction';
 import { StockListElement } from '../types/stockListElement';
-
-interface TransactionResponseItem {
-  id: number;
-  transaction_date: string; // ISO date string
-  transaction_type: "deposit" | "withdrawal" | "buy" | "sell";
-  asset_category: "korean_stock" | "american_stock" | "korean_bond" | "american_bond" | "fund" | "commodity" | "gold" | "deposit" | "savings" | "cash";
-  asset_symbol?: string;
-  asset_name?: string;
-  quantity: number;
-  transaction_amount: number;
-}
-
-interface StockDataItem {
-  name: string;
-  symbol: string;
-}
+import { formatDateForInput } from '../utils/dateUtils';
+import { fetchTransactions } from '../utils/api';
+import { fetchStockData } from '../utils/api';
+import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
 
 export default function TradePage() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
@@ -28,44 +16,10 @@ export default function TradePage() {
   const [americanStocks, setAmericanStocks] = useState<StockListElement[]>([]);
 
   useEffect(() => {
-    fetchTransactions();
+    fetchTransactions(setExistingTransactions);
     fetchStockData("korean_stocks", setKoreanStocks);
     fetchStockData("american_stocks", setAmericanStocks);
   }, []);
-
-  async function fetchTransactions() {
-    const res = await fetch("https://cosmos-backend.cho0h5.org/transaction/test");
-    const data = await res.json() as { data: TransactionResponseItem[] };
-    const sortedData = data.data.map((item: TransactionResponseItem) => ({
-      ...item,
-      transaction_date: new Date(item.transaction_date)
-    })).sort((a: Transaction, b: Transaction) => a.transaction_date.getTime() - b.transaction_date.getTime());
-    setExistingTransactions(sortedData);
-  }
-
-  async function fetchStockData(endpoint: string, setState: (data: StockListElement[]) => void) {
-    const res = await fetch(`https://cosmos-backend.cho0h5.org/market_data/${endpoint}`);
-    const data = await res.json() as { data: StockDataItem[] };
-    const transformedData = data.data.map((stock: StockDataItem) => ({ label: stock.name, value: stock.symbol }));
-    setState(transformedData);
-  }
-
-  const handleInputChange = (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = event.target;
-    setNewTransactions((prev) => {
-      const updatedTransactions = [...prev];
-      updatedTransactions[index] = {
-        ...updatedTransactions[index],
-        [name]: name === "quantity" || name === "transaction_amount"
-          ? Number(value)
-          : name === "transaction_date"
-            ? new Date(value)
-            : value,
-        ...(name === "transaction_type" && (value === "deposit" || value === "withdrawal") ? { asset_category: "cash" } : {}),
-      };
-      return updatedTransactions;
-    });
-  };
 
   const addRow = () => {
     setNewTransactions([...newTransactions, createEmptyTransaction()]);
@@ -97,7 +51,7 @@ export default function TradePage() {
 
   async function handleSuccessfulSubmit() {
     alert("거래 내역이 성공적으로 저장되었습니다.");
-    await fetchTransactions();
+    await fetchTransactions(setExistingTransactions);
     setNewTransactions([createEmptyTransaction()]);
   }
 
@@ -115,19 +69,6 @@ export default function TradePage() {
     }
   };
 
-  const handleAssetNameChange = (index: number, selectedOption: StockListElement | null) => {
-    console.info(selectedOption);
-    setNewTransactions((prev) => {
-      const updatedTransactions = [...prev];
-      updatedTransactions[index] = {
-        ...updatedTransactions[index],
-        asset_name: selectedOption?.label || "",
-        asset_symbol: selectedOption?.value || "",
-      };
-      return updatedTransactions;
-    });
-  };
-
   return (
     <div className="min-h-screen p-6">
       <h2 className="text-2xl font-bold mb-4">거래 내역 관리</h2>
@@ -142,6 +83,7 @@ export default function TradePage() {
           handleDeleteExistingTransaction={handleDeleteExistingTransaction}
           koreanStocks={koreanStocks}
           americanStocks={americanStocks}
+          setNewTransactions={setNewTransactions}
         />
         <ActionButtons
           addRow={addRow}
@@ -165,27 +107,6 @@ function createEmptyTransaction(): Transaction {
   };
 }
 
-const formatDateForInput = (date: Date) => {
-  const pad = (n: number) => String(n).padStart(2, '0');
-  const year = date.getFullYear();
-  const month = pad(date.getMonth() + 1);
-  const day = pad(date.getDate());
-  const hours = pad(date.getHours());
-  const minutes = pad(date.getMinutes());
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
-
-interface TransactionTableProps {
-  existingTransactions: Transaction[];
-  newTransactions: Transaction[];
-  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleAssetNameChange: (index: number, selectedOption: StockListElement | null) => void;
-  removeRow: (index: number) => void;
-  handleDeleteExistingTransaction: (index: number) => void;
-  koreanStocks: StockListElement[];
-  americanStocks: StockListElement[];
-}
-
 const TransactionTable = ({
   existingTransactions,
   newTransactions,
@@ -194,8 +115,19 @@ const TransactionTable = ({
   removeRow,
   handleDeleteExistingTransaction,
   koreanStocks,
-  americanStocks
-}: TransactionTableProps) => (
+  americanStocks,
+  setNewTransactions,
+}: {
+  existingTransactions: Transaction[];
+  newTransactions: Transaction[];
+  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
+  handleAssetNameChange: (index: number, selectedOption: StockListElement | null, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
+  removeRow: (index: number) => void;
+  handleDeleteExistingTransaction: (index: number) => void;
+  koreanStocks: StockListElement[];
+  americanStocks: StockListElement[];
+  setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
+}) => (
   <table className="w-full text-left border-collapse">
     <thead>
       <tr className="text-gray-700">
@@ -251,6 +183,7 @@ const TransactionTable = ({
           removeRow={removeRow}
           koreanStocks={koreanStocks}
           americanStocks={americanStocks}
+          setNewTransactions={setNewTransactions}
         />
       ))}
     </tbody>
@@ -282,15 +215,6 @@ const ActionButtons = ({ addRow, handleSubmit }: ActionButtonsProps) => (
   </div>
 )
 
-interface NewTransactionRowProps {
-  transaction: Transaction;
-  index: number;
-  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleAssetNameChange: (index: number, selectedOption: StockListElement | null) => void;
-  removeRow: (index: number) => void;
-  koreanStocks: StockListElement[];
-  americanStocks: StockListElement[];
-}
 const NewTransactionRow = ({
   transaction,
   index,
@@ -298,15 +222,25 @@ const NewTransactionRow = ({
   handleAssetNameChange,
   removeRow,
   koreanStocks,
-  americanStocks
-}: NewTransactionRowProps) => (
+  americanStocks,
+  setNewTransactions
+}: {
+  transaction: Transaction;
+  index: number;
+  handleInputChange: (index: number, event: ChangeEvent<HTMLInputElement | HTMLSelectElement>, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
+  handleAssetNameChange: (index: number, selectedOption: StockListElement | null, setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => void;
+  removeRow: (index: number) => void;
+  koreanStocks: StockListElement[];
+  americanStocks: StockListElement[];
+  setNewTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
+}) => (
   <tr key={index} className="text-gray-600 bg-gray-50">
     <td className="border-b py-2">
       <input
         type="datetime-local"
         name="transaction_date"
         value={formatDateForInput(transaction.transaction_date)}
-        onChange={(e) => handleInputChange(index, e)}
+        onChange={(e) => handleInputChange(index, e, setNewTransactions)}
         className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
         required
       />
@@ -315,7 +249,7 @@ const NewTransactionRow = ({
       <select
         name="transaction_type"
         value={transaction.transaction_type}
-        onChange={(e) => handleInputChange(index, e)}
+        onChange={(e) => handleInputChange(index, e, setNewTransactions)}
         className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
         required
       >
@@ -329,7 +263,7 @@ const NewTransactionRow = ({
       <select
         name="asset_category"
         value={transaction.asset_category}
-        onChange={(e) => handleInputChange(index, e)}
+        onChange={(e) => handleInputChange(index, e, setNewTransactions)}
         className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
           ? "bg-gray-200 opacity-60 cursor-not-allowed"
           : ""
@@ -353,7 +287,7 @@ const NewTransactionRow = ({
           type="text"
           name="asset_name"
           value={transaction.asset_name || ""}
-          onChange={(e) => handleInputChange(index, e)}
+          onChange={(e) => handleInputChange(index, e, setNewTransactions)}
           className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
             ? "bg-gray-200 opacity-60 cursor-not-allowed"
             : ""
@@ -365,14 +299,14 @@ const NewTransactionRow = ({
       {transaction.asset_category === "korean_stock" && (
         <Select
           options={koreanStocks}
-          onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
+          onChange={(selectedOption) => handleAssetNameChange(index, selectedOption, setNewTransactions)}
           className="w-full"
         />
       )}
       {transaction.asset_category === "american_stock" && (
         <Select
           options={americanStocks}
-          onChange={(selectedOption) => handleAssetNameChange(index, selectedOption)}
+          onChange={(selectedOption) => handleAssetNameChange(index, selectedOption, setNewTransactions)}
           className="w-full"
         />
       )}
@@ -382,7 +316,7 @@ const NewTransactionRow = ({
         type="number"
         name="quantity"
         value={transaction.quantity}
-        onChange={(e) => handleInputChange(index, e)}
+        onChange={(e) => handleInputChange(index, e, setNewTransactions)}
         className={`w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${transaction.transaction_type === "deposit" || transaction.transaction_type === "withdrawal"
           ? "bg-gray-200 opacity-60 cursor-not-allowed"
           : ""
@@ -396,7 +330,7 @@ const NewTransactionRow = ({
         type="number"
         name="transaction_amount"
         value={transaction.transaction_amount}
-        onChange={(e) => handleInputChange(index, e)}
+        onChange={(e) => handleInputChange(index, e, setNewTransactions)}
         className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
         required
       />

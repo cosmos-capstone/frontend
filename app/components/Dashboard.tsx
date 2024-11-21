@@ -51,7 +51,7 @@ export default function Dashboard() {
     };
 
     fetchData();
-  }, []);
+  });
 
   return (
     <div className="m-8 bg-gradient-to-br from-gray-100 to-white p-10 rounded-3xl shadow-2xl">
