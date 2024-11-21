@@ -30,13 +30,13 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <div className="flex flex-col space-y-8 bg-gray-100">
       <Dashboard />
-      <div className="flex flex-row p-5 m-8 bg-gradient-to-br from-gray-100 to-white p-10 rounded-3xl shadow-2xl">
+      <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
         <CustomFlowChart transactions={existingTransactions} />
         <OptionSelector />
       </div>
-      <div className="flex flex-row p-5 m-8 bg-gradient-to-br from-gray-100 to-white p-10 rounded-3xl shadow-2xl">
+      <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
         {currentEditIndex >= 0 && modifiedTransactions && modifiedTransactions[currentEditIndex] && (
           <EditTransactionRow
             transaction={modifiedTransactions[currentEditIndex]}
@@ -49,12 +49,12 @@ export default function Home() {
           />
         )}
       </div>
-      <div className="flex flex-row p-5 m-8 bg-gradient-to-br from-gray-100 to-white p-10 rounded-3xl shadow-2xl">
+      <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
         {currentEditIndex >= 0 && modifiedTransactions && (
           <CustomFlowChart transactions={modifiedTransactions} />
         )}
       </div>
-    </>
+    </div>
   );
 }
 

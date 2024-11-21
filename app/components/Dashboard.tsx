@@ -54,20 +54,31 @@ export default function Dashboard() {
   });
 
   return (
-    <div className="m-8 bg-gradient-to-br from-gray-100 to-white p-10 rounded-3xl shadow-2xl">
+    <div className="m-8">
       <div className="mb-10 text-center">
         <h2 className="text-4xl font-extrabold text-gray-800">자산 개요</h2>
       </div>
-      <div className="flex flex-wrap justify-between gap-4">
-        {dashboardData && Object.keys(assetNameMap).map((key) => (
-          dashboardData[key] > 0 && (
-            <div key={key} className="flex justify-between items-center p-4 bg-gray-200 text-gray-800 rounded-lg shadow-md w-full md:w-1/2 lg:w-1/4">
-              <div className="text-lg font-medium">{assetNameMap[key]}</div>
-              <div className="text-3xl font-bold">{Math.floor(dashboardData[key]).toLocaleString()}원</div>
-            </div>
-          )
-        ))}
-        {!dashboardData && <div className="text-center w-full text-xl text-gray-500">Loading...</div>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {dashboardData &&
+          Object.keys(assetNameMap).map(
+            (key) =>
+              dashboardData[key] > 0 && (
+                <div
+                  key={key}
+                  className="flex flex-col justify-between bg-white p-6 rounded-2xl border border-gray-200"
+                >
+                  <div className="text-sm text-gray-500">{assetNameMap[key]}</div>
+                  <div className="text-2xl font-bold text-gray-800 mt-2">
+                    {Math.floor(dashboardData[key]).toLocaleString()}원
+                  </div>
+                </div>
+              )
+          )}
+        {!dashboardData && (
+          <div className="text-center w-full text-xl text-gray-500">
+            Loading...
+          </div>
+        )}
       </div>
     </div>
   );

@@ -189,8 +189,8 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                     </marker>
                 </defs>
 
-                {blocks.map((block) => (
-                    <Block key={block.date.toISOString()} block={block}>
+                {blocks.map((block, index) => (
+                    <Block key={`${block.date.toISOString()}-${index}`} block={block}>
                         {block.beforeNodes.map(node => (
                             <Node key={node.id} node={node} />
                         ))}
