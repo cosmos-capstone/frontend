@@ -5,10 +5,12 @@
 import React, { useEffect, useState } from 'react';
 import PieChart, { PieChartData } from '../components/PieChart';
 import BarChart, { SharpeRatioData } from '../components/BarChart';
+import ImageWithBackground from '../components/ImageWithBackground';
 
 interface PortfolioData {
   [key: string]: string;
 }
+
 
 const assetNameMap = {
   "korean_stock": "한국 주식",
@@ -129,7 +131,7 @@ const Portfolio = () => {
         </div>
       </div>
 
-      <div className="p-8 flex justify-center items-center bg-white mb-40 mt-20">
+      <div className="p-8 flex justify-center items-center bg-white mb-10 mt-20">
         <div>
           <p className="text-xl font-bold mb-4 ">기존 <span style={{ color: '#3B82F6' }}>김코스</span>님의 자산은</p>
           <p className="text-lg font-medium mb-4">
@@ -158,21 +160,26 @@ const Portfolio = () => {
       </div>
       </div>
       
-      <div className="p-8 rounded-lg shadow-lg mt-10">
-  <h2 className="text-center font-bold text-2xl mb-5">Stocks Data</h2>
+      <div className="p-8 rounded-lg shadow-lg">
+  <h2 className="text-center font-bold text-2xl mb-10">그 중에서도 다음 상품에 주로 투자하셨어요</h2>
   {stocksData ? (
     Object.entries(stocksData)
-      // sector와 industry가 N/A인 항목 제외
-      .filter(([, value]) => value.sector !== "N/A" && value.industry !== "N/A")
-      // rate를 기준으로 내림차순 정렬
+      .filter(([, value]) => value.sector !== "N/A" && value.industry !== "N/A" && value.sector !== "none")
       .sort(([, a], [, b]) => parseFloat(b.rate) - parseFloat(a.rate))
-      // 상위 3개만 선택
       .slice(0, 3)
-      // JSX 렌더링
       .map(([key, value], index) => (
-        <p key={index} className="text-lg mb-3">
-          <strong>{key}</strong> - Rate: {value.rate}, Sector: {value.sector}, Industry: {value.industry}
-        </p>
+        <div key={index} className="flex items-center mb-3">
+          <ImageWithBackground 
+            src={value.sector && value.sector != "none" ? `/images/${value.sector}.png` : `/images/Other.png`}
+            alt={value.sector && value.sector !== "none" ? `${value.sector} Sector` : "Other Sector"}
+          />
+          <div className="ml-4">
+            <p className="text-lg font-bold">{key}</p>
+            <p>Rate: {value.rate}</p>
+            <p>Sector: {value.sector}</p>
+            <p>Industry: {value.industry}</p>
+          </div>
+        </div>
       ))
   ) : (
     <p className="text-center">No stocks data available.</p>
@@ -180,6 +187,8 @@ const Portfolio = () => {
 </div>
 
 
+
+   
       
     </>
   );
