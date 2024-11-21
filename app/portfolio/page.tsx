@@ -27,7 +27,7 @@ const Portfolio = () => {
   const [proposedData, setProposedData] = useState<PieChartData | null>(null);
   const [topAssets, setTopAssets] = useState<{ name: string; value: string }[]>([]);
   const [sharpeData, setSharpeData] = useState<SharpeRatioData | null>(null);
-  const [stocksData, setStocks] = useState<{ name: string; value: string }[]>([]);
+  const [stocksData, setStocks] = useState<{ [key: string]: { rate: string; sector: string; industry: string } } | null>(null);
 
 
   useEffect(() => {
@@ -46,7 +46,6 @@ const Portfolio = () => {
 
         const portfolioData: PieChartData = por_data.data;
         const rebalancingData: PieChartData = reb_data.data;
-        console.log(stocksData);
         
         const sharpe_ratios: SharpeRatioData = {
           korean_stock: 0.6,
@@ -61,7 +60,7 @@ const Portfolio = () => {
         setSharpeData(sharpe_ratios);
         setExistingData(portfolioData);
         setProposedData(rebalancingData);
-        setStocks(stock_data);
+        setStocks(stock_data.data);
         console.log(stock_data);
         
         // 상위 3개의 자산 항목을 추출하여 상태에 저장
@@ -158,6 +157,29 @@ const Portfolio = () => {
           ))}
       </div>
       </div>
+      
+      <div className="p-8 rounded-lg shadow-lg mt-10">
+  <h2 className="text-center font-bold text-2xl mb-5">Stocks Data</h2>
+  {stocksData ? (
+    Object.entries(stocksData)
+      // sector와 industry가 N/A인 항목 제외
+      .filter(([, value]) => value.sector !== "N/A" && value.industry !== "N/A")
+      // rate를 기준으로 내림차순 정렬
+      .sort(([, a], [, b]) => parseFloat(b.rate) - parseFloat(a.rate))
+      // 상위 3개만 선택
+      .slice(0, 3)
+      // JSX 렌더링
+      .map(([key, value], index) => (
+        <p key={index} className="text-lg mb-3">
+          <strong>{key}</strong> - Rate: {value.rate}, Sector: {value.sector}, Industry: {value.industry}
+        </p>
+      ))
+  ) : (
+    <p className="text-center">No stocks data available.</p>
+  )}
+</div>
+
+
       
     </>
   );
