@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import PieChart, { PieChartData } from '../components/PieChart';
 import BarChart, { SharpeRatioData } from '../components/BarChart';
 import ImageWithBackground from '../components/ImageWithBackground';
+import correlationData from '../data/correlationData .json';
 
 interface PortfolioData {
   [key: string]: string;
@@ -44,7 +45,7 @@ const Portfolio = () => {
   const [topAssets, setTopAssets] = useState<{ name: string; value: string }[]>([]);
   const [sharpeData, setSharpeData] = useState<SharpeRatioData | null>(null);
   const [stocksData, setStocks] = useState<{ [key: string]: { rate: string; sector: string; industry: string } } | null>(null);
-
+  const [recommendedSectors, setRecommendedSectors] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,7 +77,8 @@ const Portfolio = () => {
         setExistingData(portfolioData);
         setProposedData(rebalancingData);
         setStocks(stock_data.data);
-        console.log(stock_data);
+
+        recommendSectors(stock_data.data);
         
         // 상위 3개의 자산 항목을 추출하여 상태에 저장
         const sortedData = Object.entries(por_data.data as PortfolioData)
@@ -95,13 +97,44 @@ const Portfolio = () => {
     };
 
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const recommendSectors = (stocks: { [key: string]: { rate: string; sector: string } }) => {
+    if (!stocks) return;
+
+    // 현재 보유 자산의 섹터 추출
+    const ownedSectors = Object.values(stocks)
+      .map(stock => stock.sector)
+      .filter((sector, index, self) => sector && self.indexOf(sector) === index);
+
+    // 각 섹터 간의 평균 상관계수 계산
+    const averageCorrelations: { [key: string]: number } = {};
+    ownedSectors.forEach(ownedSector => {
+      const correlations = Object.entries(correlationData[ownedSector] || {})
+        .filter(([sector]) => ownedSectors.includes(sector))
+        .map(([, value]) => value as number);
+
+      if (correlations.length > 0) {
+        averageCorrelations[ownedSector] =
+          correlations.reduce((sum, value) => sum + value, 0) / correlations.length;
+      }
+    });
+
+    // 상관계수가 낮은 섹터 추출
+    const recommended = Object.entries(correlationData)
+      .filter(([sector]) => !ownedSectors.includes(sector))
+      .sort(([, a], [, b]) => Math.min(...Object.values(a)) - Math.min(...Object.values(b)))
+      .slice(0, 3)
+      .map(([sector]) => sector);
+
+    setRecommendedSectors(recommended);
+  };
+
 
   return (
     <>
       <div className="p-8">
-        <h2 className="text-center mb-10 font-bold text-3xl">포르폴리오 리밸런싱</h2>
+        <h2 className="text-center mb-10 font-bold text-3xl">포트폴리오 리밸런싱</h2>
         <div className="flex justify-around">
           <div className="w-2/5 bg-gray-200 rounded-lg p-8 shadow-lg text-center">
             <h3 className="mb-5 font-bold text-3xl">기존 포트폴리오</h3>
@@ -173,7 +206,7 @@ const Portfolio = () => {
       </div>
       </div>
       
-      <div className="p-8 rounded-lg shadow-lg">
+      <div className="p-8 rounded-lg">
   <h2 className="text-center font-bold text-xl mb-10">그 중에서도 다음 상품에 주로 투자하셨어요</h2>
 
   <div className="ml-40">
@@ -203,6 +236,21 @@ const Portfolio = () => {
 </div>
 
 
+{/* 추천 섹터 표시 */}
+<div className="p-8 rounded-lg mt-10">
+        <h2 className="text-center font-bold text-xl mb-10">추천 섹터</h2>
+        {recommendedSectors.length > 0 ? (
+          <ul>
+            {recommendedSectors.map((sector, index) => (
+              <li key={index} className="text-lg font-semibold text-blue-600">
+                {sectorTranslations[sector] || sector}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-center">추천할 섹터가 없습니다. 현재 포트폴리오는 안정적입니다!</p>
+        )}
+      </div>
 
    
       
