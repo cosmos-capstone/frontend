@@ -218,7 +218,7 @@ const Portfolio = () => {
       .map(([key, value], index) => (
         <div key={index} className="flex items-center mb-3">
           <ImageWithBackground 
-            src={value.sector && value.sector != "none" ? `/images/${value.sector}.png` : `/images/Other.png`}
+            src={value.sector && value.sector != "none" ? `./images/${value.sector}.png` : `./images/Other.png`}
             alt={value.sector && value.sector !== "none" ? `${value.sector} Sector` : "Other Sector"}
           />
           <div className="ml-4">
