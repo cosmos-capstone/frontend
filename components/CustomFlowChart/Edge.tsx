@@ -82,13 +82,13 @@ export const Edge = ({ edge, blocks }: EdgeProps) => {
                     y2={endY + endHeight / 2}
                 >
                     <stop
-                            offset="0%"
-                            stopColor={getGradientColor(sourceColor, edge.type)}
-                        />
-                        <stop
-                            offset="100%"
-                            stopColor={getGradientColor(targetColor, edge.type)}
-                        />
+                        offset="0%"
+                        stopColor={getGradientColor(sourceColor, edge.type)}
+                    />
+                    <stop
+                        offset="100%"
+                        stopColor={getGradientColor(targetColor, edge.type)}
+                    />
                 </linearGradient>
             </defs>
             <path
