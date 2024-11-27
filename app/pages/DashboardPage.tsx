@@ -6,7 +6,6 @@ import OptionSelector from '../components/OptionBoard';
 import CustomFlowChart from '../components/CustomFlowChart/index';
 import { Transaction } from '../types/transaction';
 import { StockListElement } from '../types/stockListElement';
-import { formatDateForInput } from '../utils/dateUtils';
 import { fetchTransactions } from '../utils/api';
 import { fetchStockData } from '../utils/api';
 import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
