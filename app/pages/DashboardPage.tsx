@@ -75,7 +75,7 @@ const EditTransactionRow = ({
   americanStocks: StockListElement[];
   setModifiedTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
 }) => (
-  <table>
+  <table className="w-full">
     <tbody>
       <tr key={index} className="text-gray-600">
         <td className="py-2">
