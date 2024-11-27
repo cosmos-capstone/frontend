@@ -77,8 +77,8 @@ const EditTransactionRow = ({
 }) => (
   <table>
     <tbody>
-      <tr key={index} className="text-gray-600 bg-gray-50">
-        <td className="border-b py-2">
+      <tr key={index} className="text-gray-600">
+        <td className="py-2">
           <select
             name="transaction_type"
             value={transaction.transaction_type}
@@ -92,7 +92,7 @@ const EditTransactionRow = ({
             <option value="sell">Sell</option>
           </select>
         </td>
-        <td className="border-b py-2">
+        <td className="py-2">
           <select
             name="asset_category"
             value={transaction.asset_category}
@@ -114,7 +114,7 @@ const EditTransactionRow = ({
             <option value="savings">Savings Account</option>
           </select>
         </td>
-        <td className="border-b py-2">
+        <td className="py-2">
           {(transaction.asset_category !== "korean_stock" && transaction.asset_category !== "american_stock") && (
             <input
               type="text"
@@ -144,7 +144,7 @@ const EditTransactionRow = ({
             />
           )}
         </td>
-        <td className="border-b py-2">
+        <td className="py-2">
           <input
             type="number"
             name="quantity"
@@ -158,7 +158,7 @@ const EditTransactionRow = ({
             required
           />
         </td>
-        <td className="border-b py-2">
+        <td className="py-2">
           <input
             type="number"
             name="transaction_amount"
