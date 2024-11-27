@@ -79,16 +79,6 @@ const EditTransactionRow = ({
     <tbody>
       <tr key={index} className="text-gray-600 bg-gray-50">
         <td className="border-b py-2">
-          <input
-            type="datetime-local"
-            name="transaction_date"
-            value={formatDateForInput(transaction.transaction_date)}
-            onChange={(e) => handleInputChange(index, e, setModifiedTransactions)}
-            className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-            required
-          />
-        </td>
-        <td className="border-b py-2">
           <select
             name="transaction_type"
             value={transaction.transaction_type}
