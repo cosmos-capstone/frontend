@@ -20,10 +20,19 @@ const CompareRebalancing = () => {
     const [prev5ProposedData, setPrev5ProposedData] = useState<PieChartData | null>(null);
 
     useEffect(() => {
+        const currentDate = new Date();
+        const prev1YearDate = new Date(currentDate);
+        prev1YearDate.setFullYear(prev1YearDate.getFullYear() - 1);
+        const prev5YearDate = new Date(currentDate);
+        prev5YearDate.setFullYear(prev5YearDate.getFullYear() - 5);
+
+        const prev1YearDateString = prev1YearDate.toISOString().split('T')[0];
+        const prev5YearDateString = prev5YearDate.toISOString().split('T')[0];
+
         fetchAndSetData('https://cosmos-backend.cho0h5.org/transaction/portfolio', setExistingData);
         fetchAndSetData('https://cosmos-backend.cho0h5.org/transaction/rebalancing', setCurrProposedData);
-        fetchAndSetData('https://cosmos-backend.cho0h5.org/transaction/rebalancing?date=2023-11-29', setPrev1ProposedData);
-        fetchAndSetData('https://cosmos-backend.cho0h5.org/transaction/rebalancing?date=2019-11-29', setPrev5ProposedData);
+        fetchAndSetData(`https://cosmos-backend.cho0h5.org/transaction/rebalancing?date=${prev1YearDateString}`, setPrev1ProposedData);
+        fetchAndSetData(`https://cosmos-backend.cho0h5.org/transaction/rebalancing?date=${prev5YearDateString}`, setPrev5ProposedData);
     }, []);
 
     return (
