@@ -3,6 +3,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import PieChart, { PieChartData } from '../components/PieChart';
 import BarChart, { SharpeRatioData } from '../components/BarChart';
 import ImageWithBackground from '../components/ImageWithBackground';
@@ -55,7 +56,6 @@ const Portfolio = () => {
 
         const reb_response = await fetch('https://cosmos-backend.cho0h5.org/transaction/rebalancing');
         const reb_data = await reb_response.json();
-
 
         // 아직 사용 안함
         const stock_response = await fetch('https://cosmos-backend.cho0h5.org/transaction/asset');
@@ -163,25 +163,20 @@ const Portfolio = () => {
             <h3 className="mb-5 font-bold text-3xl">제안 포트폴리오</h3>
             {proposedData ? <PieChart data={proposedData} /> : <div>Loading...</div>}
             {/* <span className='font-semibold'>샤프 지수를 기반으로</span> */}
-            <button
+            <Link
               className="mt-5 text-gray-500 text-sm underline"
-              onClick={() => window.location.href = '/backtesting'}
+              href="/backtesting"
             >
               포트폴리오 성능 검증 페이지로 이동
-            </button>
-
+            </Link>
           </div>
         </div>
         <h2 className="text-center mt-20 font-bold text-3xl">포트폴리오 분석</h2>
       </div>
 
-
-
       <div className="p-8 flex items-center bg-white" style={{ height: '500px' }}>
         <p className="text-2xl font-semibold mb-1 ml-20">각 자산들의 샤프 지수는 다음과 같아요 </p>
-
       </div>
-
 
       <div className='items-center justify-centera\'>
         <div className="p-8 flex bg-white ml-10" style={{ height: '500px', width: '700px' }}>
