@@ -20,8 +20,6 @@ const CompareRebalancing = () => {
     const [prev5ProposedData, setPrev5ProposedData] = useState<PieChartData | null>(null);
 
     useEffect(() => {
-        // const portfolioData: PieChartData = por_data.data;
-        // const rebalancingData: PieChartData = reb_data.data;
         fetchAndSetData('https://cosmos-backend.cho0h5.org/transaction/portfolio', setExistingData);
         fetchAndSetData('https://cosmos-backend.cho0h5.org/transaction/rebalancing', setCurrProposedData);
         fetchAndSetData('https://cosmos-backend.cho0h5.org/transaction/rebalancing?date=2023-11-29', setPrev1ProposedData);
