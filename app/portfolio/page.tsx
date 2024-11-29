@@ -163,6 +163,13 @@ const Portfolio = () => {
             <h3 className="mb-5 font-bold text-3xl">제안 포트폴리오</h3>
             {proposedData ? <PieChart data={proposedData} /> : <div>Loading...</div>}
             {/* <span className='font-semibold'>샤프 지수를 기반으로</span> */}
+            <button
+              className="mt-5 text-gray-500 text-sm underline"
+              onClick={() => window.location.href = '/backtesting'}
+            >
+              포트폴리오 성능 검증 페이지로 이동
+            </button>
+
           </div>
         </div>
         <h2 className="text-center mt-20 font-bold text-3xl">포트폴리오 분석</h2>
