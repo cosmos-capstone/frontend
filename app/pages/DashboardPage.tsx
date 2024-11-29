@@ -6,7 +6,6 @@ import OptionSelector from '../components/OptionBoard';
 import CustomFlowChart from '../components/CustomFlowChart/index';
 import { Transaction } from '../types/transaction';
 import { StockListElement } from '../types/stockListElement';
-import { formatDateForInput } from '../utils/dateUtils';
 import { fetchTransactions } from '../utils/api';
 import { fetchStockData } from '../utils/api';
 import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
@@ -75,20 +74,10 @@ const EditTransactionRow = ({
   americanStocks: StockListElement[];
   setModifiedTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
 }) => (
-  <table>
+  <table className="w-full">
     <tbody>
-      <tr key={index} className="text-gray-600 bg-gray-50">
-        <td className="border-b py-2">
-          <input
-            type="datetime-local"
-            name="transaction_date"
-            value={formatDateForInput(transaction.transaction_date)}
-            onChange={(e) => handleInputChange(index, e, setModifiedTransactions)}
-            className="w-full px-2 py-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-            required
-          />
-        </td>
-        <td className="border-b py-2">
+      <tr key={index} className="text-gray-600">
+        <td className="py-2">
           <select
             name="transaction_type"
             value={transaction.transaction_type}
@@ -102,7 +91,7 @@ const EditTransactionRow = ({
             <option value="sell">Sell</option>
           </select>
         </td>
-        <td className="border-b py-2">
+        <td className="py-2">
           <select
             name="asset_category"
             value={transaction.asset_category}
@@ -124,7 +113,7 @@ const EditTransactionRow = ({
             <option value="savings">Savings Account</option>
           </select>
         </td>
-        <td className="border-b py-2">
+        <td className="py-2">
           {(transaction.asset_category !== "korean_stock" && transaction.asset_category !== "american_stock") && (
             <input
               type="text"
@@ -154,7 +143,7 @@ const EditTransactionRow = ({
             />
           )}
         </td>
-        <td className="border-b py-2">
+        <td className="py-2">
           <input
             type="number"
             name="quantity"
@@ -168,7 +157,7 @@ const EditTransactionRow = ({
             required
           />
         </td>
-        <td className="border-b py-2">
+        <td className="py-2">
           <input
             type="number"
             name="transaction_amount"

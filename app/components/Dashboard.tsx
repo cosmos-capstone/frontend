@@ -51,7 +51,7 @@ export default function Dashboard() {
     };
 
     fetchData();
-  });
+  }, []);
 
   return (
     <div className="m-8">
