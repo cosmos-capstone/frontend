@@ -63,7 +63,7 @@ const Portfolio = () => {
 
         const portfolioData: PieChartData = por_data.data;
         const rebalancingData: PieChartData = reb_data.data;
-        
+
         const sharpe_ratios: SharpeRatioData = {
           korean_stock: 0.6,
           american_stock: 0.8,
@@ -81,8 +81,8 @@ const Portfolio = () => {
         calculateSectorDistribution(stock_data.data);
 
         recommendSectors(stock_data.data);
-        
-    
+
+
         // 상위 3개의 자산 항목을 추출하여 상태에 저장
         const sortedData = Object.entries(por_data.data as PortfolioData)
           .map(([name, value]) => ({
@@ -168,30 +168,30 @@ const Portfolio = () => {
         <h2 className="text-center mt-20 font-bold text-3xl">포트폴리오 분석</h2>
       </div>
 
-      
+
 
       <div className="p-8 flex items-center bg-white" style={{ height: '500px' }}>
         <p className="text-2xl font-semibold mb-1 ml-20">각 자산들의 샤프 지수는 다음과 같아요 </p>
 
       </div>
 
-          
+
       <div className='items-center justify-centera\'>
         <div className="p-8 flex bg-white ml-10" style={{ height: '500px', width: '700px' }}>
-            {sharpeData ? <BarChart data={sharpeData} /> : <div>Loading Sharpe Ratios...</div>}
-            
-            <div className='item-start' style={{width: '500px'}}>
-              <p className="text-lg font-semibold mb-1 ml-10" style={{width: '500px'}}><br /> <span className="text-2xl font-bold">샤프 지수란</span> <br /><br />
+          {sharpeData ? <BarChart data={sharpeData} /> : <div>Loading Sharpe Ratios...</div>}
+
+          <div className='item-start' style={{ width: '500px' }}>
+            <p className="text-lg font-semibold mb-1 ml-10" style={{ width: '500px' }}><br /> <span className="text-2xl font-bold">샤프 지수란</span> <br /><br />
               변동성 대비 수익률을 뜻해요 (초과 수익/표준 편차)
               <br />
               <br />
               <br />
               <span className="text-gray-500">
                 샤프 지수가 높은 투자 자산일수록 변동성이 적고 수익률이 높아요
-                <br />안정적인 포트폴리오를 구성하기 위해서는 샤프 지수가 높은 자산을 많이 포함하는 것이 좋아요 
-                </span>
-              </p>
-            </div>          
+                <br />안정적인 포트폴리오를 구성하기 위해서는 샤프 지수가 높은 자산을 많이 포함하는 것이 좋아요
+              </span>
+            </p>
+          </div>
         </div>
       </div>
 
@@ -199,64 +199,64 @@ const Portfolio = () => {
         <div>
           <p className="text-xl font-bold mb-4 ">기존 <span style={{ color: '#3B82F6' }}>김코스</span>님의 자산은</p>
           <p className="text-lg font-medium mb-4">
-              {topAssets.map((asset, index) => (
-                  <span style={{ color: '#3B82F6', fontWeight: 'bold'}} key={index}>
-                      {asset.name}
-                      {index < topAssets.length - 1 && ', '}
-                  </span>
-              ))}에 가장 많이 분포되어 있어요.
+            {topAssets.map((asset, index) => (
+              <span style={{ color: '#3B82F6', fontWeight: 'bold' }} key={index}>
+                {asset.name}
+                {index < topAssets.length - 1 && ', '}
+              </span>
+            ))}에 가장 많이 분포되어 있어요.
           </p>
         </div>
 
-      <div className="bg-gray-100 rounded-2xl shadow-lg p-8 w-96 text-center ml-60">
-        <p className="text-xl font-bold mb-02 text-blue-500">TOP3 자산 분포</p>
+        <div className="bg-gray-100 rounded-2xl shadow-lg p-8 w-96 text-center ml-60">
+          <p className="text-xl font-bold mb-02 text-blue-500">TOP3 자산 분포</p>
           {topAssets.map((asset, index) => (
-              <div key={index} className="mb-4">
-                  <p className="text-lg font-semibold mb-1">{asset.name}: {asset.value}%</p>
-                  <div className="w-full bg-gray-300 rounded-full h-4">
-                      <div
-                          className="bg-blue-500 h-4 rounded-full"
-                          style={{ width: `${asset.value}%` }}
-                      ></div>
-                  </div>
+            <div key={index} className="mb-4">
+              <p className="text-lg font-semibold mb-1">{asset.name}: {asset.value}%</p>
+              <div className="w-full bg-gray-300 rounded-full h-4">
+                <div
+                  className="bg-blue-500 h-4 rounded-full"
+                  style={{ width: `${asset.value}%` }}
+                ></div>
               </div>
+            </div>
           ))}
-      </div>
-      </div>
-      
-      <div className="p-8 rounded-lg">
-  <h2 className="text-center font-bold text-xl mb-10">그 중에서도 다음 상품에 주로 투자하셨어요</h2>
-
-  <div className="ml-40">
-  {stocksData ? (
-    Object.entries(stocksData)
-      .filter(([, value]) => value.sector !== "N/A" && value.industry !== "N/A" && value.sector !== "none")
-      .sort(([, a], [, b]) => parseFloat(b.rate) - parseFloat(a.rate))
-      .slice(0, 3)
-      .map(([key, value], index) => (
-        <div key={index} className="flex items-center mb-3">
-          <ImageWithBackground 
-          // 이부분 로컬에선 /images로 github에선 ./image로 변경
-            src={value.sector && value.sector != "none" ? `/images/${value.sector}.png` : `/page.tsximages/Other.png`}
-            alt={value.sector && value.sector !== "none" ? `${value.sector} Sector` : "Other Sector"}
-          />
-          <div className="ml-4">
-            <p className="text-xl font-bold text-blue-600">{index +1}위</p>
-            <p className="text-lg text-gray-600">{key}</p>
-            <p className='font-bold'>{sectorTranslations[value.sector] || value.sector}</p>
-            <p className='text-red-500 font-bold'>{value.rate}%</p>
-          </div>
         </div>
-      ))
-  ) : (
-    <p className="text-center">No stocks data available.</p>
-  )}
-  </div>
-</div>
+      </div>
+
+      <div className="p-8 rounded-lg">
+        <h2 className="text-center font-bold text-xl mb-10">그 중에서도 다음 상품에 주로 투자하셨어요</h2>
+
+        <div className="ml-40">
+          {stocksData ? (
+            Object.entries(stocksData)
+              .filter(([, value]) => value.sector !== "N/A" && value.industry !== "N/A" && value.sector !== "none")
+              .sort(([, a], [, b]) => parseFloat(b.rate) - parseFloat(a.rate))
+              .slice(0, 3)
+              .map(([key, value], index) => (
+                <div key={index} className="flex items-center mb-3">
+                  <ImageWithBackground
+                    // 이부분 로컬에선 /images로 github에선 ./image로 변경
+                    src={value.sector && value.sector != "none" ? `/images/${value.sector}.png` : `/page.tsximages/Other.png`}
+                    alt={value.sector && value.sector !== "none" ? `${value.sector} Sector` : "Other Sector"}
+                  />
+                  <div className="ml-4">
+                    <p className="text-xl font-bold text-blue-600">{index + 1}위</p>
+                    <p className="text-lg text-gray-600">{key}</p>
+                    <p className='font-bold'>{sectorTranslations[value.sector] || value.sector}</p>
+                    <p className='text-red-500 font-bold'>{value.rate}%</p>
+                  </div>
+                </div>
+              ))
+          ) : (
+            <p className="text-center">No stocks data available.</p>
+          )}
+        </div>
+      </div>
 
 
-{/* 추천 섹터 표시 */}
-<div className="p-8 rounded-lg mt-10">
+      {/* 추천 섹터 표시 */}
+      <div className="p-8 rounded-lg mt-10">
         <h2 className="text-center font-bold text-xl mb-10">추천 섹터</h2>
         {recommendedSectors.length > 0 ? (
           <ul>
@@ -271,7 +271,7 @@ const Portfolio = () => {
         )}
       </div>
 
-   
+
 
       <div className="p-8 rounded-lg mt-10">
         <h2 className="text-center font-bold text-xl mb-10">섹터 분포</h2>
@@ -283,7 +283,7 @@ const Portfolio = () => {
           ))}
         </ul>
       </div>
-      
+
     </>
   );
 };
