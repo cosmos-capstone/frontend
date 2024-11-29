@@ -46,7 +46,7 @@ const Portfolio = () => {
   const [sharpeData, setSharpeData] = useState<SharpeRatioData | null>(null);
   const [stocksData, setStocks] = useState<{ [key: string]: { rate: string; sector: string; industry: string } } | null>(null);
   const [recommendedSectors, setRecommendedSectors] = useState<string[]>([]);
-
+  const [sectorDistribution, setSectorDistribution] = useState<{ [sector: string]: number }>({});
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -78,8 +78,11 @@ const Portfolio = () => {
         setProposedData(rebalancingData);
         setStocks(stock_data.data);
 
+        calculateSectorDistribution(stock_data.data);
+
         recommendSectors(stock_data.data);
         
+    
         // 상위 3개의 자산 항목을 추출하여 상태에 저장
         const sortedData = Object.entries(por_data.data as PortfolioData)
           .map(([name, value]) => ({
@@ -99,6 +102,20 @@ const Portfolio = () => {
     fetchData();
   }, []);
 
+  const calculateSectorDistribution = (stocks: { [key: string]: { rate: string; sector: string } }) => {
+    if (!stocks) return;
+
+    const sectorRates: { [sector: string]: number } = {};
+
+    Object.values(stocks).forEach(({ sector, rate }) => {
+      if (sector && sector !== 'N/A' && sector !== 'none') {
+        sectorRates[sector] = (sectorRates[sector] || 0) + parseFloat(rate);
+      }
+    });
+
+    setSectorDistribution(sectorRates);
+  };
+
   const recommendSectors = (stocks: { [key: string]: { rate: string; sector: string } }) => {
     if (!stocks) return;
 
@@ -106,8 +123,9 @@ const Portfolio = () => {
     const ownedSectors = Object.values(stocks)
       .map(stock => stock.sector)
       .filter((sector, index, self) => sector && self.indexOf(sector) === index);
-
+    console.log(ownedSectors);
     // 각 섹터 간의 평균 상관계수 계산
+
     const averageCorrelations: { [key: string]: number } = {};
     ownedSectors.forEach(ownedSector => {
       const correlations = Object.entries(correlationData[ownedSector] || {})
@@ -254,6 +272,17 @@ const Portfolio = () => {
       </div>
 
    
+
+      <div className="p-8 rounded-lg mt-10">
+        <h2 className="text-center font-bold text-xl mb-10">섹터 분포</h2>
+        <ul>
+          {Object.entries(sectorDistribution).map(([sector, rate]) => (
+            <li key={sector} className="text-lg font-semibold">
+              {sectorTranslations[sector] || sector}: {rate.toFixed(2)}%
+            </li>
+          ))}
+        </ul>
+      </div>
       
     </>
   );
