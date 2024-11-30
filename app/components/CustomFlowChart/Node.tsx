@@ -24,7 +24,8 @@ export const Node = ({ node }: NodeProps) => {
     // const backgroundColor = getBackgroundColor(node.type);
     const simpleLabel = `${node.asset_symbol}\n${node.date.toLocaleDateString()}`;
     const detailLabel = `${node.asset_symbol}\n${node.amount}주\n₩${node.value?.toLocaleString() ?? '0'}\n${node.date.toLocaleDateString()}`;
-    const showLabel = node.state === 'before';
+    // const showLabel = node.state === 'before'; // 수정 
+    const showLabel = true;
 
     return (
         <g
@@ -56,7 +57,7 @@ export const Node = ({ node }: NodeProps) => {
                     x={node.size.width / 2}
                     y={node.size.height / 2}
                     textAnchor="middle"
-                    fontSize="12"
+                    fontSize="3"
                     dy=".3em"
                 >
                     {simpleLabel}

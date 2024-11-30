@@ -12,7 +12,7 @@ import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistrat
 import AssetTracker from '@/app/components/AssetTracker';
 import {TRANSACTION_DATA} from '@/app/data/transactionsMockup'
 
-
+//수정 임시 여기 TRANSACTION_DATA 다 existingTransactions 로 바꾸기
 export default function Home() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
   const [modifiedTransactions, setModifiedTransactions] = useState<Transaction[]>();
@@ -35,7 +35,7 @@ export default function Home() {
     <div className="flex flex-col space-y-8 bg-gray-100">
       <Dashboard />
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
-        <CustomFlowChart transactions={TRANSACTION_DATA} />
+        <CustomFlowChart transactions={TRANSACTION_DATA} /> 
         <OptionSelector />
       </div>
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">

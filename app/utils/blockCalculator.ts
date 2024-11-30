@@ -2,9 +2,9 @@
 import { Block, AssetHistory, Node } from '../types/types';
 import { calculateNodeSize } from './nodeCalculator';
 import { getCurrentPrice } from './priceAPI';
-import { BLOCK_CONFIG } from '../constants/globalConfig';
+import { BLOCK_CONFIG,nodeBaseWidth } from '../constants/globalConfig';
 import { Transaction } from '../types/transaction';
-import { blockWidthCalculate,calculateTimeDifference,calculateBlockWidth } from '@/app/utils/calculateBlockWidth';
+import { blockWidthCalculate,MIN_BLOCK_WIDTH,calculateTimeDifference,calculateBlockWidth } from '@/app/utils/calculateBlockWidth';
 
 async function calculateMaxAssetValue(history: AssetHistory): Promise<number> {
     let maxValue = history.state.cash;
@@ -100,9 +100,9 @@ async function createNormalNode(
     symbol: string,
     quantity: number,
     maxAssetValue: number,
-    
     state: 'before' | 'after',
-    previousBlock?: Block,
+    blockWidth?:number,
+    
 ): Promise<void> {
     const currentPrice = await getCurrentPrice(symbol);
     const nodeSize = await calculateNodeSize({
@@ -115,7 +115,7 @@ async function createNormalNode(
         action: 'buy',
         state: state
     }, maxAssetValue);
-    const blockWidth = previousBlock ? blockWidthCalculate(previousBlock.date, history.date) : 0;
+    
 
     nodes.push({
         id: `${symbol}-${index}-${state}`,
@@ -123,7 +123,7 @@ async function createNormalNode(
         amount: quantity,
         asset_symbol: symbol,
         position: {
-            x_position: state === 'before' ? BLOCK_CONFIG.leftMargin :  blockWidth-10,
+            x_position: state === 'before' ? BLOCK_CONFIG.leftMargin : blockWidth-nodeBaseWidth,
             y_position: currentY
         },
         type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
@@ -208,7 +208,7 @@ async function createAfterNodes(
     const nodes: Node[] = [];
     let currentY = 50;
     
-    const blockWidth = previousBlock ? blockWidthCalculate(previousBlock.date, history.date) : 0;
+    const blockWidth = previousBlock ? blockWidthCalculate(previousBlock.date, history.date) : MIN_BLOCK_WIDTH;
     // Deposit node
     const depositSize = await calculateNodeSize({
         id: `DEPOSIT-${index}-after`,
@@ -243,7 +243,7 @@ async function createAfterNodes(
     // Asset nodes
     for (const [symbol, quantity] of Object.entries(history.state.holdings)) {
         await createNormalNode(
-            nodes, currentY, index, symbol, quantity, maxAssetValue, 'after'
+            nodes, currentY, index, symbol, quantity, maxAssetValue, 'after',blockWidth
         );
        
         currentY += nodes[nodes.length - 1].size.height + 20;
@@ -264,7 +264,7 @@ export async function createBlock(
     
     const maxAssetValue = await calculateMaxAssetValue(history);
     const beforeNodes = await createBeforeNodes(history, maxAssetValue, index, currentTransaction,previousBlock);
-    const afterNodes = await createAfterNodes(history, maxAssetValue, index,previousBlock);
+    const afterNodes = await createAfterNodes(history, maxAssetValue, index, previousBlock);
 
     const maxNodesHeight = Math.max(
         beforeNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0),
@@ -275,7 +275,7 @@ export async function createBlock(
     //     : 0;
     // const blockWidth = calculateBlockWidth(timeDifference);
 
-    const blockWidth = previousBlock ? blockWidthCalculate(previousBlock.date, history.date) : 0;
+    const blockWidth = previousBlock ? blockWidthCalculate(previousBlock.date, history.date) : MIN_BLOCK_WIDTH;
     
     return {
         date: history.date,
@@ -283,6 +283,8 @@ export async function createBlock(
             x_position: previousBlock 
                 ? previousBlock.position.x_position + previousBlock.position.width + BLOCK_CONFIG.gap
                 : 0,
+                // x_position: index * (BLOCK_CONFIG.width + BLOCK_CONFIG.gap),
+                // width: BLOCK_CONFIG.width,
             width: blockWidth,
             height: Math.max(maxNodesHeight + 50, BLOCK_CONFIG.minHeight)
         },

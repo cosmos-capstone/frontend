@@ -16,6 +16,7 @@ export default function AssetTracker({ transactionData }: AssetTrackerProps) {
   useEffect(() => {
     const history = trackAssets(transactionData);
     setAssetHistory(history);
+    
   }, [transactionData]);
 
   return (
@@ -52,6 +53,7 @@ export default function AssetTracker({ transactionData }: AssetTrackerProps) {
                 <h4 className="font-medium">거래 후:</h4>
                 <p className="text-lg">
                   현금: {entry.state.cash.toLocaleString()}원
+                  
                 </p>
                 <div className="mt-2">
                   <h5 className="font-medium">보유 자산:</h5>

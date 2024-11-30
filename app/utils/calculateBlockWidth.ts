@@ -1,8 +1,8 @@
 import { Block } from '../types/types';
 
-const MIN_BLOCK_WIDTH = 100; // 최소 블록 너비
-const MAX_BLOCK_WIDTH = 300; // 최대 블록 너비
-const TIME_SCALE_FACTOR = 10; // 시간에 따른 크기 조정 계수
+export const MIN_BLOCK_WIDTH = 100; // 최소 블록 너비
+export const MAX_BLOCK_WIDTH = 300; // 최대 블록 너비
+export const TIME_SCALE_FACTOR = 10; // 시간에 따른 크기 조정 계수
 
 export function calculateBlockWidth(timeDifference: number): number {
     return Math.min(MAX_BLOCK_WIDTH, 
