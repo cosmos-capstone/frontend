@@ -35,7 +35,7 @@ export default function Home() {
     <div className="flex flex-col space-y-8 bg-gray-100">
       <Dashboard />
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
-        <CustomFlowChart transactions={TRANSACTION_DATA} /> 
+        {/* <CustomFlowChart transactions={TRANSACTION_DATA} />  */}
         <OptionSelector />
       </div>
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">

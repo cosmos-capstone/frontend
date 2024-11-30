@@ -6,6 +6,9 @@ import { BLOCK_CONFIG,nodeBaseWidth } from '../constants/globalConfig';
 import { Transaction } from '../types/transaction';
 import { blockWidthCalculate,MIN_BLOCK_WIDTH,calculateTimeDifference,calculateBlockWidth } from '@/app/utils/calculateBlockWidth';
 
+type PreviousNodePositions = { [symbol: string]: number };
+
+
 async function calculateMaxAssetValue(history: AssetHistory): Promise<number> {
     let maxValue = history.state.cash;
     if (history.previousState) {
@@ -142,6 +145,7 @@ async function createBeforeNodes(
     index: number,
     currentTransaction?: Transaction,
     previousBlock?: Block,
+    previousNodePositions?: PreviousNodePositions,
 ): Promise<Node[]> {
     const nodes: Node[] = [];
     let currentY = 50;
@@ -149,6 +153,7 @@ async function createBeforeNodes(
     if (!history.previousState) return nodes;
 
     // Deposit node
+    const depositY = previousNodePositions?.['DEPOSIT'] || currentY;
     const depositSize = await calculateNodeSize({
         id: `DEPOSIT-${index}-before`,
         date: history.date,
@@ -167,7 +172,7 @@ async function createBeforeNodes(
         asset_symbol: 'DEPOSIT',
         position: {
             x_position: BLOCK_CONFIG.leftMargin,
-            y_position: currentY
+            y_position: depositY
         },
         type: 'deposit',
         action: 'buy',
@@ -180,20 +185,24 @@ async function createBeforeNodes(
 
     // Asset nodes
     for (const [symbol, quantity] of Object.entries(history.previousState.holdings)) {
+        const symbolY = previousNodePositions?.[symbol] || currentY;
+        
         if (currentTransaction?.transaction_type === 'sell' && 
             symbol === currentTransaction.asset_symbol) {
             const currentPrice = await getCurrentPrice(symbol);
             await createSellNodes(
-                nodes, currentY, index, symbol, quantity, 
+                nodes, symbolY, index, symbol, quantity, 
                 currentTransaction, currentPrice, maxAssetValue
             );
-            currentY += (nodes[nodes.length - 1].size.height + 20) * 
-                       (quantity - currentTransaction.quantity > 0 ? 2 : 1);
+            currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
+            // currentY = symbolY + (nodes[nodes.length - 1].size.height + 20) * 
+            // (quantity - currentTransaction.quantity > 0 ? 2 : 1);
+           
         } else {
             await createNormalNode(
-                nodes, currentY, index, symbol, quantity, maxAssetValue,history.date, 'before'
+                nodes, symbolY, index, symbol, quantity, maxAssetValue,history.date, 'before'
             );
-            currentY += nodes[nodes.length - 1].size.height + 20;
+            currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
         }
     }
 
@@ -205,12 +214,13 @@ async function createAfterNodes(
     maxAssetValue: number,
     index: number,
     previousBlock?: Block,
-    
+    previousNodePositions?: PreviousNodePositions
 ): Promise<Node[]> {
     const nodes: Node[] = [];
     let currentY = 50;
     
     const blockWidth = previousBlock ? blockWidthCalculate(previousBlock.date, history.date) : MIN_BLOCK_WIDTH;
+    const depositY = previousNodePositions?.['DEPOSIT'] || currentY;
     // Deposit node
     const depositSize = await calculateNodeSize({
         id: `DEPOSIT-${index}-after`,
@@ -231,7 +241,7 @@ async function createAfterNodes(
         position: {
             x_position: blockWidth-10,
             // x_position: BLOCK_CONFIG.rightMargin,
-            y_position: currentY
+            y_position: depositY
         },
         type: 'deposit',
         action: 'buy',
@@ -240,15 +250,16 @@ async function createAfterNodes(
         value: history.state.cash
     });
 
-    currentY += depositSize.height + 20;
+    currentY = depositY + depositSize.height + 20;
+
 
     // Asset nodes
     for (const [symbol, quantity] of Object.entries(history.state.holdings)) {
+        const symbolY = previousNodePositions?.[symbol] || currentY;
         await createNormalNode(
-            nodes, currentY, index, symbol, quantity, maxAssetValue,history.date, 'after',blockWidth
+            nodes, symbolY, index, symbol, quantity, maxAssetValue, history.date, 'after', blockWidth
         );
-       
-        currentY += nodes[nodes.length - 1].size.height + 20;
+        currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
     }
 
     return nodes;
@@ -263,11 +274,27 @@ export async function createBlock(
     const currentTransaction = transactions?.find(
         t => t.transaction_date === history.date
     );
-    
-    const maxAssetValue = await calculateMaxAssetValue(history);
-    const beforeNodes = await createBeforeNodes(history, maxAssetValue, index, currentTransaction,previousBlock);
-    const afterNodes = await createAfterNodes(history, maxAssetValue, index, previousBlock);
+    const previousNodePositions: PreviousNodePositions = {};
+    if (previousBlock) {
+        previousBlock.afterNodes.forEach(node => {
+            previousNodePositions[node.asset_symbol] = node.position.y_position;
+        });
+        console.log(`Block ${index} - Previous Node Positions:`, previousNodePositions);
+    }
+    else {
+        console.log(`Block ${index} - No previous block`);
+    }
 
+    const maxAssetValue = await calculateMaxAssetValue(history);
+    const beforeNodes = await createBeforeNodes(history, maxAssetValue, index, currentTransaction,previousBlock,previousNodePositions);
+    const afterNodes = await createAfterNodes(history, maxAssetValue, index, previousBlock);
+    console.log(`Block ${index} - Created Node Positions:`);
+    console.log('Before Nodes:', beforeNodes.map(node => ({ symbol: node.asset_symbol, y: node.position.y_position })));
+    console.log('After Nodes:', afterNodes.map(node => ({ symbol: node.asset_symbol, y: node.position.y_position })));
+
+    
+    
+    
     const maxNodesHeight = Math.max(
         beforeNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0),
         afterNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0)
