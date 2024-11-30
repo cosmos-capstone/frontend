@@ -23,7 +23,8 @@ export const Node = ({ node }: NodeProps) => {
 
     // const backgroundColor = getBackgroundColor(node.type);
     const simpleLabel = `${node.asset_symbol}`;
-    const detailLabel = `${node.asset_symbol}\n${node.amount}주\n₩${node.value?.toLocaleString() ?? '0'}`;
+    const detailLabel = `${node.asset_symbol}\n${node.amount}주\n₩${node.value?.toLocaleString() ?? '0'}\n${node.date}`;
+    const showLabel = node.state === 'before';
 
     return (
         <g
@@ -47,9 +48,20 @@ export const Node = ({ node }: NodeProps) => {
                 fontSize="12"
                 dy=".3em"
             >
-                {simpleLabel}
+                
             </text>
 
+            {showLabel && (
+                <text
+                    x={node.size.width / 2}
+                    y={node.size.height / 2}
+                    textAnchor="middle"
+                    fontSize="12"
+                    dy=".3em"
+                >
+                    {simpleLabel}
+                </text>
+            )}
             {/* 호버 시 표시되는 상세 정보 */}
             {isHovered && (
                 <g transform={`translate(${node.size.width + 10}, ${-10})`}>
