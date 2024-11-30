@@ -48,6 +48,8 @@ const Portfolio = () => {
   const [stocksData, setStocks] = useState<{ [key: string]: { rate: string; sector: string; industry: string } } | null>(null);
   const [recommendedSectors, setRecommendedSectors] = useState<string[]>([]);
   const [sectorDistribution, setSectorDistribution] = useState<{ [sector: string]: number }>({});
+
+  const treshold = 30;
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -118,35 +120,37 @@ const Portfolio = () => {
 
   const recommendSectors = (stocks: { [key: string]: { rate: string; sector: string } }) => {
     if (!stocks) return;
-
-    // 현재 보유 자산의 섹터 추출
-    const ownedSectors = Object.values(stocks)
-      .map(stock => stock.sector)
-      .filter((sector, index, self) => sector && self.indexOf(sector) === index);
-    console.log(ownedSectors);
-    // 각 섹터 간의 평균 상관계수 계산
-
-    const averageCorrelations: { [key: string]: number } = {};
-    ownedSectors.forEach(ownedSector => {
-      const correlations = Object.entries(correlationData[ownedSector] || {})
-        .filter(([sector]) => ownedSectors.includes(sector))
-        .map(([, value]) => value as number);
-
-      if (correlations.length > 0) {
-        averageCorrelations[ownedSector] =
-          correlations.reduce((sum, value) => sum + value, 0) / correlations.length;
+  
+    const threshold = 20;
+    // 섹터 비율 계산
+    const sectorRates: { [sector: string]: number } = {};
+    Object.values(stocks).forEach(({ sector, rate }) => {
+      if (sector && sector !== 'N/A' && sector !== 'none') {
+        sectorRates[sector] = (sectorRates[sector] || 0) + parseFloat(rate);
       }
     });
-
-    // 상관계수가 낮은 섹터 추출
-    const recommended = Object.entries(correlationData)
-      .filter(([sector]) => !ownedSectors.includes(sector))
-      .sort(([, a], [, b]) => Math.min(...Object.values(a)) - Math.min(...Object.values(b)))
-      .slice(0, 3)
+  
+    setSectorDistribution(sectorRates);
+  
+    // 특정 섹터 비율이 기준을 초과하는지 확인
+    const overInvestedSectors = Object.entries(sectorRates)
+      .filter(([, rate]) => rate > threshold)
       .map(([sector]) => sector);
-
-    setRecommendedSectors(recommended);
+  
+    if (overInvestedSectors.length > 0) {
+      // 추천 섹터 계산
+      const recommendations = Object.entries(correlationData)
+        .filter(([sector]) => !overInvestedSectors.includes(sector))
+        .sort(([, a], [, b]) => Math.min(...Object.values(a)) - Math.min(...Object.values(b)))
+        .slice(0, 3)
+        .map(([sector]) => sectorTranslations[sector] || sector);
+  
+      setRecommendedSectors(recommendations);
+    } else {
+      setRecommendedSectors([]); // 추천 섹터 초기화
+    }
   };
+  
 
 
   return (
@@ -179,7 +183,7 @@ const Portfolio = () => {
       </div>
 
       <div className='items-center justify-centera\'>
-        <div className="p-8 flex bg-white ml-10" style={{ height: '500px', width: '700px' }}>
+        <div className="p-8 flex bg-white ml-40" style={{ height: '500px', width: '700px' }}>
           {sharpeData ? <BarChart data={sharpeData} /> : <div>Loading Sharpe Ratios...</div>}
 
           <div className='item-start' style={{ width: '500px' }}>
@@ -197,8 +201,8 @@ const Portfolio = () => {
         </div>
       </div>
 
-      <div className="p-8 flex justify-center items-center bg-white mb-10 mt-20">
-        <div>
+      <div className="p-8 flex ml-80 items-center bg-white mt-10">
+        <div className='mr-20'>
           <p className="text-xl font-bold mb-4 ">기존 <span style={{ color: '#3B82F6' }}>김코스</span>님의 자산은</p>
           <p className="text-lg font-medium mb-4">
             {topAssets.map((asset, index) => (
@@ -208,28 +212,14 @@ const Portfolio = () => {
               </span>
             ))}에 가장 많이 분포되어 있어요.
           </p>
+            <h2 className="text-center font-bold text-xl ml-60 mt-30">그 중에서도 다음 섹터에 주로 투자하셨어요</h2>
         </div>
 
-        <div className="bg-gray-100 rounded-2xl shadow-lg p-8 w-96 text-center ml-60">
-          <p className="text-xl font-bold mb-02 text-blue-500">TOP3 자산 분포</p>
-          {topAssets.map((asset, index) => (
-            <div key={index} className="mb-4">
-              <p className="text-lg font-semibold mb-1">{asset.name}: {asset.value}%</p>
-              <div className="w-full bg-gray-300 rounded-full h-4">
-                <div
-                  className="bg-blue-500 h-4 rounded-full"
-                  style={{ width: `${asset.value}%` }}
-                ></div>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
 
-      <div className="p-8 rounded-lg">
-        <h2 className="text-center font-bold text-xl mb-10">그 중에서도 다음 상품에 주로 투자하셨어요</h2>
-
-        <div className="ml-40">
+      
+      <div className="p-8 rounded-lg flex items-center justify-center">
+        <div className="justify-center">
           {stocksData ? (
             Object.entries(stocksData)
               .filter(([, value]) => value.sector !== "N/A" && value.industry !== "N/A" && value.sector !== "none")
@@ -249,42 +239,56 @@ const Portfolio = () => {
                     <p className='text-red-500 font-bold'>{value.rate}%</p>
                   </div>
                 </div>
-              ))
+                
+              )
+            )
           ) : (
             <p className="text-center">No stocks data available.</p>
           )}
         </div>
-      </div>
-
-
-      {/* 추천 섹터 표시 */}
-      <div className="p-8 rounded-lg mt-10">
-        <h2 className="text-center font-bold text-xl mb-10">추천 섹터</h2>
-        {recommendedSectors.length > 0 ? (
-          <ul>
-            {recommendedSectors.map((sector, index) => (
-              <li key={index} className="text-lg font-semibold text-blue-600">
-                {sectorTranslations[sector] || sector}
-              </li>
+      
+        <div className="bg-gray-100 rounded-2xl shadow-lg p-8 w-96 text-center ml-60 mb-20">
+          <p className="text-xl font-bold mb-02 text-blue-500">TOP3 섹터 분포</p>
+          {Object.entries(sectorDistribution)
+            .sort(([, rateA], [, rateB]) => rateB - rateA) // 비율 기준으로 내림차순 정렬
+            .slice(0, 3) // 상위 3개 섹터 선택
+            .map(([sector, rate], index) => (
+              <div key={sector} className="mb-4">
+                <p className="text-lg font-semibold mb-1">
+                  {sectorTranslations[sector] || sector}: {rate.toFixed(2)}%
+                </p>
+                <div className="w-full bg-gray-300 rounded-full h-4">
+                  <div
+                    className="bg-blue-500 h-4 rounded-full"
+                    style={{ width: `${rate}%` }} // 비율에 따라 막대 길이 설정
+                  ></div>
+                </div>
+              </div>
             ))}
-          </ul>
-        ) : (
-          <p className="text-center">추천할 섹터가 없습니다. 현재 포트폴리오는 안정적입니다!</p>
-        )}
+        </div>
       </div>
+
+
 
 
 
       <div className="p-8 rounded-lg mt-10">
-        <h2 className="text-center font-bold text-xl mb-10">섹터 분포</h2>
-        <ul>
-          {Object.entries(sectorDistribution).map(([sector, rate]) => (
-            <li key={sector} className="text-lg font-semibold">
-              {sectorTranslations[sector] || sector}: {rate.toFixed(2)}%
-            </li>
-          ))}
-        </ul>
-      </div>
+  <h2 className="text-center font-bold text-xl mb-10">추천 섹터</h2>
+  {recommendedSectors.length > 0 ? (
+    <ul>
+      {recommendedSectors.map((sector, index) => (
+        <li key={index} className="text-lg font-semibold text-blue-600">
+          {sector}
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p className="text-center text-green-600 font-semibold">
+      현재 포트폴리오는 안정적입니다!
+    </p>
+  )}
+</div>
+
 
     </>
   );
