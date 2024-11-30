@@ -9,6 +9,7 @@ import { StockListElement } from '../types/stockListElement';
 import { fetchTransactions } from '../utils/api';
 import { fetchStockData } from '../utils/api';
 import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
+import AssetTracker from '@/app/components/AssetTracker';
 
 export default function Home() {
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
@@ -53,6 +54,7 @@ export default function Home() {
           <CustomFlowChart transactions={modifiedTransactions} />
         )}
       </div>
+      <AssetTracker transactionData={existingTransactions} />
     </div>
   );
 }
