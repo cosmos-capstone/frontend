@@ -93,21 +93,23 @@ async function createSellNodes(
     }
 }
 
-async function createNormalNode(
+async function createNormalNode( // only after node need a block width so if it is a after node blockWidth value will be passed 
     nodes: Node[],
     currentY: number,
     index: number,
     symbol: string,
     quantity: number,
     maxAssetValue: number,
+    date:Date,
     state: 'before' | 'after',
+
     blockWidth?:number,
     
 ): Promise<void> {
     const currentPrice = await getCurrentPrice(symbol);
     const nodeSize = await calculateNodeSize({
         id: `${symbol}-${index}-${state}`,
-        date: new Date(),  // Will be set in the node creation
+        date: date,  // Will be set in the node creation
         amount: quantity,
         asset_symbol: symbol,
         position: { x_position: 0, y_position: 0 },
@@ -119,7 +121,7 @@ async function createNormalNode(
 
     nodes.push({
         id: `${symbol}-${index}-${state}`,
-        date: new Date(),  // Will be set when used
+        date: date,  // Will be set when used
         amount: quantity,
         asset_symbol: symbol,
         position: {
@@ -189,7 +191,7 @@ async function createBeforeNodes(
                        (quantity - currentTransaction.quantity > 0 ? 2 : 1);
         } else {
             await createNormalNode(
-                nodes, currentY, index, symbol, quantity, maxAssetValue, 'before'
+                nodes, currentY, index, symbol, quantity, maxAssetValue,history.date, 'before'
             );
             currentY += nodes[nodes.length - 1].size.height + 20;
         }
@@ -243,7 +245,7 @@ async function createAfterNodes(
     // Asset nodes
     for (const [symbol, quantity] of Object.entries(history.state.holdings)) {
         await createNormalNode(
-            nodes, currentY, index, symbol, quantity, maxAssetValue, 'after',blockWidth
+            nodes, currentY, index, symbol, quantity, maxAssetValue,history.date, 'after',blockWidth
         );
        
         currentY += nodes[nodes.length - 1].size.height + 20;
