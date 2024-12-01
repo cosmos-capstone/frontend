@@ -69,7 +69,8 @@ const CompareRebalancing = () => {
             <div className="p-8 flex flex-row space-x-8">
                 <div className="w-2/5 bg-gray-200 rounded-lg p-8 shadow-lg text-center">
                     <h3 className="mb-5 font-bold text-3xl">1년 전 제안 포트폴리오</h3>
-                    {prev1ProposedData ? <PieChart data={prev1ProposedData} /> : <div>Loading...</div>}                </div>
+                    {prev1ProposedData ? <PieChart data={prev1ProposedData} /> : <div>Loading...</div>}
+                </div>
 
                 <div className="flex flex-row p-6 bg-white rounded-2xl border border-gray-200">
                     <CustomFlowChart transactions={existingTransactions} />
@@ -79,7 +80,8 @@ const CompareRebalancing = () => {
             <div className="p-8 flex flex-row space-x-8">
                 <div className="w-2/5 bg-gray-200 rounded-lg p-8 shadow-lg text-center">
                     <h3 className="mb-5 font-bold text-3xl">5년 전 제안 포트폴리오</h3>
-                    {prev5ProposedData ? <PieChart data={prev5ProposedData} /> : <div>Loading...</div>}                </div>
+                    {prev5ProposedData ? <PieChart data={prev5ProposedData} /> : <div>Loading...</div>}
+                </div>
 
                 <div className="flex flex-row p-6 bg-white rounded-2xl border border-gray-200">
                     <CustomFlowChart transactions={existingTransactions} />
