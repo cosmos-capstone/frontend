@@ -11,9 +11,11 @@ import { fetchStockData } from '../utils/api';
 import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
 import AssetTracker from '@/app/components/AssetTracker';
 import {TRANSACTION_DATA} from '@/app/data/transactionsMockup'
+import {initializeStockData,printCachedStockData} from '@/app/utils/api'
 
 //수정 임시 여기 TRANSACTION_DATA 다 existingTransactions 로 바꾸기
 export default function Home() {
+  const [isChartDataReady, setIsChartDataReady] = useState(false);
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
   const [modifiedTransactions, setModifiedTransactions] = useState<Transaction[]>();
   const [koreanStocks, setKoreanStocks] = useState<StockListElement[]>([]);
@@ -21,6 +23,25 @@ export default function Home() {
   const [currentEditIndex, setCurrentEditIndex] = useState(-1);
 
   useEffect(() => {
+    async function initializeChartData() {
+      try {
+        // TRANSACTION_DATA에서 모든 고유한 심볼을 추출
+        const symbols = Array.from(new Set(TRANSACTION_DATA.map(t => t.asset_symbol).filter(Boolean)));
+        
+        console.log('Starting to initialize stock data for symbols:', symbols);
+        await initializeStockData(symbols);
+        console.log('Stock data initialization completed');
+
+        printCachedStockData();
+        setIsChartDataReady(true);
+      } catch (error) {
+        console.error('Error initializing chart data:', error);
+        // 오류 처리 로직 (예: 사용자에게 오류 메시지 표시)
+      }
+    }
+    initializeChartData();
+
+    // 다른 데이터 fetching 작업들
     fetchTransactions(setExistingTransactions);
     fetchTransactions(setModifiedTransactions);
     fetchStockData("korean_stocks", setKoreanStocks);
@@ -35,7 +56,18 @@ export default function Home() {
     <div className="flex flex-col space-y-8 bg-gray-100">
       <Dashboard />
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
-        <CustomFlowChart transactions={TRANSACTION_DATA} /> 
+      {isChartDataReady ? (
+          <CustomFlowChart transactions={TRANSACTION_DATA} />
+        ) : (
+          <div className="flex justify-center items-center w-full h-64">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+          </div>)}
+          {isChartDataReady ? (
+          <CustomFlowChart transactions={existingTransactions} />
+        ) : (
+          <div className="flex justify-center items-center w-full h-64">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+          </div>)}
         <OptionSelector />
       </div>
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">

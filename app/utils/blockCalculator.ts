@@ -114,7 +114,7 @@ async function createSellNodes(
     }
 }
 
-async function createNormalNode({
+async function createNormalNode({// In this function you get the real asset value from the data base and implement in the node height
     nodes,
     currentY,
     index,
@@ -232,15 +232,17 @@ async function createBeforeNodes(
 
         } else {
             await createNormalNode(
-                { nodes: nodes, 
-                    currentY: symbolY, 
-                    index: index, 
-                    symbol: symbol, 
-                    quantity: quantity, 
-                    maxAssetValue: maxAssetValue, 
-                    date: history.date, 
-                    state: 'before', 
-                    nodeHeight: previousNodePositions?.['DEPOSIT']?.height || 9999999, }
+                {
+                    nodes: nodes,
+                    currentY: symbolY,
+                    index: index,
+                    symbol: symbol,
+                    quantity: quantity,
+                    maxAssetValue: maxAssetValue,
+                    date: history.date,
+                    state: 'before',
+                    nodeHeight: previousNodePositions?.[symbol]?.height || 9999999,
+                }//임시 에러 처리부분
             );
             currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
         }
@@ -297,7 +299,18 @@ async function createAfterNodes(
         const symbolInfo = previousNodePositions?.[symbol];
         const symbolY = symbolInfo?.y_position || currentY;
         await createNormalNode(
-            { nodes: nodes, currentY: symbolY, index: index, symbol: symbol, quantity: quantity, maxAssetValue, date: history.date, state: 'after', blockWidth: blockWidth }
+            {
+                nodes: nodes,
+                currentY: symbolY,
+                index: index,
+                symbol: symbol,
+                quantity: quantity,
+                maxAssetValue,
+                date: history.date,
+                state: 'after',
+                blockWidth: blockWidth,
+
+            }
         );
         currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
     }

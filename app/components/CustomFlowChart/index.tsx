@@ -158,7 +158,10 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
     }, [transactions]);
 
     return (
-        <div style={{ overflowX: 'auto' }}>
+        <div style={{ overflowX: 'auto' ,
+            
+                overflowY: 'auto', 
+        }}>
             <svg
                 width={Math.max(1000, blocks.length * 420)}
                 height={400}
