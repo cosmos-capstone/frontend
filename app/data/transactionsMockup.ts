@@ -273,7 +273,7 @@ export const TRANSACTION_DATA: Transaction[] = [
     "asset_symbol": "AAPL",
     "asset_name": "애플",
     "quantity": 3,
-    "transaction_amount": "595000.00"
+    "transaction_amount": "593889.00"
     },
     {
     "id": 7,
