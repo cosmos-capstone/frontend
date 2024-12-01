@@ -14,14 +14,14 @@ import {TRANSACTION_DATA} from '@/app/data/transactionsMockup'
 
 //수정 임시 여기 TRANSACTION_DATA 다 existingTransactions 로 바꾸기
 export default function Home() {
-  const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
+  // const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
   const [modifiedTransactions, setModifiedTransactions] = useState<Transaction[]>();
   const [koreanStocks, setKoreanStocks] = useState<StockListElement[]>([]);
   const [americanStocks, setAmericanStocks] = useState<StockListElement[]>([]);
   const [currentEditIndex, setCurrentEditIndex] = useState(-1);
 
   useEffect(() => {
-    fetchTransactions(setExistingTransactions);
+    // fetchTransactions(setExistingTransactions);
     fetchTransactions(setModifiedTransactions);
     fetchStockData("korean_stocks", setKoreanStocks);
     fetchStockData("american_stocks", setAmericanStocks);

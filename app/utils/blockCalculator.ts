@@ -27,21 +27,21 @@ type PreviousNodeInfo = {
 type PreviousNodePositions = { [symbol: string]: PreviousNodeInfo };
 
 
-async function calculateMaxAssetValue(history: AssetHistory): Promise<number> {
-    let maxValue = history.state.cash;
-    if (history.previousState) {
-        maxValue = Math.max(maxValue, history.previousState.cash);
-        for (const [symbol, quantity] of Object.entries(history.previousState.holdings)) {
-            const price = await getCurrentPrice(symbol);
-            maxValue = Math.max(maxValue, price * quantity);
-        }
-    }
-    for (const [symbol, quantity] of Object.entries(history.state.holdings)) {
-        const price = await getCurrentPrice(symbol);
-        maxValue = Math.max(maxValue, price * quantity);
-    }
-    return maxValue;
-}
+// async function calculateMaxAssetValue(history: AssetHistory): Promise<number> {
+//     let maxValue = history.state.cash;
+//     if (history.previousState) {
+//         maxValue = Math.max(maxValue, history.previousState.cash);
+//         for (const [symbol, quantity] of Object.entries(history.previousState.holdings)) {
+//             const price = await getCurrentPrice(symbol);
+//             maxValue = Math.max(maxValue, price * quantity);
+//         }
+//     }
+//     for (const [symbol, quantity] of Object.entries(history.state.holdings)) {
+//         const price = await getCurrentPrice(symbol);
+//         maxValue = Math.max(maxValue, price * quantity);
+//     }
+//     return maxValue;
+// }
 
 async function createSellNodes(
     nodes: Node[],
