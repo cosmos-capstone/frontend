@@ -8,6 +8,7 @@ import PieChart, { PieChartData } from '../components/PieChart';
 import BarChart, { SharpeRatioData } from '../components/BarChart';
 import ImageWithBackground from '../components/ImageWithBackground';
 import correlationData from '../data/correlationData .json';
+import sectorData from '../data/sectorData.json';
 
 interface PortfolioData {
   [key: string]: string;
@@ -35,9 +36,9 @@ const sectorTranslations = {
   "Financial Services": "금융 서비스",
   "Real Estate": "부동산",
   "Healthcare": "헬스케어",
-  "Consumer Defensive": "소비재(방어적)",
+  "Consumer Defensive": "필수 소비재",
   "Technology": "기술",
-  "Consumer Cyclical": "소비재(순환적)"
+  "Consumer Cyclical": "선택 소비재"
 };
 
 const Portfolio = () => {
@@ -49,7 +50,6 @@ const Portfolio = () => {
   const [recommendedSectors, setRecommendedSectors] = useState<string[]>([]);
   const [sectorDistribution, setSectorDistribution] = useState<{ [sector: string]: number }>({});
 
-  const treshold = 30;
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -143,7 +143,7 @@ const Portfolio = () => {
         .filter(([sector]) => !overInvestedSectors.includes(sector))
         .sort(([, a], [, b]) => Math.min(...Object.values(a)) - Math.min(...Object.values(b)))
         .slice(0, 3)
-        .map(([sector]) => sectorTranslations[sector] || sector);
+        .map(([sector]) => sector);
   
       setRecommendedSectors(recommendations);
     } else {
@@ -183,7 +183,7 @@ const Portfolio = () => {
       </div>
 
       <div className='items-center justify-centera\'>
-        <div className="p-8 flex bg-white ml-40" style={{ height: '500px', width: '700px' }}>
+        <div className="p-8 flex bg-white ml-10" style={{ height: '500px', width: '700px' }}>
           {sharpeData ? <BarChart data={sharpeData} /> : <div>Loading Sharpe Ratios...</div>}
 
           <div className='item-start' style={{ width: '500px' }}>
@@ -201,7 +201,7 @@ const Portfolio = () => {
         </div>
       </div>
 
-      <div className="p-8 flex ml-80 items-center bg-white mt-10">
+      <div className="p-8 flex ml-40 items-center bg-white mt-10">
         <div className='mr-20'>
           <p className="text-xl font-bold mb-4 ">기존 <span style={{ color: '#3B82F6' }}>김코스</span>님의 자산은</p>
           <p className="text-lg font-medium mb-4">
@@ -212,7 +212,7 @@ const Portfolio = () => {
               </span>
             ))}에 가장 많이 분포되어 있어요.
           </p>
-            <h2 className="text-center font-bold text-xl ml-60 mt-30">그 중에서도 다음 섹터에 주로 투자하셨어요</h2>
+            <h2 className="text-center font-bold text-xl ml-80 mt-20">그 중에서도 다음 업종에 주로 투자하셨어요</h2>
         </div>
 
       </div>
@@ -247,12 +247,12 @@ const Portfolio = () => {
           )}
         </div>
       
-        <div className="bg-gray-100 rounded-2xl shadow-lg p-8 w-96 text-center ml-60 mb-20">
-          <p className="text-xl font-bold mb-02 text-blue-500">TOP3 섹터 분포</p>
+        <div className="bg-gray-100 rounded-2xl shadow-lg p-8 w-96 text-center ml-60">
+          <p className="text-xl font-bold mb-6 text-blue-500">TOP3 업종 분포</p>
           {Object.entries(sectorDistribution)
             .sort(([, rateA], [, rateB]) => rateB - rateA) // 비율 기준으로 내림차순 정렬
             .slice(0, 3) // 상위 3개 섹터 선택
-            .map(([sector, rate], index) => (
+            .map(([sector, rate]) => (
               <div key={sector} className="mb-4">
                 <p className="text-lg font-semibold mb-1">
                   {sectorTranslations[sector] || sector}: {rate.toFixed(2)}%
@@ -272,13 +272,67 @@ const Portfolio = () => {
 
 
 
-      <div className="p-8 rounded-lg mt-10">
-  <h2 className="text-center font-bold text-xl mb-10">추천 섹터</h2>
+      <div className="p-8 rounded-lg">
+  {Object.entries(sectorDistribution)
+    .sort(([, rateA], [, rateB]) => rateB - rateA) // 비율 기준 내림차순 정렬
+    .slice(0, 1) // 비중이 가장 높은 섹터 1개 선택
+    .map(([sector]) => (
+      <div key={sector} className="mb-4">
+        <p className="text-lg font-semibold mb-1 flex justify-center">
+          <span className="text-blue-600 mr-1">
+            {sectorTranslations[sector] || sector}
+          </span>
+          업종의 비중이 높습니다. 더 다양한 업종을 추천드릴게요.
+        </p>
+      </div>
+    ))}
+
   {recommendedSectors.length > 0 ? (
     <ul>
       {recommendedSectors.map((sector, index) => (
-        <li key={index} className="text-lg font-semibold text-blue-600">
-          {sector}
+        <li key={index} className="text-lg font-semibold ml-40 mb-8">
+          <div className="flex items-center">
+            <ImageWithBackground
+              src={sector && sector !== "none" ? `/images/${sector}.png` : `/images/Other.png`}
+              alt={`${sectorTranslations[sector] || sector} Sector`}
+            />
+            <h3 className="text-blue-600 font-bold ml-4">
+              {sectorTranslations[sector] || sector} 섹터
+            </h3>
+          </div>
+
+          {/* 섹터에 포함된 주식 정보 */}
+          {sectorData[sector] ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              {/* 최고 시가총액 종목 */}
+              <div className="bg-gray-100 p-4 rounded-lg shadow">
+                <h4 className="text-md font-bold mb-2">최고 시가총액 종목</h4>
+                <p className="text-gray-700 font-semibold">
+                  {sectorData[sector].highestMarketCap.name} (
+                  {sectorData[sector].highestMarketCap.symbol})
+                </p>
+                <p className="text-gray-500">
+                  시가총액: {sectorData[sector].highestMarketCap.marketCap.toLocaleString()} USD
+                </p>
+              </div>
+
+              {/* 최고 1년 수익률 종목 */}
+              <div className="bg-gray-100 p-4 rounded-lg shadow">
+                <h4 className="text-md font-bold mb-2">최고 1년 수익률 종목</h4>
+                <p className="text-gray-700 font-semibold">
+                  {sectorData[sector].highest1YearReturn.name} (
+                  {sectorData[sector].highest1YearReturn.symbol})
+                </p>
+                <p className="text-gray-500">
+                  1년 수익률: {(sectorData[sector].highest1YearReturn.return * 100).toFixed(2)}%
+                </p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-gray-500 mt-4">
+              {sectorTranslations[sector]} 섹터의 데이터가 아직 준비되지 않았습니다.
+            </p>
+          )}
         </li>
       ))}
     </ul>
