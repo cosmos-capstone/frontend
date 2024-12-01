@@ -277,7 +277,8 @@ export async function createBlock(
     const previousNodePositions: PreviousNodePositions = {};
     if (previousBlock) {
         previousBlock.afterNodes.forEach(node => {
-            previousNodePositions[node.asset_symbol] = node.position.y_position;
+            // previousNodePositions[node.asset_symbol] = node.position.y_position;
+            previousNodePositions[node.asset_symbol] = node.amount;
         });
         console.log(`Block ${index} - Previous Node Positions:`, previousNodePositions);
     }
