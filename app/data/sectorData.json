@@ -1,0 +1,134 @@
+{
+  "Communication Services": {
+    "highestMarketCap": {
+      "symbol": "GOOGL",
+      "name": "Alphabet Inc.",
+      "marketCap": 1400000000000
+    },
+    "highest1YearReturn": {
+      "symbol": "META",
+      "name": "Meta Platforms, Inc.",
+      "return": 0.38
+    }
+  },
+  "Utilities": {
+    "highestMarketCap": {
+      "symbol": "NEE",
+      "name": "NextEra Energy, Inc.",
+      "marketCap": 160000000000
+    },
+    "highest1YearReturn": {
+      "symbol": "DUK",
+      "name": "Duke Energy Corporation",
+      "return": 0.15
+    }
+  },
+  "Basic Materials": {
+    "highestMarketCap": {
+      "symbol": "BHP",
+      "name": "BHP Group Limited",
+      "marketCap": 200000000000
+    },
+    "highest1YearReturn": {
+      "symbol": "RIO",
+      "name": "Rio Tinto Group",
+      "return": 0.25
+    }
+  },
+  "Industrials": {
+    "highestMarketCap": {
+      "symbol": "HON",
+      "name": "Honeywell International Inc.",
+      "marketCap": 150000000000
+    },
+    "highest1YearReturn": {
+      "symbol": "CAT",
+      "name": "Caterpillar Inc.",
+      "return": 0.30
+    }
+  },
+  "Energy": {
+    "highestMarketCap": {
+      "symbol": "XOM",
+      "name": "Exxon Mobil Corporation",
+      "marketCap": 400000000000
+    },
+    "highest1YearReturn": {
+      "symbol": "CVX",
+      "name": "Chevron Corporation",
+      "return": 0.22
+    }
+  },
+  "Financial Services": {
+    "highestMarketCap": {
+      "symbol": "JPM",
+      "name": "JPMorgan Chase & Co.",
+      "marketCap": 420000000000
+    },
+    "highest1YearReturn": {
+      "symbol": "MS",
+      "name": "Morgan Stanley",
+      "return": 0.33
+    }
+  },
+  "Real Estate": {
+    "highestMarketCap": {
+      "symbol": "PLD",
+      "name": "Prologis, Inc.",
+      "marketCap": 110000000000
+    },
+    "highest1YearReturn": {
+      "symbol": "AMT",
+      "name": "American Tower Corporation",
+      "return": 0.18
+    }
+  },
+  "Healthcare": {
+    "highestMarketCap": {
+      "symbol": "JNJ",
+      "name": "Johnson & Johnson",
+      "marketCap": 450000000000
+    },
+    "highest1YearReturn": {
+      "symbol": "PFE",
+      "name": "Pfizer Inc.",
+      "return": 0.28
+    }
+  },
+  "Consumer Defensive": {
+    "highestMarketCap": {
+      "symbol": "PG",
+      "name": "Procter & Gamble Co.",
+      "marketCap": 360000000000
+    },
+    "highest1YearReturn": {
+      "symbol": "KO",
+      "name": "The Coca-Cola Company",
+      "return": 0.14
+    }
+  },
+  "Technology": {
+    "highestMarketCap": {
+      "symbol": "AAPL",
+      "name": "Apple Inc.",
+      "marketCap": 2740000000000
+    },
+    "highest1YearReturn": {
+      "symbol": "NVDA",
+      "name": "NVIDIA Corporation",
+      "return": 0.45
+    }
+  },
+  "Consumer Cyclical": {
+    "highestMarketCap": {
+      "symbol": "AMZN",
+      "name": "Amazon.com, Inc.",
+      "marketCap": 1350000000000
+    },
+    "highest1YearReturn": {
+      "symbol": "TSLA",
+      "name": "Tesla, Inc.",
+      "return": 0.50
+    }
+  }
+}
