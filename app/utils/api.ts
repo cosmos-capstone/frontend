@@ -2,7 +2,7 @@ import { TransactionResponseItem } from '../types/transactionResponseItem';
 import { Transaction } from '../types/transaction';
 import { StockListElement } from '../types/stockListElement';
 
-import {StockPrice,StockData} from '@/app/types/typePriceAPI'
+import { StockData } from '@/app/types/typePriceAPI'
 
 interface StockDataItem {
   name: string;
