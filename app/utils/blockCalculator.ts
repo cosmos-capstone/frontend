@@ -4,7 +4,7 @@ import { calculateNodeSize } from './nodeCalculator';
 import { getCurrentPrice } from './priceAPI';
 import { BLOCK_CONFIG, nodeBaseWidth } from '../constants/globalConfig';
 import { Transaction } from '../types/transaction';
-import { blockWidthCalculate, MIN_BLOCK_WIDTH, calculateTimeDifference, calculateBlockWidth } from '@/app/utils/calculateBlockWidth';
+import { blockWidthCalculate, MIN_BLOCK_WIDTH } from '@/app/utils/calculateBlockWidth';
 
 interface CreateNormalNodeParams {
     nodes: Node[];
@@ -232,15 +232,17 @@ async function createBeforeNodes(
 
         } else {
             await createNormalNode(
-                { nodes: nodes, 
-                    currentY: symbolY, 
-                    index: index, 
-                    symbol: symbol, 
-                    quantity: quantity, 
-                    maxAssetValue: maxAssetValue, 
-                    date: history.date, 
-                    state: 'before', 
-                    nodeHeight: previousNodePositions?.['DEPOSIT']?.height || 9999999, }
+                {
+                    nodes: nodes,
+                    currentY: symbolY,
+                    index: index,
+                    symbol: symbol,
+                    quantity: quantity,
+                    maxAssetValue: maxAssetValue,
+                    date: history.date,
+                    state: 'before',
+                    nodeHeight: previousNodePositions?.['DEPOSIT']?.height || 9999999,
+                }
             );
             currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
         }
