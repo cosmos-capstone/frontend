@@ -415,9 +415,12 @@ export const TRANSACTION_DATA: Transaction[] = [
     "quantity": 5,
     "transaction_amount": "456780.00"
   }
-].map(transaction => ({
+].map((transaction): Transaction => ({
   ...transaction,
-  transaction_date: new Date(transaction.transaction_date)
+  transaction_date: new Date(transaction.transaction_date),
+  transaction_type: transaction.transaction_type as 'deposit' | 'withdrawal' | 'buy' | 'sell',
+  asset_category: transaction.asset_category as "korean_stock" | "american_stock" | "korean_bond" | "american_bond" | "fund" | "commodity" | "gold" | "deposit" | "savings" | "cash",
+  transaction_amount: parseFloat(transaction.transaction_amount)
 }));
 // 데이터 조회를 위한 유틸리티 함수들
 export const getTransactionById = (id: number): Transaction | undefined => {
@@ -443,19 +446,19 @@ export const getTransactionsByDateRange = (startDate: Date, endDate: Date): Tran
 export const getTotalDeposits = (): number => {
   return TRANSACTION_DATA
     .filter(t => t.transaction_type === 'deposit')
-    .reduce((sum, t) => sum + parseFloat(t.transaction_amount), 0);
+    .reduce((sum, t) => sum + t.transaction_amount, 0);
 };
 
 export const getTotalInvestment = (): number => {
   return TRANSACTION_DATA
     .filter(t => t.transaction_type === 'buy')
-    .reduce((sum, t) => sum + parseFloat(t.transaction_amount), 0);
+    .reduce((sum, t) => sum + t.transaction_amount, 0);
 };
 
 export const getTotalSales = (): number => {
   return TRANSACTION_DATA
     .filter(t => t.transaction_type === 'sell')
-    .reduce((sum, t) => sum + parseFloat(t.transaction_amount), 0);
+    .reduce((sum, t) => sum + t.transaction_amount, 0);
 };
 
 // 거래 통계 함수
@@ -503,11 +506,11 @@ export const getAssetTransactionSummary = () => {
       if (t.transaction_type === 'buy') {
         summary[t.asset_symbol].buys++;
         summary[t.asset_symbol].totalQuantity += t.quantity;
-        summary[t.asset_symbol].totalInvested += parseFloat(t.transaction_amount);
+        summary[t.asset_symbol].totalInvested += t.transaction_amount;
       } else if (t.transaction_type === 'sell') {
         summary[t.asset_symbol].sells++;
         summary[t.asset_symbol].totalQuantity -= t.quantity;
-        summary[t.asset_symbol].totalSold += parseFloat(t.transaction_amount);
+        summary[t.asset_symbol].totalSold += t.transaction_amount;
       }
     }
   });
