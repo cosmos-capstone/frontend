@@ -48,3 +48,4 @@ export interface AssetHistory {
   state: AssetState;
   previousState?: AssetState;
 }
+

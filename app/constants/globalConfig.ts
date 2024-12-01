@@ -7,5 +7,5 @@ export const BLOCK_CONFIG = {
   gap: 0,
   minHeight: 500,
   leftMargin: 0,
-  rightMargin: 90, // 400 - 170
+  rightMargin: 90, // 100 -10 
   } as const;

@@ -12,7 +12,7 @@ export const Block = ({ block, children }: BlockProps) => {
                 strokeWidth="1"
             />
             <text 
-                x={block.position.width / 2} 
+                x={block.position.width} 
                 y={25} 
                 textAnchor="middle" 
                 fontSize="14" 
@@ -21,9 +21,9 @@ export const Block = ({ block, children }: BlockProps) => {
                 {new Date(block.date).toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })}
             </text>
             <line
-                x1={block.position.width / 2}
+                x1={block.position.width }
                 y1={40}
-                x2={block.position.width / 2}
+                x2={block.position.width }
                 y2={block.position.height}
                 stroke="#ddd"
                 strokeDasharray="4"
