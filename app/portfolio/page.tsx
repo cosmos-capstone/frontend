@@ -286,6 +286,8 @@ const Portfolio = () => {
         </p>
       </div>
     ))}
+    <p className='text-right mr-40'>{sectorData.lastUpdated} 기준 업데이트</p>
+
 {recommendedSectors.length > 0 ? (
   <ul>
     {recommendedSectors.map((sector, index) => (
