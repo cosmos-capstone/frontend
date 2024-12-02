@@ -286,61 +286,69 @@ const Portfolio = () => {
         </p>
       </div>
     ))}
+{recommendedSectors.length > 0 ? (
+  <ul>
+    {recommendedSectors.map((sector, index) => (
+      <li key={index} className="text-lg font-semibold ml-10 mb-8">
+        <div className="flex items-center">
+          <ImageWithBackground
+            src={sector && sector !== "none" ? `/images/${sector}.png` : `/images/Other.png`}
+            alt={`${sectorTranslations[sector] || sector} Sector`}
+          />
+          <h3 className="text-blue-600 font-bold ml-4">
+            {sectorTranslations[sector] || sector} 섹터
+          </h3>
+        </div>
 
-  {recommendedSectors.length > 0 ? (
-    <ul>
-      {recommendedSectors.map((sector, index) => (
-        <li key={index} className="text-lg font-semibold ml-40 mb-8">
-          <div className="flex items-center">
-            <ImageWithBackground
-              src={sector && sector !== "none" ? `/images/${sector}.png` : `/images/Other.png`}
-              alt={`${sectorTranslations[sector] || sector} Sector`}
-            />
-            <h3 className="text-blue-600 font-bold ml-4">
-              {sectorTranslations[sector] || sector} 섹터
-            </h3>
-          </div>
-
-          {/* 섹터에 포함된 주식 정보 */}
-          {sectorData[sector] ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              {/* 최고 시가총액 종목 */}
-              <div className="bg-gray-100 p-4 rounded-lg shadow">
-                <h4 className="text-md font-bold mb-2">최고 시가총액 종목</h4>
-                <p className="text-gray-700 font-semibold">
-                  {sectorData[sector].highestMarketCap.name} (
-                  {sectorData[sector].highestMarketCap.symbol})
-                </p>
-                <p className="text-gray-500">
-                  시가총액: {sectorData[sector].highestMarketCap.marketCap.toLocaleString()} USD
-                </p>
-              </div>
-
-              {/* 최고 1년 수익률 종목 */}
-              <div className="bg-gray-100 p-4 rounded-lg shadow">
-                <h4 className="text-md font-bold mb-2">최고 1년 수익률 종목</h4>
-                <p className="text-gray-700 font-semibold">
-                  {sectorData[sector].highest1YearReturn.name} (
-                  {sectorData[sector].highest1YearReturn.symbol})
-                </p>
-                <p className="text-gray-500">
-                  1년 수익률: {(sectorData[sector].highest1YearReturn.return * 100).toFixed(2)}%
-                </p>
-              </div>
+        {/* 섹터에 포함된 주식 정보 */}
+        {sectorData[sector] ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            {/* 최고 시가총액 종목 */}
+            <div className="bg-gray-100 p-4 rounded-lg shadow mr-20">
+              <h4 className="text-md font-bold mb-2">시가총액 상위 종목</h4>
+              <ul className="list-disc list-inside">
+                {sectorData[sector].topMarketCap.map((stock, idx) => (
+                  <li key={idx} className="mb-2">
+                    <span>{idx+1}위</span>
+                    <p className="text-gray-700 font-semibold">{stock.name}</p>
+                    <p className="text-gray-500">
+                      시가총액: {stock.marketCap.toLocaleString()} USD
+                    </p>
+                  </li>
+                ))}
+              </ul>
             </div>
-          ) : (
-            <p className="text-gray-500 mt-4">
-              {sectorTranslations[sector]} 섹터의 데이터가 아직 준비되지 않았습니다.
-            </p>
-          )}
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p className="text-center text-green-600 font-semibold">
-      현재 포트폴리오는 안정적입니다!
-    </p>
-  )}
+
+            {/* 최고 1년 수익률 종목 */}
+            <div className="bg-gray-100 p-4 rounded-lg shadow mr-10">
+              <h4 className="text-md font-bold mb-2">1년 수익률 상위 종목</h4>
+              <ul className="list-disc list-inside">
+                {sectorData[sector].topYTDReturn.map((stock, idx) => (
+                  <li key={idx} className="mb-2">
+                    <span>{idx+1}위</span>
+                    <p className="text-gray-700 font-semibold">{stock.name}</p>
+                    <p className="text-gray-500">
+                      1년 수익률: {(stock.YTD_return * 100).toFixed(2)}%
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ) : (
+          <p className="text-gray-500 mt-4">
+            {sectorTranslations[sector]} 섹터의 데이터가 아직 준비되지 않았습니다.
+          </p>
+        )}
+      </li>
+    ))}
+  </ul>
+) : (
+  <p className="text-center text-green-600 font-semibold">
+    현재 포트폴리오는 안정적입니다!
+  </p>
+)}
+
 </div>
 
 

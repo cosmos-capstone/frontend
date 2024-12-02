@@ -1,134 +1,332 @@
 {
   "Communication Services": {
-    "highestMarketCap": {
-      "symbol": "GOOGL",
-      "name": "Alphabet Inc.",
-      "marketCap": 1400000000000
-    },
-    "highest1YearReturn": {
-      "symbol": "META",
-      "name": "Meta Platforms, Inc.",
-      "return": 0.38
-    }
+      "topMarketCap": [
+          {
+              "name": "Alphabet Inc.",
+              "marketCap": "2.08T"
+          },
+          {
+              "name": "Meta Platforms, Inc.",
+              "marketCap": "1.437T"
+          },
+          {
+              "name": "Netflix, Inc.",
+              "marketCap": "379.074B"
+          }
+      ],
+      "topYTDReturn": [
+          {
+              "name": "Spotify Technology S.A.",
+              "YTD_return": 1.5382
+          },
+          {
+              "name": "DoorDash, Inc.",
+              "YTD_return": 0.8251000000000001
+          },
+          {
+              "name": "Netflix, Inc.",
+              "YTD_return": 0.8214
+          }
+      ]
   },
   "Utilities": {
-    "highestMarketCap": {
-      "symbol": "NEE",
-      "name": "NextEra Energy, Inc.",
-      "marketCap": 160000000000
-    },
-    "highest1YearReturn": {
-      "symbol": "DUK",
-      "name": "Duke Energy Corporation",
-      "return": 0.15
-    }
+      "topMarketCap": [
+          {
+              "name": "NextEra Energy, Inc.",
+              "marketCap": "161.777B"
+          },
+          {
+              "name": "The Southern Company",
+              "marketCap": "98.326B"
+          },
+          {
+              "name": "GE Vernova Inc.",
+              "marketCap": "92.435B"
+          }
+      ],
+      "topYTDReturn": [
+          {
+              "name": "Vistra Corp.",
+              "YTD_return": 3.1494999999999997
+          },
+          {
+              "name": "Constellation Energy Corporation",
+              "YTD_return": 1.1948999999999999
+          },
+          {
+              "name": "NextEra Energy, Inc.",
+              "YTD_return": 0.2952
+          }
+      ]
   },
   "Basic Materials": {
-    "highestMarketCap": {
-      "symbol": "BHP",
-      "name": "BHP Group Limited",
-      "marketCap": 200000000000
-    },
-    "highest1YearReturn": {
-      "symbol": "RIO",
-      "name": "Rio Tinto Group",
-      "return": 0.25
-    }
+      "topMarketCap": [
+          {
+              "name": "Linde plc",
+              "marketCap": "219.504B"
+          },
+          {
+              "name": "The Sherwin-Williams Company",
+              "marketCap": "100.086B"
+          },
+          {
+              "name": "Southern Copper Corporation",
+              "marketCap": "79.318B"
+          }
+      ],
+      "topYTDReturn": [
+          {
+              "name": "CRH plc",
+              "YTD_return": 0.47869999999999996
+          },
+          {
+              "name": "Corteva, Inc.",
+              "YTD_return": 0.2988
+          },
+          {
+              "name": "The Sherwin-Williams Company",
+              "YTD_return": 0.2741
+          }
+      ]
   },
   "Industrials": {
-    "highestMarketCap": {
-      "symbol": "HON",
-      "name": "Honeywell International Inc.",
-      "marketCap": 150000000000
-    },
-    "highest1YearReturn": {
-      "symbol": "CAT",
-      "name": "Caterpillar Inc.",
-      "return": 0.30
-    }
+      "topMarketCap": [
+          {
+              "name": "GE Aerospace",
+              "marketCap": "197.15B"
+          },
+          {
+              "name": "Caterpillar Inc.",
+              "marketCap": "196.071B"
+          },
+          {
+              "name": "RTX Corporation",
+              "marketCap": "162.158B"
+          }
+      ],
+      "topYTDReturn": [
+          {
+              "name": "GE Aerospace",
+              "YTD_return": 0.7883
+          },
+          {
+              "name": "Eaton Corporation plc",
+              "YTD_return": 0.5589
+          },
+          {
+              "name": "RTX Corporation",
+              "YTD_return": 0.44789999999999996
+          }
+      ]
   },
   "Energy": {
-    "highestMarketCap": {
-      "symbol": "XOM",
-      "name": "Exxon Mobil Corporation",
-      "marketCap": 400000000000
-    },
-    "highest1YearReturn": {
-      "symbol": "CVX",
-      "name": "Chevron Corporation",
-      "return": 0.22
-    }
+      "topMarketCap": [
+          {
+              "name": "Texas Gulf Energy, Incorporated",
+              "marketCap": "3.142T"
+          },
+          {
+              "name": "Exxon Mobil Corporation",
+              "marketCap": "518.445B"
+          },
+          {
+              "name": "Chevron Corporation",
+              "marketCap": "289.03B"
+          }
+      ],
+      "topYTDReturn": [
+          {
+              "name": "The Williams Companies, Inc.",
+              "YTD_return": 0.6801999999999999
+          },
+          {
+              "name": "ONEOK, Inc.",
+              "YTD_return": 0.6178
+          },
+          {
+              "name": "Kinder Morgan, Inc.",
+              "YTD_return": 0.6026
+          }
+      ]
   },
   "Financial Services": {
-    "highestMarketCap": {
-      "symbol": "JPM",
-      "name": "JPMorgan Chase & Co.",
-      "marketCap": 420000000000
-    },
-    "highest1YearReturn": {
-      "symbol": "MS",
-      "name": "Morgan Stanley",
-      "return": 0.33
-    }
+      "topMarketCap": [
+          {
+              "name": "Berkshire Hathaway Inc.",
+              "marketCap": "1.041T"
+          },
+          {
+              "name": "JPMorgan Chase & Co.",
+              "marketCap": "839.167B"
+          },
+          {
+              "name": "Visa Inc.",
+              "marketCap": "608.999B"
+          }
+      ],
+      "topYTDReturn": [
+          {
+              "name": "American Express Company",
+              "YTD_return": 0.6263000000000001
+          },
+          {
+              "name": "The Goldman Sachs Group, Inc.",
+              "YTD_return": 0.5775
+          },
+          {
+              "name": "Wells Fargo & Company",
+              "YTD_return": 0.5475
+          }
+      ]
   },
   "Real Estate": {
-    "highestMarketCap": {
-      "symbol": "PLD",
-      "name": "Prologis, Inc.",
-      "marketCap": 110000000000
-    },
-    "highest1YearReturn": {
-      "symbol": "AMT",
-      "name": "American Tower Corporation",
-      "return": 0.18
-    }
+      "topMarketCap": [
+          {
+              "name": "Prologis, Inc.",
+              "marketCap": "108.159B"
+          },
+          {
+              "name": "American Tower Corporation",
+              "marketCap": "97.804B"
+          },
+          {
+              "name": "Equinix, Inc.",
+              "marketCap": "94.701B"
+          }
+      ],
+      "topYTDReturn": [
+          {
+              "name": "Welltower Inc.",
+              "YTD_return": 0.5324
+          },
+          {
+              "name": "CBRE Group, Inc.",
+              "YTD_return": 0.5038
+          },
+          {
+              "name": "Digital Realty Trust, Inc.",
+              "YTD_return": 0.45409999999999995
+          }
+      ]
   },
   "Healthcare": {
-    "highestMarketCap": {
-      "symbol": "JNJ",
-      "name": "Johnson & Johnson",
-      "marketCap": 450000000000
-    },
-    "highest1YearReturn": {
-      "symbol": "PFE",
-      "name": "Pfizer Inc.",
-      "return": 0.28
-    }
+      "topMarketCap": [
+          {
+              "name": "Eli Lilly and Company",
+              "marketCap": "715.271B"
+          },
+          {
+              "name": "UnitedHealth Group Incorporated",
+              "marketCap": "561.557B"
+          },
+          {
+              "name": "Johnson & Johnson",
+              "marketCap": "374.145B"
+          }
+      ],
+      "topYTDReturn": [
+          {
+              "name": "Intuitive Surgical, Inc.",
+              "YTD_return": 0.6065999999999999
+          },
+          {
+              "name": "Eli Lilly and Company",
+              "YTD_return": 0.3644
+          },
+          {
+              "name": "AbbVie Inc.",
+              "YTD_return": 0.1804
+          }
+      ]
   },
   "Consumer Defensive": {
-    "highestMarketCap": {
-      "symbol": "PG",
-      "name": "Procter & Gamble Co.",
-      "marketCap": 360000000000
-    },
-    "highest1YearReturn": {
-      "symbol": "KO",
-      "name": "The Coca-Cola Company",
-      "return": 0.14
-    }
+      "topMarketCap": [
+          {
+              "name": "Walmart Inc.",
+              "marketCap": "743.538B"
+          },
+          {
+              "name": "Costco Wholesale Corporation",
+              "marketCap": "430.615B"
+          },
+          {
+              "name": "The Procter & Gamble Company",
+              "marketCap": "422.401B"
+          }
+      ],
+      "topYTDReturn": [
+          {
+              "name": "Walmart Inc.",
+              "YTD_return": 0.7602
+          },
+          {
+              "name": "Costco Wholesale Corporation",
+              "YTD_return": 0.47240000000000004
+          },
+          {
+              "name": "Altria Group, Inc.",
+              "YTD_return": 0.4313
+          }
+      ]
   },
   "Technology": {
-    "highestMarketCap": {
-      "symbol": "AAPL",
-      "name": "Apple Inc.",
-      "marketCap": 2740000000000
-    },
-    "highest1YearReturn": {
-      "symbol": "NVDA",
-      "name": "NVIDIA Corporation",
-      "return": 0.45
-    }
+      "topMarketCap": [
+          {
+              "name": "Apple Inc.",
+              "marketCap": "3.587T"
+          },
+          {
+              "name": "NVIDIA Corporation",
+              "marketCap": "3.386T"
+          },
+          {
+              "name": "Microsoft Corporation",
+              "marketCap": "3.148T"
+          }
+      ],
+      "topYTDReturn": [
+          {
+              "name": "NVIDIA Corporation",
+              "YTD_return": 1.7916999999999998
+          },
+          {
+              "name": "Oracle Corporation",
+              "YTD_return": 0.7532
+          },
+          {
+              "name": "Broadcom Inc.",
+              "YTD_return": 0.452
+          }
+      ]
   },
   "Consumer Cyclical": {
-    "highestMarketCap": {
-      "symbol": "AMZN",
-      "name": "Amazon.com, Inc.",
-      "marketCap": 1350000000000
-    },
-    "highest1YearReturn": {
-      "symbol": "TSLA",
-      "name": "Tesla, Inc.",
-      "return": 0.50
-    }
+      "topMarketCap": [
+          {
+              "name": "Amazon.com, Inc.",
+              "marketCap": "2.186T"
+          },
+          {
+              "name": "Tesla, Inc.",
+              "marketCap": "1.108T"
+          },
+          {
+              "name": "The Home Depot, Inc.",
+              "marketCap": "426.282B"
+          }
+      ],
+      "topYTDReturn": [
+          {
+              "name": "Booking Holdings Inc.",
+              "YTD_return": 0.46649999999999997
+          },
+          {
+              "name": "Tesla, Inc.",
+              "YTD_return": 0.38909999999999995
+          },
+          {
+              "name": "Amazon.com, Inc.",
+              "YTD_return": 0.3682
+          }
+      ]
   }
 }
