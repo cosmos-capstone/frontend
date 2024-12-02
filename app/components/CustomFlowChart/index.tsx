@@ -7,13 +7,14 @@ import { createBlock } from '../../utils/blockCalculator';
 import { Block } from './Block';
 import { Node } from './Node';
 import { Edge } from './Edge';
-import { HoverInfo } from './HoverInfo';  
+import { HoverInfo } from './HoverInfo';
 import { CustomFlowChartProps } from './types';
 
 export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
     const [blocks, setBlocks] = useState<BlockType[]>([]);
     const [edges, setEdges] = useState<EdgeType[]>([]);
     const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
+    
 
     useEffect(() => {
         const initializeBlocks = async () => {
@@ -167,7 +168,7 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
             maxHeight: '80vh', // 뷰포트 높이의 80%로 제한 (선택적)
         }}>
             <svg
-                width={Math.max(1000, blocks.length * 420)}
+                width={Math.max(1500, blocks.length * 500)}
                 height={400}
                 className="flow-chart"
             >
@@ -198,21 +199,21 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
 
                 {blocks.map((block, index) => (
                     <Block key={`${block.date.toISOString()}-${index}`} block={block}>
-                    {block.beforeNodes.map(node => (
-                        <Node 
-                            key={node.id} 
-                            node={node} 
-                            onHover={setHoveredNode}
-                        />
-                    ))}
-                    {block.afterNodes.map(node => (
-                        <Node 
-                            key={node.id} 
-                            node={node} 
-                            onHover={setHoveredNode}
-                        />
-                    ))}
-                </Block>
+                        {block.beforeNodes.map(node => (
+                            <Node
+                                key={node.id}
+                                node={node}
+                                onHover={setHoveredNode}
+                            />
+                        ))}
+                        {block.afterNodes.map(node => (
+                            <Node
+                                key={node.id}
+                                node={node}
+                                onHover={setHoveredNode}
+                            />
+                        ))}
+                    </Block>
                 ))}
 
                 {edges.map(edge => (

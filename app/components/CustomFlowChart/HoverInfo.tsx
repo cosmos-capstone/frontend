@@ -5,11 +5,17 @@ export const HoverInfo = ({ node }) => {
     const backgroundColor = ASSET_COLORS[node.asset_symbol] || '#ffffff';
     const detailLabel = `${node.asset_symbol}\n${node.amount}주\n₩${node.value?.toLocaleString() ?? '0'}\n${node.date.toLocaleDateString()}`;
 
+    // 호버 정보 박스의 위치 계산
+    const boxWidth = 150;
+    const boxHeight = 80;
+    const xPosition = node.position.x_position + node.size.width + 10;
+    const yPosition = node.position.y_position - boxHeight / 2 + node.size.height / 2;
+
     return (
-        <g transform={`translate(${node.position.x_position + node.size.width + 10}, ${node.position.y_position - 10})`}>
+        <g transform={`translate(${xPosition}, ${yPosition})`}>
             <rect
-                width={150}
-                height={80}
+                width={boxWidth}
+                height={boxHeight}
                 fill={backgroundColor}
                 stroke="#1a192b"
                 strokeWidth="1"
@@ -23,7 +29,7 @@ export const HoverInfo = ({ node }) => {
             {detailLabel.split('\n').map((line, i) => (
                 <text
                     key={i}
-                    x={75}
+                    x={boxWidth / 2}
                     y={20 + i * 20}
                     textAnchor="middle"
                     fontSize="12"
