@@ -1,5 +1,3 @@
-import { Block } from '../types/types';
-
 export const MIN_BLOCK_WIDTH = 50; // 최소 블록 너비
 export const MAX_BLOCK_WIDTH = 200; // 최대 블록 너비
 export const BASE_TIME_DIFFERENCE = 1; // 기본 시간 차이 (1일)
@@ -8,7 +6,7 @@ export const MAX_TIME_DIFFERENCE = 30; // 최대 고려할 시간 차이 (30일)
 export function calculateBlockWidth(normalizedTimeDifference: number): number {
     // 정규화된 시간 차이를 0-1 사이의 값으로 변환
     const scale = Math.min(1, normalizedTimeDifference / MAX_TIME_DIFFERENCE);
-    
+
     // 로그 스케일을 사용하여 너비 계산
     return MIN_BLOCK_WIDTH + (MAX_BLOCK_WIDTH - MIN_BLOCK_WIDTH) * Math.log1p(scale * 10) / Math.log1p(10);
 }
