@@ -18,12 +18,26 @@ export const calculateNodeSize = async (
         const price = await getStockPrice(node.asset_symbol, node.date);
         
         if (price === null) {
-            // 가격 정보를 가져오지 못한 경우 기본값 사용 또는 오류 처리
             console.error(`dddFailed to get price for ${node.asset_symbol} on ${node.date}`);
-            assetValue = 0; // 또는 다른 적절한 기본값
+            assetValue = 0;
+            console.log(`dddAsset value set to 0 due to null price for ${node.asset_symbol}`);
         } else {
-            console.log(`dddSetting ${price} on ${node.asset_symbol}`);
-            assetValue = price * node.amount*1400; // 수정 임시 달러니까 곱해줌
+            console.log(`dddProcessing ${node.asset_symbol} (${node.type}) on ${node.date}`);
+            console.log(`dddPrice: ${price}, Amount: ${node.amount}`);
+        
+            if (node.type === 'american_stock') {
+                assetValue = price * node.amount * 1400;
+                console.log(`dddAmerican stock: ${price} * ${node.amount} * 1400 = ${assetValue}`);// 수정 임시 환율 반영해야함
+            } else if (node.type === 'korean_stock') {
+                assetValue = price * node.amount;
+                console.log(`dddKorean stock: ${price} * ${node.amount} = ${assetValue}`);
+            } else {
+                console.error(`Unknown asset type: ${node.type}`);
+                assetValue = 0;
+                console.log(`dddAsset value set to 0 due to unknown type for ${node.asset_symbol}`);
+            }
+        
+            console.log(`dddFinal asset value for ${node.asset_symbol}: ${assetValue}`);
         }
     }
 
