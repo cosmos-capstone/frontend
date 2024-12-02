@@ -341,7 +341,7 @@ export async function createBlock(
         console.log(`Block ${index} - No previous block`);
     }
 
-    const maxAssetValue = 4999999; // 수정 임시 목업
+    const maxAssetValue = 6999999; // 수정 임시 목업
     // const maxAssetValue = await calculateMaxAssetValue(history);
     const beforeNodes = await createBeforeNodes(history, maxAssetValue, index, currentTransaction, previousBlock, previousNodePositions);
     const afterNodes = await createAfterNodes(history, maxAssetValue, index, previousBlock);

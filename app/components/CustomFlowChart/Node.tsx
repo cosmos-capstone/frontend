@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { NodeProps } from './types';
 import { ASSET_COLORS } from '../../constants/assetColors';
 
-export const Node = ({ node }: NodeProps) => {
-    const [isHovered, setIsHovered] = useState(false);
+export const Node = ({ node,onHover }: NodeProps) => {
+    
 
     const getBackgroundColor = () => {
         return ASSET_COLORS[node.asset_symbol] || '#ffffff';
@@ -28,71 +28,44 @@ export const Node = ({ node }: NodeProps) => {
     const showLabel = true;
 
     return (
-        <g
-            transform={`translate(${node.position.x_position},${node.position.y_position})`}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
-            {/* 기본 노드 */}
-            <rect
-                width={node.size.width}
-                height={node.size.height}
-                fill={backgroundColor}
-                stroke="#1a192b"
-                strokeWidth="0.1"
-                filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
-            />
-            <text
-                x={node.size.width / 2}
-                y={node.size.height / 2}
-                textAnchor="middle"
-                fontSize="12"
-                dy=".3em"
+        <>
+            <g
+                transform={`translate(${node.position.x_position},${node.position.y_position})`}
+                onMouseEnter={() => onHover(node)}
+            onMouseLeave={() => onHover(null)}
             >
-                
-            </text>
-
-            {showLabel && (
+                {/* 기본 노드 */}
+                <rect
+                    width={node.size.width}
+                    height={node.size.height}
+                    fill={backgroundColor}
+                    stroke="#1a192b"
+                    strokeWidth="0.1"
+                    filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
+                />
                 <text
                     x={node.size.width / 2}
                     y={node.size.height / 2}
                     textAnchor="middle"
-                    fontSize="3"
+                    fontSize="12"
                     dy=".3em"
                 >
-                    {simpleLabel}
+                    
                 </text>
-            )}
-            {/* 호버 시 표시되는 상세 정보 */}
-            {isHovered && (
-                <g transform={`translate(${node.size.width + 10}, ${-10})`}>
-                    <rect
-                        width={150}
-                        height={80}
-                        fill={backgroundColor}
-                        stroke="#1a192b"
-                        strokeWidth="1"
-                        rx="5"
-                        ry="5"
-                        filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
-                        style={{
-                            backgroundColor: 'rgba(255, 255, 255, 0.9)', // 불투명하게 하얗게 변경
-                        }}
-                    />
-                    {detailLabel.split('\n').map((line, i) => (
-                        <text
-                            key={i}
-                            x={75}
-                            y={20 + i * 20}
-                            textAnchor="middle"
-                            fontSize="12"
-                            fill="#000"
-                        >
-                            {line}
-                        </text>
-                    ))}
-                </g>
-            )}
-        </g>
+
+                {showLabel && (
+                    <text
+                        x={node.size.width / 2}
+                        y={node.size.height / 2}
+                        textAnchor="middle"
+                        fontSize="3"
+                        dy=".3em"
+                    >
+                        {simpleLabel}
+                    </text>
+                )}
+            </g>
+
+        </>
     );
 };

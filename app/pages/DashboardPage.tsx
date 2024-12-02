@@ -10,8 +10,8 @@ import { fetchTransactions } from '../utils/api';
 import { fetchStockData } from '../utils/api';
 import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
 import AssetTracker from '@/app/components/AssetTracker';
-import {TRANSACTION_DATA} from '@/app/data/transactionsMockup'
-import {initializeStockData,printCachedStockData} from '@/app/utils/api'
+import { TRANSACTION_DATA } from '@/app/data/transactionsMockup'
+import { initializeStockData, printCachedStockData } from '@/app/utils/api'
 
 //수정 임시 여기 TRANSACTION_DATA 다 existingTransactions 로 바꾸기
 export default function Home() {
@@ -27,7 +27,7 @@ export default function Home() {
       try {
         // TRANSACTION_DATA에서 모든 고유한 심볼을 추출
         const symbols = Array.from(new Set(TRANSACTION_DATA.map(t => t.asset_symbol).filter(Boolean)));
-        
+
         console.log('Starting to initialize stock data for symbols:', symbols);
         await initializeStockData(symbols);
         console.log('Stock data initialization completed');
@@ -56,18 +56,18 @@ export default function Home() {
     <div className="flex flex-col space-y-8 bg-gray-100">
       <Dashboard />
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
-      {isChartDataReady ? (
+        {isChartDataReady ? (
           <CustomFlowChart transactions={TRANSACTION_DATA} />
         ) : (
           <div className="flex justify-center items-center w-full h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
           </div>)}
-          {isChartDataReady ? (
+        {/* {isChartDataReady ? (
           <CustomFlowChart transactions={existingTransactions} />
         ) : (
           <div className="flex justify-center items-center w-full h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-          </div>)}
+          </div>)} */}
         <OptionSelector />
       </div>
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
@@ -84,9 +84,13 @@ export default function Home() {
         )}
       </div>
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
-        {currentEditIndex >= 0 && modifiedTransactions && (
+      {/* {currentEditIndex >= 0 && modifiedTransactions&& isChartDataReady ? (
           <CustomFlowChart transactions={modifiedTransactions} />
-        )}
+        ) : (
+          <div className="flex justify-center items-center w-full h-64">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+          </div>)} */}
+        
       </div>
       <AssetTracker transactionData={TRANSACTION_DATA} />
     </div>

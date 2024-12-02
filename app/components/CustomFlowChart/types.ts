@@ -9,6 +9,8 @@ export interface NodeSize {
 
 export interface NodeProps {
     node: Node;
+    onHover: (node: Node | null) => void;
+
 }
 
 export interface EdgeProps {

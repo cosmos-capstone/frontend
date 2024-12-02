@@ -227,7 +227,7 @@ export const TRANSACTION_DATA: Transaction[] = [
   },
   {
     "id": 2,
-    "transaction_date": "2023-01-15T09:30:00Z",
+    "transaction_date": "2023-01-12T09:30:00Z",
     "transaction_type": "buy",
     "asset_category": "american_stock",
     "asset_symbol": "SPY",
@@ -237,7 +237,7 @@ export const TRANSACTION_DATA: Transaction[] = [
   },
   {
     "id": 3,
-    "transaction_date": "2023-01-16T11:30:00Z",
+    "transaction_date": "2023-01-18T11:30:00Z",
     "transaction_type": "sell",
     "asset_category": "american_stock",
     "asset_symbol": "SPY",
@@ -247,7 +247,7 @@ export const TRANSACTION_DATA: Transaction[] = [
   },
   {
     "id": 4,
-    "transaction_date": "2023-01-17T15:30:00Z",
+    "transaction_date": "2023-01-19T15:30:00Z",
     "transaction_type": "buy",
     "asset_category": "american_stock",
     "asset_symbol": "SPY",
@@ -307,7 +307,7 @@ export const TRANSACTION_DATA: Transaction[] = [
   },
   {
     "id": 10,
-    "transaction_date": "2023-02-17T15:30:00Z",
+    "transaction_date": "2023-02-21T15:30:00Z",
     "transaction_type": "buy",
     "asset_category": "korean_stock",
     "asset_symbol": "005930.KS",
@@ -337,7 +337,7 @@ export const TRANSACTION_DATA: Transaction[] = [
   },
   {
     "id": 13,
-    "transaction_date": "2023-03-03T15:30:00Z",
+    "transaction_date": "2023-03-06T15:30:00Z",
     "transaction_type": "buy",
     "asset_category": "american_stock",
     "asset_symbol": "MSFT",
@@ -365,56 +365,8 @@ export const TRANSACTION_DATA: Transaction[] = [
     "quantity": 15,
     "transaction_amount": "458000.00"
   },
-  {
-    "id": 16,
-    "transaction_date": "2023-03-17T15:30:00Z",
-    "transaction_type": "buy",
-    "asset_category": "korean_stock",
-    "asset_symbol": "035720.KS",
-    "asset_name": "카카오",
-    "quantity": 20,
-    "transaction_amount": "460000.00"
-  },
-  {
-    "id": 17,
-    "transaction_date": "2023-04-01T09:30:00Z",
-    "transaction_type": "buy",
-    "asset_category": "american_stock",
-    "asset_symbol": "NVDA",
-    "asset_name": "엔비디아",
-    "quantity": 4,
-    "transaction_amount": "892450.00"
-  },
-  {
-    "id": 18,
-    "transaction_date": "2023-04-02T11:30:00Z",
-    "transaction_type": "sell",
-    "asset_category": "american_stock",
-    "asset_symbol": "NVDA",
-    "asset_name": "엔비디아",
-    "quantity": 2,
-    "transaction_amount": "895000.00"
-  },
-  {
-    "id": 19,
-    "transaction_date": "2023-04-03T15:30:00Z",
-    "transaction_type": "buy",
-    "asset_category": "american_stock",
-    "asset_symbol": "NVDA",
-    "asset_name": "엔비디아",
-    "quantity": 3,
-    "transaction_amount": "898000.00"
-  },
-  {
-    "id": 20,
-    "transaction_date": "2023-04-15T09:30:00Z",
-    "transaction_type": "buy",
-    "asset_category": "american_stock",
-    "asset_symbol": "GOOGL",
-    "asset_name": "알파벳",
-    "quantity": 5,
-    "transaction_amount": "456780.00"
-  }
+  
+ 
 ].map((transaction): Transaction => ({
   ...transaction,
   transaction_date: new Date(transaction.transaction_date),
