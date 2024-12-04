@@ -17,6 +17,7 @@ export const ASSET_COLORS = {
 const stockColors = {
   'korean_stock': ['#a9f1dd', '#8eeed0', '#73ebc4', '#59e9b7', '#3fe6ab', '#20c997', '#1cab8c', '#178d71', '#127056', '#0d523b'],
   'american_stock': ['#b3d2ff', '#99c4ff', '#80b6ff', '#66a8ff', '#4d99ff', '#0d6efd', '#0b62e4', '#0945b3', '#073982', '#052c61']
+  
 };
 
 // 색상 선택 함수
