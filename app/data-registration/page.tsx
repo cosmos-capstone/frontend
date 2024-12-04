@@ -107,6 +107,7 @@ function createEmptyTransaction(): Transaction {
   };
 }
 
+
 const TransactionTable = ({
   existingTransactions,
   newTransactions,

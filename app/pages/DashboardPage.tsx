@@ -1,62 +1,79 @@
 import React from 'react';
-import Select from 'react-select'; 
+import Select from 'react-select';
 import { useState, useEffect, ChangeEvent } from 'react';
 import Dashboard from '../components/Dashboard';
 import OptionSelector from '../components/OptionBoard';
 import CustomFlowChart from '../components/CustomFlowChart/index';
-import { Transaction } from '../types/transaction';
 import { StockListElement } from '../types/stockListElement';
 import { fetchTransactions } from '../utils/api';
 import { fetchStockData } from '../utils/api';
 import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
 import AssetTracker from '@/app/components/AssetTracker';
-import { TRANSACTION_DATA,TRANSACTION_DATA_1 } from '@/app/data/transactionsMockup'
+import { TRANSACTION_DATA, TRANSACTION_DATA_1 } from '@/app/data/transactionsMockup'
 import { initializeStockData, printCachedStockData } from '@/app/utils/api'
-import {addSymbolColor} from '@/app/constants/assetColors'
+import { addSymbolColor } from '@/app/constants/assetColors'
+import { Transaction } from "@/app/types/transaction";
+
+
+
 
 //수정 임시 여기 TRANSACTION_DATA 다 existingTransactions 로 바꾸기
 export default function Home() {
   const [isChartDataReady, setIsChartDataReady] = useState(false);
-  const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
+  const [existingTransactions, setExistingTransactions] = useState<Transaction[]>(TRANSACTION_DATA_1);
   const [modifiedTransactions, setModifiedTransactions] = useState<Transaction[]>();
   const [koreanStocks, setKoreanStocks] = useState<StockListElement[]>([]);
   const [americanStocks, setAmericanStocks] = useState<StockListElement[]>([]);
   const [currentEditIndex, setCurrentEditIndex] = useState(-1);
 
   useEffect(() => {
-    async function initializeChartData() {
-      try {
-        // TRANSACTION_DATA에서 모든 고유한 심볼을 추출
-        const symbols = Array.from(new Set(TRANSACTION_DATA_1.map(t => t.asset_symbol).filter(Boolean))); 
-        
 
-        console.log('Starting to initialize stock data for symbols:', symbols);
-        await initializeStockData(symbols);
-        console.log('Stock data initialization completed');
-        
+    fetchData();
 
-        printCachedStockData();
-        // 모든 고유한 심볼에 색상 배정
-        symbols.forEach(symbol => {
-          addSymbolColor(symbol);
-        });
-        console.log('Stock color initialization completed');
-        
-
-        setIsChartDataReady(true);
-      } catch (error) {
-        console.error('Error initializing chart data:', error);
-        // 오류 처리 로직 (예: 사용자에게 오류 메시지 표시)
-      }
-    }
-    initializeChartData();
-
-    // 다른 데이터 fetching 작업들
-    fetchTransactions(setExistingTransactions);
-    fetchTransactions(setModifiedTransactions);
-    fetchStockData("korean_stocks", setKoreanStocks);
-    fetchStockData("american_stocks", setAmericanStocks);
   }, []);
+  const fetchData = async () => {
+    try {
+      // Promise.all을 사용하여 비동기 작업들이 완료될 때까지 기다림
+      await Promise.all([
+        fetchTransactions(setExistingTransactions),
+        fetchTransactions(setModifiedTransactions),
+        fetchStockData("korean_stocks", setKoreanStocks),
+        fetchStockData("american_stocks", setAmericanStocks)
+      ]);
+
+      // 모든 비동기 작업이 완료된 후 initializeChartData 호출
+      getChartData();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  async function getChartData() {
+    try {
+      //today block 을 만들기 위해 뒤에 추가
+      setExistingTransactions([...existingTransactions,createTodayTransaction()]);
+      // TRANSACTION_DATA에서 모든 고유한 심볼을 추출
+      const symbols = Array.from(new Set(existingTransactions.map(t => t.asset_symbol).filter(Boolean)));
+
+
+      console.log('Starting to initialize stock data for symbols:', symbols);
+      await initializeStockData(symbols);
+      console.log('Stock data initialization completed');
+
+
+      printCachedStockData();
+      // 모든 고유한 심볼에 색상 배정
+      symbols.forEach(symbol => {
+        addSymbolColor(symbol);
+      });
+      console.log('Stock color initialization completed');
+
+
+      setIsChartDataReady(true);
+    } catch (error) {
+      console.error('Error initializing chart data:', error);
+      // 오류 처리 로직 (예: 사용자에게 오류 메시지 표시)
+    }
+  }
 
   useEffect(() => {
     setCurrentEditIndex(2);
@@ -67,7 +84,7 @@ export default function Home() {
       <Dashboard />
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
         {isChartDataReady ? (
-          <CustomFlowChart transactions={TRANSACTION_DATA_1} />
+          <CustomFlowChart transactions={existingTransactions} />
         ) : (
           <div className="flex justify-center items-center w-full h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
@@ -94,18 +111,31 @@ export default function Home() {
         )}
       </div>
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
-      {/* {currentEditIndex >= 0 && modifiedTransactions&& isChartDataReady ? (
+        {/* {currentEditIndex >= 0 && modifiedTransactions&& isChartDataReady ? (
           <CustomFlowChart transactions={modifiedTransactions} />
         ) : (
           <div className="flex justify-center items-center w-full h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
           </div>)} */}
-        
+
       </div>
-      <AssetTracker transactionData={TRANSACTION_DATA} />
       <AssetTracker transactionData={existingTransactions} />
+      <AssetTracker transactionData={TRANSACTION_DATA} />
+
     </div>
   );
+}
+function createTodayTransaction(): Transaction {
+  return {
+    id: -1,
+    transaction_date: new Date(),
+    transaction_type: "buy",
+    asset_category: "deposit",
+    asset_symbol: null,
+    asset_name: null,
+    quantity: 0,
+    transaction_amount: 1,
+  };
 }
 
 const EditTransactionRow = ({
