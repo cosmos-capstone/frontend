@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Search, Settings, Notifications } from '@mui/icons-material';
 
 export default function TopBar() {
   return (
