@@ -271,14 +271,13 @@ const Portfolio = () => {
 
 
 
-
       <div className="p-8 rounded-lg">
   {Object.entries(sectorDistribution)
     .sort(([, rateA], [, rateB]) => rateB - rateA) // 비율 기준 내림차순 정렬
     .slice(0, 1) // 비중이 가장 높은 섹터 1개 선택
     .map(([sector]) => (
       <div key={sector} className="mb-4">
-        <p className="text-lg font-semibold mb-1 flex justify-center">
+        <p className="text-lg font-semibold mb-1 flex justify-center mb-10">
           <span className="text-blue-600 mr-1">
             {sectorTranslations[sector] || sector}
           </span>
@@ -286,75 +285,84 @@ const Portfolio = () => {
         </p>
       </div>
     ))}
-    <p className='text-right mr-40'>{sectorData.lastUpdated} 기준 업데이트</p>
+  <p className="text-right mr-40 mb-8">{sectorData.lastUpdated} 기준 업데이트</p>
 
-{recommendedSectors.length > 0 ? (
-  <ul>
-    {recommendedSectors.map((sector, index) => (
-      <li key={index} className="text-lg font-semibold ml-10 mb-8">
-        <div className="flex items-center">
-          <ImageWithBackground
-            src={sector && sector !== "none" ? `https://raw.githubusercontent.com/cosmos-capstone/frontend/main/public/images/${sector}.png` : `/images/Other.png`}
-            alt={`${sectorTranslations[sector] || sector} Sector`}
-          />
-          <h3 className="text-blue-600 font-bold ml-4">
-            {sectorTranslations[sector] || sector} 섹터
-          </h3>
-        </div>
-
-        {/* 섹터에 포함된 주식 정보 */}
-        {sectorData[sector] ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            {/* 최고 시가총액 종목 */}
-            <div className="bg-gray-100 p-4 rounded-lg shadow mr-20">
-              <h4 className="text-md font-bold mb-2">시가총액 상위 종목</h4>
-              <ul className="list-disc list-inside">
-                {sectorData[sector].topMarketCap.map((stock, idx) => (
-                  <li key={idx} className="mb-2">
-                    <span>{idx+1}위</span>
-                    <p className="text-gray-700 font-semibold">{stock.name}</p>
-                    <p className="text-gray-500">
-                      시가총액: {stock.marketCap.toLocaleString()} USD
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* 최고 1년 수익률 종목 */}
-            <div className="bg-gray-100 p-4 rounded-lg shadow mr-10">
-              <h4 className="text-md font-bold mb-2">1년 수익률 상위 종목</h4>
-              <ul className="list-disc list-inside">
-                {sectorData[sector].topYTDReturn.map((stock, idx) => (
-                  <li key={idx} className="mb-2">
-                    <span>{idx+1}위</span>
-                    <p className="text-gray-700 font-semibold">{stock.name}</p>
-                    <p className="text-gray-500">
-                      1년 수익률: {(stock.YTD_return * 100).toFixed(2)}%
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
+  {recommendedSectors.length > 0 ? (
+    <div className="flex flex-wrap justify-center items-center gap-20">
+      {recommendedSectors.map((sector, index) => (
+        <div
+          key={index}
+          className="bg-gray-100 p-4 rounded-lg shadow flex flex-col items-center min-w-[300px]"
+        >
+          {/* 섹터 이미지와 이름 */}
+          <div className="flex items-center mb-4">
+            <ImageWithBackground
+              src={sector && sector !== "none" ? `https://raw.githubusercontent.com/cosmos-capstone/frontend/main/public/images/${sector}.png` : `/images/Other.png`}
+              alt={`${sectorTranslations[sector] || sector} Sector`}
+            />
+            <h3 className="text-blue-600 font-bold ml-4">
+              {sectorTranslations[sector] || sector} 섹터
+            </h3>
           </div>
-        ) : (
-          <p className="text-gray-500 mt-4">
-            {sectorTranslations[sector]} 섹터의 데이터가 아직 준비되지 않았습니다.
-          </p>
-        )}
-      </li>
-    ))}
-  </ul>
-) : (
-  <p className="text-center text-green-600 font-semibold">
-    현재 포트폴리오는 안정적입니다!
-  </p>
-)}
 
+          {/* 섹터 상세 정보 */}
+          {sectorData[sector] ? (
+            <div className="flex flex-col gap-8">
+              {/* 시가총액 상위 종목 */}
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h4 className="text-md font-bold mb-2">시가총액 상위 종목</h4>
+                <ul className="list-disc list-inside">
+                  {sectorData[sector].topMarketCap.map((stock, idx) => (
+                    <li key={idx} className="mb-2">
+                      <span>{idx + 1}위</span>
+                      <p className="text-gray-700 font-semibold">{stock.name}</p>
+                      <p className="text-gray-500">
+                        시가총액: <span className='font-bold'>
+                          {stock.marketCap.toLocaleString()} USD
+                          </span>
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* 1년 수익률 상위 종목 */}
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h4 className="text-md font-bold mb-2">1년 상승률 상위 종목</h4>
+                <ul className="list-disc list-inside">
+                  {sectorData[sector].topYTDReturn.map((stock, idx) => (
+                    <li key={idx} className="mb-2">
+                      <span>{idx + 1}위</span>
+                      <p className="text-gray-700 font-semibold">{stock.name}</p>
+                      <p className="text-gray-500">
+                        1년 상승률: <span className='text-red-500 font-bold'>
+                          {(stock.YTD_return * 100).toFixed(2)}%
+                          </span>
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ) : (
+            <p className="text-gray-500 mt-4">
+              {sectorTranslations[sector]} 섹터의 데이터가 아직 준비되지 않았습니다.
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p className="text-center text-green-600 font-semibold">
+      현재 포트폴리오는 안정적입니다!
+    </p>
+  )}
 </div>
 
 
-    </>
+
+
+</>
   );
 };
 
