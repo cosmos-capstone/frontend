@@ -45,8 +45,8 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, text, path, isActive }) => (
   <Link href={path}>
     <div
       className={`flex items-center p-3 mb-3 rounded-lg cursor-pointer transition-colors ${isActive
-          ? 'bg-blue-50 text-blue-600 font-bold text-sm'
-          : 'text-gray-500 hover:bg-gray-100'
+        ? 'bg-blue-50 text-blue-600 font-bold'
+        : 'text-gray-500 hover:bg-gray-100'
         }`}
     >
       <span className="text-lg mr-3">{icon}</span>
