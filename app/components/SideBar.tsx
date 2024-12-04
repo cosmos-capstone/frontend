@@ -29,18 +29,6 @@ export default function SideBar() {
           path="/data-registration"
           isActive={pathname === '/data-registration'}
         />
-        <MenuItem
-          icon={<Person />}
-          text="Account"
-          path="/account"
-          isActive={pathname === '/account'}
-        />
-        <MenuItem
-          icon={<Settings />}
-          text="Settings"
-          path="/settings"
-          isActive={pathname === '/settings'}
-        />
       </nav>
     </div>
   );
