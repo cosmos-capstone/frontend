@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Dashboard, PieChart, BarChart, Person, Settings } from '@mui/icons-material';
+import { Dashboard, PieChart, BarChart } from '@mui/icons-material';
 
 export default function SideBar() {
   const pathname = usePathname();
@@ -44,11 +44,10 @@ interface MenuItemProps {
 const MenuItem: React.FC<MenuItemProps> = ({ icon, text, path, isActive }) => (
   <Link href={path}>
     <div
-      className={`flex items-center p-3 mb-3 rounded-lg cursor-pointer transition-colors ${
-        isActive
+      className={`flex items-center p-3 mb-3 rounded-lg cursor-pointer transition-colors ${isActive
           ? 'bg-blue-50 text-blue-600 font-bold text-sm'
           : 'text-gray-500 hover:bg-gray-100'
-      }`}
+        }`}
     >
       <span className="text-lg mr-3">{icon}</span>
       <span>{text}</span>
