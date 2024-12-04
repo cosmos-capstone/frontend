@@ -13,8 +13,9 @@ import { CustomFlowChartProps } from './types';
 export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
     const [blocks, setBlocks] = useState<BlockType[]>([]);
     const [edges, setEdges] = useState<EdgeType[]>([]);
-    // const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
-    const [hoveredNode] = useState<Node | null>(null);
+    const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
+    // const [hoveredNode] = useState<Node | null>(null);
+    
     
 
     useEffect(() => {
@@ -204,14 +205,14 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                             <Node
                                 key={node.id}
                                 node={node}
-                                
+                                onHover={setHoveredNode}
                             />
                         ))}
                         {block.afterNodes.map(node => (
                             <Node
                                 key={node.id}
                                 node={node}
-                                
+                                onHover={setHoveredNode}
                             />
                         ))}
                     </Block>

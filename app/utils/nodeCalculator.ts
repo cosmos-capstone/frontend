@@ -4,7 +4,7 @@ import { NodeSize } from '../components/CustomFlowChart/types';
 
 import { nodeBaseWidth, nodeBaseHeight } from '../constants/globalConfig';
 import {getStockPrice} from '@/app/utils/api'
-
+ 
 export const calculateNodeSize = async (
     node: Omit<Node, 'size'>,
     maxAssetValue: number
