@@ -5,7 +5,7 @@ import { calculateNodeSize, calculateAssetValue } from './nodeCalculator';
 import { BLOCK_CONFIG, nodeBaseWidth } from '../constants/globalConfig';
 import { Transaction } from '../types/transaction';
 import { blockWidthCalculate, MIN_BLOCK_WIDTH } from '@/app/utils/calculateBlockWidth';
-
+import {createIndicatorNodes} from '@/app/utils/spIndexCalculator'
 
 interface CreateNormalNodeParams {
     nodes: Node[];
@@ -372,13 +372,15 @@ export async function createBlock(
     console.log(`Block ${index} - Created Node Positions:`);
     console.log('Before Nodes:', beforeNodes.map(node => ({ symbol: node.asset_symbol, y: node.position.y_position })));
     console.log('After Nodes:', afterNodes.map(node => ({ symbol: node.asset_symbol, y: node.position.y_position })));
-
+    const indexNodes = await createIndicatorNodes(history, maxAssetValue,index);
 
 
 
     const maxNodesHeight = Math.max(
         beforeNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0),
-        afterNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0)
+        afterNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0),
+        indexNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0),
+        
     );
     // const timeDifference = previousBlock 
     //     ? calculateTimeDifference(previousBlock.date, history.date)
@@ -399,6 +401,7 @@ export async function createBlock(
             height: Math.max(maxNodesHeight + 50, BLOCK_CONFIG.minHeight)
         },
         beforeNodes,
-        afterNodes
+        afterNodes,
+        indexNodes,
     };
 }

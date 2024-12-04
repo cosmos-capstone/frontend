@@ -425,6 +425,16 @@ export const TRANSACTION_DATA_1: Transaction[] = [
     "asset_name": "알파벳",
     "quantity": 5,
     "transaction_amount": "275.00"
+  },
+  {
+    "id": 5,
+    "transaction_date": "2024-03-28T09:30:00Z",
+    "transaction_type": "buy",
+    "asset_category": "american_stock",
+    "asset_symbol": "^GSPC",
+    "asset_name": "S&P 500",
+    "quantity": 0.1,
+    "transaction_amount": "6800.00"
   }
 ].map((transaction): Transaction => ({
   ...transaction,

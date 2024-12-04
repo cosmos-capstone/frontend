@@ -8,7 +8,7 @@ import { Block } from './Block';
 import { Node } from './Node';
 import { Edge } from './Edge';
 import { HoverInfo } from './HoverInfo';
-import { CustomFlowChartProps } from './types';
+import { CustomFlowChartProps } from './types'; 
 
 export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
     const [blocks, setBlocks] = useState<BlockType[]>([]);

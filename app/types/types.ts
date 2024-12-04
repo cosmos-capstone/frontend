@@ -9,8 +9,8 @@ export interface Node {
       y_position: number;
   };
   type: 'deposit' | 'american_stock' | 'korean_stock';
-  action: 'buy' | 'sell';
-  state: 'before' | 'after';
+  action: 'buy' | 'sell' | 'none';
+  state: 'before' | 'after'| 'none';
   size: {
       width: number;
       height: number;
@@ -34,6 +34,8 @@ export interface Block {
   };
   beforeNodes: Node[];
   afterNodes: Node[];
+  indexNodes: Node[];
+  
 }
 
 export interface AssetState {
