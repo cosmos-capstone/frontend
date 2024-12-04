@@ -9,8 +9,8 @@ export interface Node {
       y_position: number;
   };
   type: 'deposit' | 'american_stock' | 'korean_stock';
-  action: 'buy' | 'sell' | 'none';
-  state: 'before' | 'after'| 'none';
+  action: 'buy' | 'sell' | 'index';
+  state: 'before' | 'after'| 'index';
   size: {
       width: number;
       height: number;

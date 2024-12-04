@@ -270,6 +270,7 @@ async function createBeforeNodes(
             currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
         }
     }
+    
 
     return nodes;
 }
@@ -338,7 +339,7 @@ async function createAfterNodes(
         );
         currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
     }
-
+    createIndicatorNodes(history, maxAssetValue,index);
     return nodes;
 }
 
@@ -365,7 +366,7 @@ export async function createBlock(
         console.log(`Block ${index} - No previous block`);
     }
 
-    const maxAssetValue = 999990; // 수정 임시 목업
+    const maxAssetValue = 1999990; // 수정 임시 목업
     // const maxAssetValue = await calculateMaxAssetValue(history);
     const beforeNodes = await createBeforeNodes(history, maxAssetValue, index, currentTransaction, previousBlock, previousNodePositions);
     const afterNodes = await createAfterNodes(history, maxAssetValue, index, previousBlock);
@@ -388,7 +389,7 @@ export async function createBlock(
     // const blockWidth = calculateBlockWidth(timeDifference);
 
     const blockWidth = previousBlock ? blockWidthCalculate(previousBlock.date, history.date) : MIN_BLOCK_WIDTH;
-
+    console.log(`eeeBlock ${index} - Created Index Nodes:`, indexNodes);
     return {
         date: history.date,
         position: {

@@ -12,10 +12,7 @@ export async function createIndicatorNodes(
     
 ): Promise<Node[]> {
     const nodes: Node[] = [];
-    let currentY = 50;
-
     
-    // Deposit node
     const indicatorSize = await calculateNodeSize({
         id: `INDICATOR-${index}-^GSPC`,
         date: history.date,
@@ -23,8 +20,8 @@ export async function createIndicatorNodes(
         asset_symbol: '^GSPC',
         position: { x_position: 0, y_position: 0 },
         type: 'american_stock',// 수정 형식 추가하기
-        action: 'none',// 수정 형식 추가하기
-        state: 'none'// 수정 형식 추가하기
+        action: 'index',// 수정 형식 추가하기
+        state: 'index'// 수정 형식 추가하기
     }, maxAssetValue);
 
     nodes.push({
@@ -37,8 +34,8 @@ export async function createIndicatorNodes(
             y_position: 0,
         },
         type: 'american_stock',// 수정 형식 추가하기
-        action: 'none',// 수정 형식 추가하기
-        state: 'none',// 수정 형식 추가하기
+        action: 'index',// 수정 형식 추가하기
+        state: 'index',// 수정 형식 추가하기
         size: indicatorSize,
         value: history.state.cash
     });

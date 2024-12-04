@@ -215,6 +215,13 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                                 onHover={setHoveredNode}
                             />
                         ))}
+                        {block.indexNodes.map(node => (
+                            <Node
+                                key={node.id}
+                                node={node}
+                                onHover={setHoveredNode}
+                            />
+                        ))}
                     </Block>
                 ))}
 

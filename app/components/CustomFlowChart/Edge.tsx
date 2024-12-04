@@ -1,5 +1,5 @@
 // components/CustomFlowChart/Edge.tsx
-import { EdgeProps } from './types';
+import { EdgeProps } from './types'; 
 import { ASSET_COLORS } from '../../constants/assetColors';
 
 
