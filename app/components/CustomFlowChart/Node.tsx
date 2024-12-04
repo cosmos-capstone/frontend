@@ -1,9 +1,9 @@
 // components/CustomFlowChart/Node.tsx
-import { useState } from 'react';
+// import { useState } from 'react';
 import { NodeProps } from './types';
 import { ASSET_COLORS } from '../../constants/assetColors';
 
-export const Node = ({ node,onHover }: NodeProps) => {
+export const Node = ({ node }: NodeProps) => {
     
 
     const getBackgroundColor = () => {
@@ -23,16 +23,16 @@ export const Node = ({ node,onHover }: NodeProps) => {
 
     // const backgroundColor = getBackgroundColor(node.type);
     const simpleLabel = `${node.asset_symbol}\n${node.date.toLocaleDateString()}`;
-    const detailLabel = `${node.asset_symbol}\n${node.amount}주\n₩${node.value?.toLocaleString() ?? '0'}\n${node.date.toLocaleDateString()}`;
+    // const detailLabel = `${node.asset_symbol}\n${node.amount}주\n₩${node.value?.toLocaleString() ?? '0'}\n${node.date.toLocaleDateString()}`;
     // const showLabel = node.state === 'before'; // 수정 
     const showLabel = true;
 
     return (
         <>
             <g
-                transform={`translate(${node.position.x_position},${node.position.y_position})`}
-                onMouseEnter={() => onHover(node)}
-            onMouseLeave={() => onHover(null)}
+            //     transform={`translate(${node.position.x_position},${node.position.y_position})`}
+            //     onMouseEnter={() => onHover(node)}
+            // onMouseLeave={() => onHover(null)}
             >
                 {/* 기본 노드 */}
                 <rect

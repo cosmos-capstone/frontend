@@ -1,10 +1,11 @@
 // utils/blockCalculator.ts
 import { Block, AssetHistory, Node } from '../types/types';
-import { calculateNodeSize } from './nodeCalculator';
-import { getCurrentPrice } from './priceAPI';
+import { calculateNodeSize, calculateAssetValue } from './nodeCalculator';
+
 import { BLOCK_CONFIG, nodeBaseWidth } from '../constants/globalConfig';
 import { Transaction } from '../types/transaction';
 import { blockWidthCalculate, MIN_BLOCK_WIDTH } from '@/app/utils/calculateBlockWidth';
+
 
 interface CreateNormalNodeParams {
     nodes: Node[];
@@ -17,6 +18,7 @@ interface CreateNormalNodeParams {
     state: 'before' | 'after';
     nodeHeight?: number;
     blockWidth?: number;
+    type: 'deposit' | 'american_stock' | 'korean_stock';
 }
 
 type PreviousNodeInfo = {
@@ -55,6 +57,7 @@ async function createSellNodes(
 ): Promise<void> {
     // 매도되는 수량에 대한 노드
     const sellQuantity = transaction.quantity;
+    // console.log(`eeeStarting calculation for sellNodeSize: ${symbol}-${index}-before-sell`);
     const sellNodeSize = await calculateNodeSize({
         id: `${symbol}-${index}-before-sell`,
         date: transaction.transaction_date,
@@ -65,6 +68,9 @@ async function createSellNodes(
         action: 'sell',
         state: 'before'
     }, maxAssetValue);
+
+    // console.log(`eeeFinished calculation for sellNodeSize: ${symbol}-${index}-before-sell`);
+    // console.log(`eeesellNodeSize: `, sellNodeSize);
 
     nodes.push({
         id: `${symbol}-${index}-before-sell`,
@@ -124,9 +130,18 @@ async function createNormalNode({// In this function you get the real asset valu
     date,
     state,
     nodeHeight,
-    blockWidth
+    blockWidth,
+    type,
 }: CreateNormalNodeParams): Promise<void> {
-    const currentPrice = await getCurrentPrice(symbol);
+    // const currentPrice = await getCurrentPrice(symbol);
+    // const nodeValue = await calculateAssetValue(node);
+    const nodeValue = await calculateAssetValue({
+        symbol: symbol,
+        quantity: quantity,
+        date: date,
+        type: type
+    });
+
 
     let nodeSize: { width: number; height: number };
 
@@ -164,7 +179,7 @@ async function createNormalNode({// In this function you get the real asset valu
         action: 'buy',
         state: state,
         size: nodeSize,
-        value: currentPrice * quantity
+        value: nodeValue,
     });
 }
 
@@ -186,6 +201,7 @@ async function createBeforeNodes(
     const depositY = previousNodePositions?.['DEPOSIT']?.y_position || currentY;
     const depositSize = await calculateNodeSize({
         id: `DEPOSIT-${index}-before`,
+        // date: history.date,
         date: history.date,
         amount: history.previousState.cash,
         asset_symbol: 'DEPOSIT',
@@ -221,10 +237,16 @@ async function createBeforeNodes(
 
         if (currentTransaction?.transaction_type === 'sell' &&
             symbol === currentTransaction.asset_symbol) {
-            const currentPrice = await getCurrentPrice(symbol);
+            // const currentPrice = await getCurrentPrice(symbol);
+            const nodeValue = await calculateAssetValue({
+                symbol: symbol,
+                quantity: quantity,
+                date: history.date,
+                type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+            });
             await createSellNodes(
                 nodes, symbolY, index, symbol, quantity,
-                currentTransaction, currentPrice, maxAssetValue
+                currentTransaction, nodeValue, maxAssetValue
             );
             currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
             // currentY = symbolY + (nodes[nodes.length - 1].size.height + 20) * 
@@ -239,9 +261,10 @@ async function createBeforeNodes(
                     symbol: symbol,
                     quantity: quantity,
                     maxAssetValue: maxAssetValue,
-                    date: history.date,
+                    date: previousBlock.date,
                     state: 'before',
                     nodeHeight: previousNodePositions?.[symbol]?.height || 9999999,
+                    type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
                 }//임시 에러 처리부분
             );
             currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
@@ -309,6 +332,7 @@ async function createAfterNodes(
                 date: history.date,
                 state: 'after',
                 blockWidth: blockWidth,
+                type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
 
             }
         );
@@ -341,7 +365,7 @@ export async function createBlock(
         console.log(`Block ${index} - No previous block`);
     }
 
-    const maxAssetValue = 6999999; // 수정 임시 목업
+    const maxAssetValue = 999990; // 수정 임시 목업
     // const maxAssetValue = await calculateMaxAssetValue(history);
     const beforeNodes = await createBeforeNodes(history, maxAssetValue, index, currentTransaction, previousBlock, previousNodePositions);
     const afterNodes = await createAfterNodes(history, maxAssetValue, index, previousBlock);

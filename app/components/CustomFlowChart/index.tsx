@@ -13,7 +13,8 @@ import { CustomFlowChartProps } from './types';
 export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
     const [blocks, setBlocks] = useState<BlockType[]>([]);
     const [edges, setEdges] = useState<EdgeType[]>([]);
-    const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
+    // const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
+    const [hoveredNode] = useState<Node | null>(null);
     
 
     useEffect(() => {
@@ -168,7 +169,7 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
             maxHeight: '80vh', // 뷰포트 높이의 80%로 제한 (선택적)
         }}>
             <svg
-                width={Math.max(1500, blocks.length * 500)}
+                width={Math.max(1500, blocks.length * 200)}
                 height={400}
                 className="flow-chart"
             >
@@ -203,14 +204,14 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                             <Node
                                 key={node.id}
                                 node={node}
-                                onHover={setHoveredNode}
+                                
                             />
                         ))}
                         {block.afterNodes.map(node => (
                             <Node
                                 key={node.id}
                                 node={node}
-                                onHover={setHoveredNode}
+                                
                             />
                         ))}
                     </Block>

@@ -374,6 +374,67 @@ export const TRANSACTION_DATA: Transaction[] = [
   asset_category: transaction.asset_category as "korean_stock" | "american_stock" | "korean_bond" | "american_bond" | "fund" | "commodity" | "gold" | "deposit" | "savings" | "cash",
   transaction_amount: parseFloat(transaction.transaction_amount)
 }));
+
+export const TRANSACTION_DATA_1: Transaction[] = [
+  {
+    "id": 0,
+    "transaction_date": "2023-01-01T09:30:00Z",
+    "transaction_type": "deposit",
+    "asset_category": null,
+    "asset_symbol": null,
+    "asset_name": null,
+    "quantity": 0,
+    "transaction_amount": "70000.00"
+  },
+  {
+    "id": 1,
+    "transaction_date": "2017-03-15T09:30:00Z",
+    "transaction_type": "buy",
+    "asset_category": "american_stock",
+    "asset_symbol": "NVDA",
+    "asset_name": "NVIDIA Corporation",
+    "quantity": 5,
+    "transaction_amount": "535.00"
+  },
+  {
+    "id": 2,
+    "transaction_date": "2018-09-20T09:30:00Z",
+    "transaction_type": "buy",
+    "asset_category": "american_stock",
+    "asset_symbol": "NVDA",
+    "asset_name": "NVIDIA Corporation",
+    "quantity": 5,
+    "transaction_amount": "1365.00"
+  },
+  {
+    "id": 3,
+    "transaction_date": "2022-05-10T09:30:00Z",
+    "transaction_type": "buy",
+    "asset_category": "american_stock",
+    "asset_symbol": "NVDA",
+    "asset_name": "NVIDIA Corporation",
+    "quantity": 5,
+    "transaction_amount": "855.00"
+  },
+  {
+    "id": 4,
+    "transaction_date": "2024-02-28T09:30:00Z",
+    "transaction_type": "buy",
+    "asset_category": "american_stock",
+    "asset_symbol": "GOOGL",
+    "asset_name": "알파벳",
+    "quantity": 5,
+    "transaction_amount": "275.00"
+  }
+].map((transaction): Transaction => ({
+  ...transaction,
+  transaction_date: new Date(transaction.transaction_date),
+  transaction_type: transaction.transaction_type as 'deposit' | 'withdrawal' | 'buy' | 'sell',
+  asset_category: transaction.asset_category as "korean_stock" | "american_stock" | "korean_bond" | "american_bond" | "fund" | "commodity" | "gold" | "deposit" | "savings" | "cash",
+  transaction_amount: parseFloat(transaction.transaction_amount)
+}));
+
+
 // 데이터 조회를 위한 유틸리티 함수들
 export const getTransactionById = (id: number): Transaction | undefined => {
   return TRANSACTION_DATA.find(transaction => transaction.id === id);

@@ -10,7 +10,7 @@ import { fetchTransactions } from '../utils/api';
 import { fetchStockData } from '../utils/api';
 import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
 import AssetTracker from '@/app/components/AssetTracker';
-import { TRANSACTION_DATA } from '@/app/data/transactionsMockup'
+import { TRANSACTION_DATA,TRANSACTION_DATA_1 } from '@/app/data/transactionsMockup'
 import { initializeStockData, printCachedStockData } from '@/app/utils/api'
 
 //수정 임시 여기 TRANSACTION_DATA 다 existingTransactions 로 바꾸기
@@ -26,7 +26,7 @@ export default function Home() {
     async function initializeChartData() {
       try {
         // TRANSACTION_DATA에서 모든 고유한 심볼을 추출
-        const symbols = Array.from(new Set(TRANSACTION_DATA.map(t => t.asset_symbol).filter(Boolean)));
+        const symbols = Array.from(new Set(TRANSACTION_DATA_1.map(t => t.asset_symbol).filter(Boolean)));
 
         console.log('Starting to initialize stock data for symbols:', symbols);
         await initializeStockData(symbols);
@@ -57,7 +57,7 @@ export default function Home() {
       <Dashboard />
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
         {isChartDataReady ? (
-          <CustomFlowChart transactions={TRANSACTION_DATA} />
+          <CustomFlowChart transactions={TRANSACTION_DATA_1} />
         ) : (
           <div className="flex justify-center items-center w-full h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
@@ -93,6 +93,7 @@ export default function Home() {
         
       </div>
       <AssetTracker transactionData={TRANSACTION_DATA} />
+      <AssetTracker transactionData={existingTransactions} />
     </div>
   );
 }
