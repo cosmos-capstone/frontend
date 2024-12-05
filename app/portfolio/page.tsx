@@ -229,7 +229,7 @@ const Portfolio = () => {
                 <div key={index} className="flex items-center mb-3">
                   <ImageWithBackground
                     // 이부분 로컬에선 /images로 github에선 ./image로 변경
-                    src={value.sector && value.sector != "none" ? `https://raw.githubusercontent.com/cosmos-capstone/frontend/main/public/images//${value.sector}.png` : `/page.tsximages/Other.png`}
+                    src={value.sector && value.sector != "none" ? `https://raw.githubusercontent.com/cosmos-capstone/frontend/main/public/images//${encodeURIComponent(value.sector)}.png` : `/page.tsximages/Other.png`}
                     alt={value.sector && value.sector !== "none" ? `${value.sector} Sector` : "Other Sector"}
                   />
                   <div className="ml-4">
