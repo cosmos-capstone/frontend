@@ -165,9 +165,9 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
 
             setBlocks(newBlocks);
             setEdges(newEdges);
-            newEdges.forEach((edge) => {
+            // newEdges.forEach((edge) => {
                 // console.log(`gggEdge ID: ${edge.id}, Source: ${edge.source}, Target: ${edge.target}, Type: ${edge.type}`);
-            });
+            // });
         };
 
         initializeBlocks();
