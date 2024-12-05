@@ -259,7 +259,23 @@ nodes.push({
     // console.log("hhhhPrevious block check ", previousBlock);
 
  
-
+if (previousBlock){
+    nodes.push({
+        id: `DEPOSIT-${index}-before`,
+        date: previousBlock.date,
+        amount: history.previousState.cash,
+        asset_symbol: 'DEPOSIT',
+        position: {
+            x_position: BLOCK_CONFIG.leftMargin,
+            y_position: depositY
+        },
+        type: 'deposit',
+        action: 'buy',
+        state: 'before',
+        size: depositSize,
+        value: history.previousState.cash
+    });
+} else{
     nodes.push({
         id: `DEPOSIT-${index}-before`,
         date: history.date,
@@ -274,7 +290,7 @@ nodes.push({
         state: 'before',
         size: depositSize,
         value: history.previousState.cash
-    });
+    });}
 
     currentY += depositSize.height + 20;
 
