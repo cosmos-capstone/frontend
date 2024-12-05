@@ -15,6 +15,9 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
     const [blocks, setBlocks] = useState<BlockType[]>([]);
     const [edges, setEdges] = useState<EdgeType[]>([]);
     const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
+     // 줌과 이동 상태 추가
+     const [scale, setScale] = useState(1); // 줌 레벨 상태
+     const [translate, setTranslate] = useState({ x: 0, y: 0 }); // 이동 상태
     // const [hoveredNode] = useState<Node | null>(null);
     const handleHoveredNode = (node) => {
         
@@ -22,7 +25,21 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
         
         
     };
-    
+    // 마우스 휠로 줌을 조절하는 핸들러
+    const handleWheel = (event) => {
+        event.preventDefault();
+        const zoomSpeed = 0.1; // 줌 속도 조정
+        setScale(prevScale => Math.min(3, Math.max(0.5, prevScale - event.deltaY * zoomSpeed / 100))); // 줌 범위 제한
+    };
+
+    // 마우스 드래그로 SVG 이동
+    const handleDrag = (event) => {
+        if (event.buttons !== 1) return; // 마우스 왼쪽 버튼을 누를 때만 이동
+        setTranslate(prev => ({
+            x: prev.x + event.movementX,
+            y: prev.y + event.movementY
+        }));
+    };
 
     useEffect(() => {
         const initializeBlocks = async () => {
@@ -188,15 +205,23 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
 
     return (
         <div style={{
+            overflow: 'hidden', // 스크롤을 숨기고 드래그를 통한 이동만 가능
             overflowX: 'auto',
             overflowY: 'auto',
             height: '400px', // 원하는 높이로 조정하세요
             maxHeight: '80vh', // 뷰포트 높이의 80%로 제한 (선택적)
-        }}>
+        }}
+        onWheel={handleWheel} // 줌 핸들러 연결
+            onMouseMove={handleDrag} // 드래그 핸들러 연결
+        >
             <svg
                 width={Math.max(1500, blocks.length * 200)}
                 height={1000}
                 className="flow-chart"
+                style={{
+                    transform: `translate(${translate.x}px, ${translate.y}px) scale(${scale})`, // 줌 및 이동 적용
+                    transformOrigin: 'center center',
+                }}
             >
                 <defs>
                     <marker
