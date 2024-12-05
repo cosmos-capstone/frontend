@@ -123,7 +123,7 @@ export default function Home() {
           <div className="flex justify-center items-center w-full h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
           </div>)}
-        <OptionSelector />
+        {/* <OptionSelector /> */}
       </div>
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
         {currentEditIndex >= 0 && modifiedTransactions && modifiedTransactions[currentEditIndex] && (

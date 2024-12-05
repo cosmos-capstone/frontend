@@ -62,16 +62,16 @@ export async function trackAssets(transactions: Transaction[]): Promise<AssetHis
       },
       previousState: previousState
     });
-    maxAssetValue = await calculateMaxAssetValue({
+    maxAssetValue = Math.max(maxAssetValue, await calculateMaxAssetValue({
       date: transaction.transaction_date,
       state: {
         cash: currentState.cash,
         holdings: { ...currentState.holdings }
       },
       previousState: previousState
-    })
-    
+    }))
+    console.log("nnnmaxAssetValue : ",maxAssetValue);
   }
-
+  
   return assetHistory;
 }
