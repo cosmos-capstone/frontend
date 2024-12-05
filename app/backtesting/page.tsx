@@ -17,7 +17,7 @@ const fetchAndSetData = async (url, setData) => {
     }
 };
 
-export async function fetchProposedTransactions(
+async function fetchProposedTransactions(
     setExistingTransactions: (transactions: Transaction[]) => void,
     date: string // 추가된 쿼리 파라미터
 ) {
