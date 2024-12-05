@@ -2,7 +2,7 @@ import React from 'react';
 import Select from 'react-select';
 import { useState, useEffect, ChangeEvent } from 'react';
 import Dashboard from '../components/Dashboard';
-import OptionSelector from '../components/OptionBoard';
+// import OptionSelector from '../components/OptionBoard';
 import CustomFlowChart from '../components/CustomFlowChart/index';
 import { StockListElement } from '../types/stockListElement';
 
@@ -78,7 +78,7 @@ export default function Home() {
 
 
       // const symbols = ['^GSPC', '020180.KQ', '326030.KS', '005930.KS', 'NVDA', 'WMT', '009520.KQ'];
-      const symbols = Array.from(new Set(existingTransactions.map(t => t.asset_symbol).filter(Boolean).concat('^GSPC')));
+      const symbols = Array.from(new Set(existingTransactions.map(t => t.asset_symbol).filter(Boolean).concat('^GSPC').concat('102110.KS').concat('SPY').concat('BND')));
 
 
       // maxAssetValue = Math.max(maxAssetValue, await calculateMaxAssetValue(history));

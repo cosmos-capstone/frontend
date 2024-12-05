@@ -8,22 +8,23 @@ import { Block } from './Block';
 import { Node } from './Node';
 import { Edge } from './Edge';
 import { HoverInfo } from './HoverInfo';
-import { CustomFlowChartProps } from './types'; 
-import {extractIndexFromString} from '@/app/utils/extractIndexFromString';
- 
-export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlowChartProps) => {
+import { CustomFlowChartProps } from './types';
+import { extractIndexFromString } from '@/app/utils/extractIndexFromString';
+import { ASSET_COLORS } from '@/app/constants/assetColors'; // 색상 데이터
+
+export const CustomFlowChart = ({ transactions, setCurrentEditIndex }: CustomFlowChartProps) => {
     const [blocks, setBlocks] = useState<BlockType[]>([]);
     const [edges, setEdges] = useState<EdgeType[]>([]);
     const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
-     // 줌과 이동 상태 추가
-     const [scale, setScale] = useState(1); // 줌 레벨 상태
-     const [translate, setTranslate] = useState({ x: 0, y: 0 }); // 이동 상태
+    // 줌과 이동 상태 추가
+    const [scale, setScale] = useState(1); // 줌 레벨 상태
+    const [translate, setTranslate] = useState({ x: 0, y: 0 }); // 이동 상태
     // const [hoveredNode] = useState<Node | null>(null);
     const handleHoveredNode = (node) => {
-        
+
         setHoveredNode(node);
-        
-        
+
+
     };
     // 마우스 휠로 줌을 조절하는 핸들러
     const handleWheel = (event) => {
@@ -77,12 +78,12 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
 
                         }
                     });
-                    
+
                     // console.log("fffindex nodes")
-                   
-                    
+
+
                 }
-               
+
 
                 // 2. 블록 내 거래 엣지
                 const currentTransaction = transactions.find(
@@ -188,7 +189,7 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
             setBlocks(newBlocks);
             setEdges(newEdges);
             // newEdges.forEach((edge) => {
-                // console.log(`gggEdge ID: ${edge.id}, Source: ${edge.source}, Target: ${edge.target}, Type: ${edge.type}`);
+            // console.log(`gggEdge ID: ${edge.id}, Source: ${edge.source}, Target: ${edge.target}, Type: ${edge.type}`);
             // });
         };
 
@@ -197,11 +198,12 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
 
 
     const handleNodeClick = (node) => {
-        
+
         setCurrentEditIndex(extractIndexFromString(node.id));
-        
-        
+
+
     };
+    const legendItems = Object.entries(ASSET_COLORS).map(([symbol, color]) => ({ symbol, color }));
 
     return (
         <div style={{
@@ -211,9 +213,44 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
             height: '400px', // 원하는 높이로 조정하세요
             maxHeight: '80vh', // 뷰포트 높이의 80%로 제한 (선택적)
         }}
-        onWheel={handleWheel} // 줌 핸들러 연결
+            onWheel={handleWheel} // 줌 핸들러 연결
             onMouseMove={handleDrag} // 드래그 핸들러 연결
         >
+            <div
+                style={{
+                    position: 'absolute',
+                    bottom: 10, // 화면 아래에서 10px 간격
+                    right: 10,  // 화면 오른쪽에서 10px 간격
+                    background: 'white',
+                    border: '1px solid #ccc',
+                    borderRadius: '8px',
+                    padding: '10px',
+                    zIndex: 10,
+                    maxHeight: '30vh', // 범례의 최대 높이를 화면의 30%로 제한
+                    overflowY: 'auto', // 내용이 많을 경우 스크롤 가능
+                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)', // 그림자 추가
+                }}
+            >
+                <h3 style={{ margin: '0 0 10px', fontSize: '14px', fontWeight: 'bold' }}> 범례 </h3>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {legendItems.map(({ symbol, color }) => (
+                        <li key={symbol} style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                            <span
+                                style={{
+                                    width: '16px',
+                                    height: '16px',
+                                    backgroundColor: color,
+                                    display: 'inline-block',
+                                    marginRight: '8px',
+                                    border: '1px solid #000',
+                                }}
+                            />
+                            <span style={{ fontSize: '12px' }}>{symbol}</span>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
             <svg
                 width={Math.max(1500, blocks.length * 200)}
                 height={1000}
@@ -259,7 +296,7 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
                                 node={node}
                                 onHover={() => handleHoveredNode(node)}
                                 onClick={() => handleNodeClick(node)} // 클릭 핸들러 추가
-                            /> 
+                            />
                         ))}
                         {block.afterNodes.map(node => (
                             <Node
@@ -269,11 +306,11 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
                                 onClick={() => handleNodeClick(node)} // 클릭 핸들러 추가
                             />
                         ))}
-                        
+
                     </Block>
                 ))}
 
-                
+
                 {hoveredNode && <HoverInfo node={hoveredNode} />}
             </svg>
         </div>

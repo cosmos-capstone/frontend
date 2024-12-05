@@ -1,7 +1,7 @@
 export const MIN_BLOCK_WIDTH = 50; // 최소 블록 너비
 export const MAX_BLOCK_WIDTH = 200; // 최대 블록 너비
 export const BASE_TIME_DIFFERENCE = 1; // 기본 시간 차이 (1일)
-export const MAX_TIME_DIFFERENCE = 30; // 최대 고려할 시간 차이 (30일)
+export const MAX_TIME_DIFFERENCE = 365; // 최대 고려할 시간 차이 (30일)
 
 export function calculateBlockWidth(normalizedTimeDifference: number): number {
     // 정규화된 시간 차이를 0-1 사이의 값으로 변환
