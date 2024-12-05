@@ -3,7 +3,7 @@
 import { NodeProps } from './types';
 import { ASSET_COLORS } from '../../constants/assetColors';
 
-export const Node = ({ node,onHover }: NodeProps) => {
+export const Node = ({ node,onHover, onClick}: NodeProps) => {
     
 
     const getBackgroundColor = () => {
@@ -33,6 +33,8 @@ export const Node = ({ node,onHover }: NodeProps) => {
                 transform={`translate(${node.position.x_position},${node.position.y_position})`}
                 onMouseEnter={() => onHover(node)}
             onMouseLeave={() => onHover(null)}
+            onClick={() => onClick(node)}
+            style={{ cursor: 'pointer', pointerEvents: 'all' }} // 클릭 가능한 손 모양과 pointer-events 활성화
             >
                 {/* 기본 노드 */}
                 {node.state === 'index' ? (

@@ -85,7 +85,7 @@ export default function Home() {
       <Dashboard />
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
         {isChartDataReady ? (
-          <CustomFlowChart transactions={existingTransactions} />
+          <CustomFlowChart transactions={modifiedTransactions} setCurrentEditIndex={setCurrentEditIndex} />
         ) : (
           <div className="flex justify-center items-center w-full h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
@@ -139,7 +139,7 @@ function createTodayTransaction(): Transaction {
   };
 }
 
-const EditTransactionRow = ({
+export const EditTransactionRow = ({
   transaction,
   index,
   handleInputChange,

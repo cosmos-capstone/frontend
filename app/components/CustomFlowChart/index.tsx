@@ -9,8 +9,9 @@ import { Node } from './Node';
 import { Edge } from './Edge';
 import { HoverInfo } from './HoverInfo';
 import { CustomFlowChartProps } from './types'; 
+import {extractIndexFromString} from '@/app/utils/extractIndexFromString';
  
-export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
+export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlowChartProps) => {
     const [blocks, setBlocks] = useState<BlockType[]>([]);
     const [edges, setEdges] = useState<EdgeType[]>([]);
     const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
@@ -172,6 +173,14 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
         initializeBlocks();
     }, [transactions]);
 
+
+    const handleNodeClick = (node) => {
+        
+        setCurrentEditIndex(extractIndexFromString(node.id));
+        console.log("kkkkNode has been clicked - node id : ",extractIndexFromString(node.id));
+        
+    };
+
     return (
         <div style={{
             overflowX: 'auto',
@@ -209,6 +218,9 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                     </marker>
                 </defs>
 
+                {edges.map(edge => (
+                    <Edge key={edge.id} edge={edge} blocks={blocks} />
+                ))}
                 {blocks.map((block, index) => (
                     <Block key={`${block.date.toISOString()}-${index}`} block={block}>
                         {block.beforeNodes.map(node => (
@@ -216,6 +228,7 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                                 key={node.id}
                                 node={node}
                                 onHover={setHoveredNode}
+                                onClick={() => handleNodeClick(node)} // 클릭 핸들러 추가
                             />
                         ))}
                         {block.afterNodes.map(node => (
@@ -223,15 +236,14 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                                 key={node.id}
                                 node={node}
                                 onHover={setHoveredNode}
+                                onClick={() => handleNodeClick(node)} // 클릭 핸들러 추가
                             />
                         ))}
                         
                     </Block>
                 ))}
 
-                {edges.map(edge => (
-                    <Edge key={edge.id} edge={edge} blocks={blocks} />
-                ))}
+                
                 {hoveredNode && <HoverInfo node={hoveredNode} />}
             </svg>
         </div>
