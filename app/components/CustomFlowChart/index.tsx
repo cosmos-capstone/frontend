@@ -9,7 +9,7 @@ import { Node } from './Node';
 import { Edge } from './Edge';
 import { HoverInfo } from './HoverInfo';
 import { CustomFlowChartProps } from './types'; 
-
+ 
 export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
     const [blocks, setBlocks] = useState<BlockType[]>([]);
     const [edges, setEdges] = useState<EdgeType[]>([]);
@@ -50,9 +50,12 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                                 target: currentNode.id,
                                 type: 'buy'
                             });
+                            console.log(`iiiAdding Edge: source=${prevNode.id}, target=${currentNode?.id}, symbol=${prevNode.asset_symbol}, index=${index}`);
+
                         }
                     });
-                    console.log("fff index nodes")
+                    
+                    console.log("fffindex nodes")
                    
                     
                 }

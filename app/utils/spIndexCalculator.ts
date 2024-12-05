@@ -18,7 +18,7 @@ export async function createIndicatorNodes(
         id: `INDICATOR-${index}-^GSPC`,
         
         date: state=='before' ? history.date : previousBlock.date,
-        amount: 1,// 수정 가격에 맞춰서
+        amount: 0.012,// 수정 가격에 맞춰서
         asset_symbol: '^GSPC',
         position: { x_position: 0, y_position: 0 },
         type: 'american_stock',// 수정 형식 추가하기
@@ -29,7 +29,7 @@ export async function createIndicatorNodes(
     nodes.push({
         id: `INDICATOR-${index}-^GSPC`,
         date: history.date,
-        amount: 1,// 수정 가격에 맞춰서
+        amount: 0.012,// 수정 가격에 맞춰서
         asset_symbol: '^GSPC',
         position: {
             

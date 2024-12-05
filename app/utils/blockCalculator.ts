@@ -5,7 +5,7 @@ import { calculateNodeSize, calculateAssetValue } from './nodeCalculator';
 import { BLOCK_CONFIG, nodeBaseWidth } from '../constants/globalConfig';
 import { Transaction } from '../types/transaction';
 import { blockWidthCalculate, MIN_BLOCK_WIDTH } from '@/app/utils/calculateBlockWidth';
-import { createIndicatorNodes } from '@/app/utils/spIndexCalculator'
+
 
 interface CreateNormalNodeParams {
     nodes: Node[];
@@ -201,7 +201,7 @@ async function createBeforeNodes(
  const indicatorSize = await calculateNodeSize({
     id: `INDICATOR-${index}-^GSPC`,
     date: history.date,// 수정수정
-    amount: 1,// 수정 가격에 맞춰서
+    amount: 0.03,// 수정 가격에 맞춰서
     asset_symbol: '^GSPC',
     position: { x_position: 0, y_position: 0 },
     type: 'american_stock',// 수정 형식 추가하기
@@ -212,7 +212,7 @@ async function createBeforeNodes(
 nodes.push({
     id: `INDICATOR-${index}-^GSPC`,
     date: history.date,
-    amount: 1,// 수정 가격에 맞춰서
+    amount: 0.03,// 수정 가격에 맞춰서
     asset_symbol: '^GSPC',
     position: {
 
@@ -227,7 +227,7 @@ nodes.push({
     value: history.state.cash
 });
 
-
+ 
 
     // Deposit node
 
@@ -333,7 +333,7 @@ async function createAfterNodes(
         id: `INDICATOR-${index}-^GSPC`,
 
         date: history.date,
-        amount: 1,// 수정 가격에 맞춰서
+        amount: 0.03,// 수정 가격에 맞춰서
         asset_symbol: '^GSPC',
         position: { x_position: 0, y_position: 0 },
         type: 'american_stock',// 수정 형식 추가하기
@@ -344,7 +344,7 @@ async function createAfterNodes(
     nodes.push({
         id: `INDICATOR-${index}-^GSPC`,
         date: history.date,
-        amount: 1,// 수정 가격에 맞춰서
+        amount: 0.03,// 수정 가격에 맞춰서
         asset_symbol: '^GSPC',
         position: {
 
@@ -442,7 +442,7 @@ export async function createBlock(
         console.log(`Block ${index} - No previous block`);
     }
 
-    const maxAssetValue = 1999990; // 수정 임시 목업
+    const maxAssetValue = 99990; // 수정 임시 목업
     // const maxAssetValue = await calculateMaxAssetValue(history);
     const beforeNodes = await createBeforeNodes(history, maxAssetValue, index, currentTransaction, previousBlock, previousNodePositions);
     const afterNodes = await createAfterNodes(history, maxAssetValue, index, previousBlock);
