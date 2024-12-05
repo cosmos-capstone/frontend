@@ -31,9 +31,9 @@ export const Node = ({ node,onHover, onClick}: NodeProps) => {
         <>
             <g
                 transform={`translate(${node.position.x_position},${node.position.y_position})`}
-                onMouseEnter={() => onHover(node)}
+                onMouseEnter={() => onHover}
             onMouseLeave={() => onHover(null)}
-            onClick={() => onClick(node)}
+            onClick={() => onClick}
             style={{ cursor: 'pointer', pointerEvents: 'all' }} // 클릭 가능한 손 모양과 pointer-events 활성화
             >
                 {/* 기본 노드 */}

@@ -10,7 +10,7 @@ import { fetchStockData } from '../utils/api';
 import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
 import AssetTracker from '@/app/components/AssetTracker';
 import { TRANSACTION_DATA, TRANSACTION_DATA_1 } from '@/app/data/transactionsMockup'
-import { initializeStockData, printCachedStockData } from '@/app/utils/api'
+import { initializeStockData } from '@/app/utils/api'
 import { addSymbolColor } from '@/app/constants/assetColors'
 import { Transaction } from "@/app/types/transaction";
 
@@ -61,7 +61,7 @@ export default function Home() {
       // console.log('Stock data initialization completed');
 
 
-      printCachedStockData();
+      // printCachedStockData();
       // 모든 고유한 심볼에 색상 배정
       symbols.forEach(symbol => {
         addSymbolColor(symbol);

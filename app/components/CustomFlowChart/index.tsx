@@ -14,7 +14,7 @@ import {extractIndexFromString} from '@/app/utils/extractIndexFromString';
 export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlowChartProps) => {
     const [blocks, setBlocks] = useState<BlockType[]>([]);
     const [edges, setEdges] = useState<EdgeType[]>([]);
-    const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
+    const [hoveredNode, setHoveredNode] = useState<Node>(null);
     // const [hoveredNode] = useState<Node | null>(null);
     
     
