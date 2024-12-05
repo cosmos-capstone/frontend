@@ -1,7 +1,7 @@
 import { AssetHistory, AssetState } from '../types/types';
 import { Transaction } from '../types/transaction';
 
-import { fetchStockData, getStockPrice } from '../utils/api';
+import {  getStockPrice } from '../utils/api';
 
 export let maxAssetValue = 10;
 async function calculateMaxAssetValue(history: AssetHistory): Promise<number> {

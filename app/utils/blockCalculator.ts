@@ -1,7 +1,7 @@
 // utils/blockCalculator.ts
 import { Block, AssetHistory, Node } from '../types/types';
 import { calculateNodeSize, calculateAssetValue } from './nodeCalculator';
-import { getStockPrice } from '@/app/utils/api';
+
 import { BLOCK_CONFIG, nodeBaseWidth } from '../constants/globalConfig';
 import { Transaction } from '../types/transaction';
 import { blockWidthCalculate, MIN_BLOCK_WIDTH } from '@/app/utils/calculateBlockWidth';
