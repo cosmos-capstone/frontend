@@ -75,7 +75,7 @@ async function createSellNodes(
         amount: sellQuantity,
         asset_symbol: symbol,
         position: { x_position: 0, y_position: 0 },
-        type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+        type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
         action: 'sell',
         state: 'before'
     }, maxAssetValue);
@@ -92,7 +92,7 @@ async function createSellNodes(
             x_position: BLOCK_CONFIG.leftMargin,
             y_position: currentY
         },
-        type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+        type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
         action: 'sell',
         state: 'before',
         size: sellNodeSize,
@@ -108,7 +108,7 @@ async function createSellNodes(
             amount: remainingQuantity,
             asset_symbol: symbol,
             position: { x_position: 0, y_position: 0 },
-            type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+            type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
             action: 'buy',
             state: 'before'
         }, maxAssetValue);
@@ -122,7 +122,7 @@ async function createSellNodes(
                 x_position: BLOCK_CONFIG.leftMargin,
                 y_position: currentY + sellNodeSize.height + 20
             },
-            type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+            type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
             action: 'buy',
             state: 'before',
             size: holdNodeSize,
@@ -170,7 +170,7 @@ async function createNormalNode({// In this function you get the real asset valu
             amount: quantity,
             asset_symbol: symbol,
             position: { x_position: 0, y_position: 0 },
-            type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+            type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
             action: 'buy',
             state: state
         }, maxAssetValue);
@@ -186,7 +186,7 @@ async function createNormalNode({// In this function you get the real asset valu
             x_position: state === 'before' ? BLOCK_CONFIG.leftMargin : blockWidth - nodeBaseWidth,
             y_position: currentY
         },
-        type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+        type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
         action: 'buy',
         state: state,
         size: nodeSize,
@@ -307,7 +307,7 @@ if (previousBlock){
                 symbol: symbol,
                 quantity: quantity,
                 date: history.date,
-                type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+                type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
             });
             await createSellNodes(
                 nodes, symbolY, index, symbol, quantity,
@@ -330,7 +330,7 @@ if (previousBlock){
                     date: previousBlock.date,
                     state: 'before',
                     nodeHeight: previousNodePositions?.[symbol]?.height || 9999999,
-                    type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+                    type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
                 }//임시 에러 처리부분
             );
             currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
@@ -435,7 +435,7 @@ async function createAfterNodes(
                 date: history.date,
                 state: 'after',
                 blockWidth: blockWidth,
-                type: symbol.includes('.KS') ? 'korean_stock' : 'american_stock',
+                type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
 
             }
         );

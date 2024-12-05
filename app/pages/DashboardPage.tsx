@@ -20,19 +20,21 @@ import { Transaction } from "@/app/types/transaction";
 //수정 임시 여기 TRANSACTION_DATA 다 existingTransactions 로 바꾸기
 export default function Home() {
   const [isChartDataReady, setIsChartDataReady] = useState(false);
-  const [existingTransactions, setExistingTransactions] = useState<Transaction[]>(TRANSACTION_DATA_1);
+  const [existingTransactions, setExistingTransactions] = useState<Transaction[]>();
   const [modifiedTransactions, setModifiedTransactions] = useState<Transaction[]>();
   const [koreanStocks, setKoreanStocks] = useState<StockListElement[]>([]);
   const [americanStocks, setAmericanStocks] = useState<StockListElement[]>([]);
   const [currentEditIndex, setCurrentEditIndex] = useState(-1);
 
   useEffect(() => {
-    // fetchTransactions(setExistingTransactions);
-    //   fetchTransactions(setModifiedTransactions);
-    //   fetchStockData("korean_stocks", setKoreanStocks);
-    //   fetchStockData("american_stocks", setAmericanStocks);
 
-    fetchData();
+
+
+    const fetchDataAsync = async () => {
+      await fetchData();
+    };
+
+    fetchDataAsync();
 
   }, []);
   const fetchData = async () => {
@@ -44,35 +46,33 @@ export default function Home() {
         fetchStockData("korean_stocks", setKoreanStocks),
         fetchStockData("american_stocks", setAmericanStocks)
       ]);
+      await getChartData();
 
-      // 모든 비동기 작업이 완료된 후 initializeChartData 호출
-      getChartData();
+
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+
+
   };
+
   async function getChartData() {
     try {
       //today block 을 만들기 위해 뒤에 추가
-      setExistingTransactions([...existingTransactions, createTodayTransaction()]);
+      // setExistingTransactions([...existingTransactions, createTodayTransaction()]);
       // TRANSACTION_DATA에서 모든 고유한 심볼을 추출
-      const symbols = Array.from(new Set(existingTransactions.map(t => t.asset_symbol).filter(Boolean).concat('^GSPC')));
-
-
-
+      console.log("kkkkkexistingTransactions : ", existingTransactions)
+      // const symbols = Array.from(new Set(existingTransactions.map(t => t.asset_symbol).filter(Boolean).concat('^GSPC')));
+      const symbols = ['^GSPC' , '020180.KQ','326030.KS','005930.KS','NVDA','WMT','009520.KQ'];
       // console.log('Starting to initialize stock data for symbols:', symbols);
       await initializeStockData(symbols);
       // console.log('Stock data initialization completed');
-
-
       // printCachedStockData();
       // 모든 고유한 심볼에 색상 배정
       symbols.forEach(symbol => {
         addSymbolColor(symbol);
       });
       // console.log('Stock color initialization completed');
-
-
       setIsChartDataReady(true);
     } catch (error) {
       console.error('Error initializing chart data:', error);
@@ -88,18 +88,18 @@ export default function Home() {
     <div className="flex flex-col space-y-8 bg-gray-100">
       <Dashboard />
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
+        {/* {isChartDataReady ? (
+          <CustomFlowChart transactions={existingTransactions} setCurrentEditIndex={setCurrentEditIndex} />
+        ) : (
+          <div className="flex justify-center items-center w-full h-64">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+          </div>)} */}
         {isChartDataReady ? (
           <CustomFlowChart transactions={modifiedTransactions} setCurrentEditIndex={setCurrentEditIndex} />
         ) : (
           <div className="flex justify-center items-center w-full h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
           </div>)}
-        {/* {isChartDataReady ? (
-          <CustomFlowChart transactions={existingTransactions} />
-        ) : (
-          <div className="flex justify-center items-center w-full h-64">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-          </div>)} */}
         <OptionSelector />
       </div>
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
@@ -124,8 +124,10 @@ export default function Home() {
           </div>)} */}
 
       </div>
-      <AssetTracker transactionData={existingTransactions} />
-      <AssetTracker transactionData={TRANSACTION_DATA} />
+      {modifiedTransactions && modifiedTransactions.length > 0 && (
+        <AssetTracker transactionData={modifiedTransactions} />
+      )}
+
 
     </div>
   );

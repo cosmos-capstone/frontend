@@ -19,6 +19,7 @@ export async function fetchTransactions(setExistingTransactions: (transactions: 
         transaction_date: new Date(item.transaction_date)
     })).sort((a: Transaction, b: Transaction) => a.transaction_date.getTime() - b.transaction_date.getTime());
     setExistingTransactions(sortedData);
+    console.log ("kkkexistingTransactions : ",sortedData);
 }
 
 export async function fetchStockData(endpoint: string, setState: (data: StockListElement[]) => void) {

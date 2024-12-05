@@ -18,7 +18,10 @@ export function trackAssets(transactions: Transaction[]): AssetHistory[] {
 
     // 현재 거래 처리
     if (transaction.transaction_type === 'deposit') {
-      currentState.cash += transaction.transaction_amount;
+      // console.log("lll Deposit add",currentState.cash );
+      // console.log("lllCurrent cash type:", typeof currentState.cash);
+      currentState.cash = Number(currentState.cash) + Number(transaction.transaction_amount);
+      
     } 
     else if (transaction.transaction_type === 'buy') {
       currentState.cash -= transaction.transaction_amount;
