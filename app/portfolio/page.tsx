@@ -230,7 +230,7 @@ const Portfolio = () => {
                 <div key={index} className="flex items-center mb-3">
                   <ImageWithBackground
                     // 이부분 로컬에선 /images로 github에선 ./image로 변경
-                    src={value.sector && value.sector != "none" ? `./images/${value.sector}.png` : `/page.tsximages/Other.png`}
+                    src={value.sector && value.sector != "none" ? `/images/${value.sector}.png` : `/page.tsximages/Other.png`}
                     alt={value.sector && value.sector !== "none" ? `${value.sector} Sector` : "Other Sector"}
                   />
                   <div className="ml-4">
@@ -298,7 +298,7 @@ const Portfolio = () => {
           {/* 섹터 이미지와 이름 */}
           <div className="flex items-center mb-4">
             <ImageWithBackground
-              src={sector && sector !== "none" ? `./images/${sector}.png` : `/images/Other.png`}
+              src={sector && sector !== "none" ? `/images/${sector}.png` : `/images/Other.png`}
               alt={`${sectorTranslations[sector] || sector} Sector`}
             />
             <h3 className="text-blue-600 font-bold ml-4">
