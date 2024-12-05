@@ -55,6 +55,7 @@ const Portfolio = () => {
       try {
         const por_response = await fetch('https://cosmos-backend.cho0h5.org/transaction/portfolio');
         const por_data = await por_response.json();
+        console.log(por_data);
 
         const reb_response = await fetch('https://cosmos-backend.cho0h5.org/transaction/rebalancing');
         const reb_data = await reb_response.json();
@@ -229,7 +230,7 @@ const Portfolio = () => {
                 <div key={index} className="flex items-center mb-3">
                   <ImageWithBackground
                     // 이부분 로컬에선 /images로 github에선 ./image로 변경
-                    src={value.sector && value.sector != "none" ? `https://raw.githubusercontent.com/cosmos-capstone/frontend/main/public/images//${encodeURIComponent(value.sector)}.png` : `/page.tsximages/Other.png`}
+                    src={value.sector && value.sector != "none" ? `https://raw.githubusercontent.com/cosmos-capstone/frontend/main/public/images/${value.sector}.png` : `/page.tsximages/Other.png`}
                     alt={value.sector && value.sector !== "none" ? `${value.sector} Sector` : "Other Sector"}
                   />
                   <div className="ml-4">
@@ -247,7 +248,7 @@ const Portfolio = () => {
           )}
         </div>
       
-        <div className="bg-gray-100 rounded-2xl shadow-lg p-8 w-96 text-center ml-60">
+        <div className="bg-gray-100 rounded-2xl shadow-lg p-8 w-96 text-center ml-20">
           <p className="text-xl font-bold mb-6 text-blue-500">TOP3 업종 분포</p>
           {Object.entries(sectorDistribution)
             .sort(([, rateA], [, rateB]) => rateB - rateA) // 비율 기준으로 내림차순 정렬
@@ -318,7 +319,9 @@ const Portfolio = () => {
                       <p className="text-gray-700 font-semibold">{stock.name}</p>
                       <p className="text-gray-500">
                         시가총액: <span className='font-bold'>
+                          <span className="text-red-500 font-bold">
                           {stock.marketCap.toLocaleString()} USD
+                          </span>
                           </span>
                       </p>
                     </li>
