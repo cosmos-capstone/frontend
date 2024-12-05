@@ -56,9 +56,9 @@ export default function Home() {
       
 
 
-      console.log('Starting to initialize stock data for symbols:', symbols);
+      // console.log('Starting to initialize stock data for symbols:', symbols);
       await initializeStockData(symbols);
-      console.log('Stock data initialization completed');
+      // console.log('Stock data initialization completed');
 
 
       printCachedStockData();
@@ -66,7 +66,7 @@ export default function Home() {
       symbols.forEach(symbol => {
         addSymbolColor(symbol);
       });
-      console.log('Stock color initialization completed');
+      // console.log('Stock color initialization completed');
 
 
       setIsChartDataReady(true);

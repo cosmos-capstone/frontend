@@ -195,7 +195,7 @@ async function createBeforeNodes(
     let currentY = 50;
 
     if (!history.previousState) return nodes;
-    console.log("hhhPrevious block check ", previousBlock);
+    // console.log("hhhPrevious block check ", previousBlock);
 
  //indicator 부분
  const indicatorSize = await calculateNodeSize({
@@ -245,7 +245,7 @@ nodes.push({
     }, maxAssetValue);
 
 
-    console.log("hhhhPrevious block check ", previousBlock);
+    // console.log("hhhhPrevious block check ", previousBlock);
 
  
 
@@ -291,7 +291,7 @@ nodes.push({
             // (quantity - currentTransaction.quantity > 0 ? 2 : 1);
 
         } else {
-            console.log("hhhhhPrevious block check ", previousBlock);
+            // console.log("hhhhhPrevious block check ", previousBlock);
             await createNormalNode(
                 {
                     nodes: nodes,
@@ -436,19 +436,19 @@ export async function createBlock(
                 height: node.size.height
             };
         });
-        console.log(`Block ${index} - Previous Node Positions:`, previousNodePositions);
+        // console.log(`Block ${index} - Previous Node Positions:`, previousNodePositions);
     }
     else {
-        console.log(`Block ${index} - No previous block`);
+        // console.log(`Block ${index} - No previous block`);
     }
 
     const maxAssetValue = 99990; // 수정 임시 목업
     // const maxAssetValue = await calculateMaxAssetValue(history);
     const beforeNodes = await createBeforeNodes(history, maxAssetValue, index, currentTransaction, previousBlock, previousNodePositions);
     const afterNodes = await createAfterNodes(history, maxAssetValue, index, previousBlock);
-    console.log(`Block ${index} - Created Node Positions:`);
-    console.log('Before Nodes:', beforeNodes.map(node => ({ symbol: node.asset_symbol, y: node.position.y_position })));
-    console.log('After Nodes:', afterNodes.map(node => ({ symbol: node.asset_symbol, y: node.position.y_position })));
+    // console.log(`Block ${index} - Created Node Positions:`);
+    // console.log('Before Nodes:', beforeNodes.map(node => ({ symbol: node.asset_symbol, y: node.position.y_position })));
+    // console.log('After Nodes:', afterNodes.map(node => ({ symbol: node.asset_symbol, y: node.position.y_position })));
 
 
 

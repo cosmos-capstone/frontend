@@ -51,12 +51,12 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
                                 target: currentNode.id,
                                 type: 'buy'
                             });
-                            console.log(`iiiAdding Edge: source=${prevNode.id}, target=${currentNode?.id}, symbol=${prevNode.asset_symbol}, index=${index}`);
+                            // console.log(`iiiAdding Edge: source=${prevNode.id}, target=${currentNode?.id}, symbol=${prevNode.asset_symbol}, index=${index}`);
 
                         }
                     });
                     
-                    console.log("fffindex nodes")
+                    // console.log("fffindex nodes")
                    
                     
                 }
@@ -166,7 +166,7 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
             setBlocks(newBlocks);
             setEdges(newEdges);
             newEdges.forEach((edge) => {
-                console.log(`gggEdge ID: ${edge.id}, Source: ${edge.source}, Target: ${edge.target}, Type: ${edge.type}`);
+                // console.log(`gggEdge ID: ${edge.id}, Source: ${edge.source}, Target: ${edge.target}, Type: ${edge.type}`);
             });
         };
 
@@ -177,7 +177,7 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
     const handleNodeClick = (node) => {
         
         setCurrentEditIndex(extractIndexFromString(node.id));
-        console.log("kkkkNode has been clicked - node id : ",extractIndexFromString(node.id));
+        // console.log("kkkkNode has been clicked - node id : ",extractIndexFromString(node.id));
         
     };
 

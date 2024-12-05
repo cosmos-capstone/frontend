@@ -12,8 +12,7 @@ export interface NodeSize {
 
 export interface NodeProps {
     node: Node;
-    
-    onHover: (node: Node | null) => void;
+    onHover: (node: Node) => void;
 }
 
 export interface EdgeProps {
@@ -28,5 +27,5 @@ export interface BlockProps {
 
 export interface CustomFlowChartProps {
     transactions: Transaction[];
-    setCurrentEditIndex: Dispatch<SetStateAction<number>>; /
+    setCurrentEditIndex: Dispatch<SetStateAction<number>>;
 }

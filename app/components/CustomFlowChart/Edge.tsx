@@ -39,9 +39,7 @@ export const Edge = ({ edge, blocks }: EdgeProps) => {
     // const curveHeight = Math.max(startHeight, endHeight) * 0.5; // 곡선의 높이    // unused variable error
 
     // Log input values for debugging
-    console.log(
-        `gggSource Node: ${sourceNode.id}, gggTarget Node: ${targetNode}, gggStart X, Y: ${startX}, ${startY}, gggEnd X, Y: ${endX}, ${endY}, gggSource Color: ${sourceColor}, gggTarget Color: ${targetColor}`
-      );
+    // console.log(`gggSource Node: ${sourceNode.id}, gggTarget Node: ${targetNode}, gggStart X, Y: ${startX}, ${startY}, gggEnd X, Y: ${endX}, ${endY}, gggSource Color: ${sourceColor}, gggTarget Color: ${targetColor}`);
       
 
 
