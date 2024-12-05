@@ -9,11 +9,12 @@ import { Node } from './Node';
 import { Edge } from './Edge';
 import { HoverInfo } from './HoverInfo';
 import { CustomFlowChartProps } from './types'; 
-
-export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
+import {extractIndexFromString} from '@/app/utils/extractIndexFromString';
+ 
+export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlowChartProps) => {
     const [blocks, setBlocks] = useState<BlockType[]>([]);
     const [edges, setEdges] = useState<EdgeType[]>([]);
-    const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
+    const [hoveredNode, setHoveredNode] = useState<Node>(null);
     // const [hoveredNode] = useState<Node | null>(null);
     
     
@@ -50,9 +51,16 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                                 target: currentNode.id,
                                 type: 'buy'
                             });
+                            // console.log(`iiiAdding Edge: source=${prevNode.id}, target=${currentNode?.id}, symbol=${prevNode.asset_symbol}, index=${index}`);
+
                         }
                     });
+                    
+                    // console.log("fffindex nodes")
+                   
+                    
                 }
+               
 
                 // 2. 블록 내 거래 엣지
                 const currentTransaction = transactions.find(
@@ -157,10 +165,21 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
 
             setBlocks(newBlocks);
             setEdges(newEdges);
+            // newEdges.forEach((edge) => {
+                // console.log(`gggEdge ID: ${edge.id}, Source: ${edge.source}, Target: ${edge.target}, Type: ${edge.type}`);
+            // });
         };
 
         initializeBlocks();
     }, [transactions]);
+
+
+    const handleNodeClick = (node) => {
+        
+        setCurrentEditIndex(extractIndexFromString(node.id));
+        // console.log("kkkkNode has been clicked - node id : ",extractIndexFromString(node.id));
+        
+    };
 
     return (
         <div style={{
@@ -199,6 +218,9 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                     </marker>
                 </defs>
 
+                {edges.map(edge => (
+                    <Edge key={edge.id} edge={edge} blocks={blocks} />
+                ))}
                 {blocks.map((block, index) => (
                     <Block key={`${block.date.toISOString()}-${index}`} block={block}>
                         {block.beforeNodes.map(node => (
@@ -206,6 +228,7 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                                 key={node.id}
                                 node={node}
                                 onHover={setHoveredNode}
+                                onClick={() => handleNodeClick(node)} // 클릭 핸들러 추가
                             />
                         ))}
                         {block.afterNodes.map(node => (
@@ -213,21 +236,14 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                                 key={node.id}
                                 node={node}
                                 onHover={setHoveredNode}
+                                onClick={() => handleNodeClick(node)} // 클릭 핸들러 추가
                             />
                         ))}
-                        {block.indexNodes.map(node => (
-                            <Node
-                                key={node.id}
-                                node={node}
-                                onHover={setHoveredNode}
-                            />
-                        ))}
+                        
                     </Block>
                 ))}
 
-                {edges.map(edge => (
-                    <Edge key={edge.id} edge={edge} blocks={blocks} />
-                ))}
+                
                 {hoveredNode && <HoverInfo node={hoveredNode} />}
             </svg>
         </div>

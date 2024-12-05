@@ -10,7 +10,7 @@ import { fetchStockData } from '../utils/api';
 import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
 import AssetTracker from '@/app/components/AssetTracker';
 import { TRANSACTION_DATA, TRANSACTION_DATA_1 } from '@/app/data/transactionsMockup'
-import { initializeStockData, printCachedStockData } from '@/app/utils/api'
+import { initializeStockData } from '@/app/utils/api'
 import { addSymbolColor } from '@/app/constants/assetColors'
 import { Transaction } from "@/app/types/transaction";
 
@@ -52,20 +52,21 @@ export default function Home() {
       //today block 을 만들기 위해 뒤에 추가
       setExistingTransactions([...existingTransactions,createTodayTransaction()]);
       // TRANSACTION_DATA에서 모든 고유한 심볼을 추출
-      const symbols = Array.from(new Set(existingTransactions.map(t => t.asset_symbol).filter(Boolean)));
+      const symbols = Array.from(new Set(existingTransactions.map(t => t.asset_symbol).filter(Boolean).concat('^GSPC')));
+      
 
 
-      console.log('Starting to initialize stock data for symbols:', symbols);
+      // console.log('Starting to initialize stock data for symbols:', symbols);
       await initializeStockData(symbols);
-      console.log('Stock data initialization completed');
+      // console.log('Stock data initialization completed');
 
 
-      printCachedStockData();
+      // printCachedStockData();
       // 모든 고유한 심볼에 색상 배정
       symbols.forEach(symbol => {
         addSymbolColor(symbol);
       });
-      console.log('Stock color initialization completed');
+      // console.log('Stock color initialization completed');
 
 
       setIsChartDataReady(true);
@@ -84,7 +85,7 @@ export default function Home() {
       <Dashboard />
       <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
         {isChartDataReady ? (
-          <CustomFlowChart transactions={existingTransactions} />
+          <CustomFlowChart transactions={modifiedTransactions} setCurrentEditIndex={setCurrentEditIndex} />
         ) : (
           <div className="flex justify-center items-center w-full h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
@@ -138,7 +139,7 @@ function createTodayTransaction(): Transaction {
   };
 }
 
-const EditTransactionRow = ({
+export const EditTransactionRow = ({
   transaction,
   index,
   handleInputChange,

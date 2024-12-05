@@ -38,21 +38,21 @@ export async function fetchStockData(endpoint: string, setState: (data: StockLis
 
 // API에서 주식 데이터를 가져와 캐시에 저장하는 함수
 export async function fetchAndCacheStockData(symbol: string): Promise<void> {
-    console.log(`bbbAttempting to fetch data for ${symbol}`);
+    // console.log(`bbbAttempting to fetch data for ${symbol}`);
     try {
         const response = await fetch(`https://cosmos-backend.cho0h5.org/market_data/stock/${symbol}/prices`);
-        console.log(`bbbResponse status for ${symbol}: ${response.status}`);
+        // console.log(`bbbResponse status for ${symbol}: ${response.status}`);
 
         if (!response.ok) {
             throw new Error(`bbbHTTP error! status: ${response.status}`);
         }
 
         const data: StockPriceData = await response.json();
-        console.log(`bbbReceived data for ${symbol}:`, JSON.stringify(data).slice(0, 200) + '...'); // 데이터의 처음 200자만 출력
+        // console.log(`bbbReceived data for ${symbol}:`, JSON.stringify(data).slice(0, 200) + '...'); // 데이터의 처음 200자만 출력
 
         stockDataCache[symbol] = data;
-        console.log(`bbbSuccessfully fetched and cached data for ${symbol}`);
-        console.log(`bbbCache now contains data for symbols: ${Object.keys(stockDataCache).join(', ')}`);
+        // console.log(`bbbSuccessfully fetched and cached data for ${symbol}`);
+        // console.log(`bbbCache now contains data for symbols: ${Object.keys(stockDataCache).join(', ')}`);
     } catch (error) {
         console.error(`bbbError fetching stock data for ${symbol}:`, error);
         if (error instanceof Error) {
@@ -67,7 +67,7 @@ export async function fetchAndCacheStockData(symbol: string): Promise<void> {
 export function getStockPrice(symbol: string, date: Date): number | null {
     const stockData = stockDataCache[symbol];
     if (!stockData) {
-        console.log(`aaaaNo cached data available for ${symbol}`);
+        // console.log(`aaaaNo cached data available for ${symbol}`);
         return null;
     }
 
@@ -76,10 +76,10 @@ export function getStockPrice(symbol: string, date: Date): number | null {
 
     if (priceData) {
         const price = parseFloat(priceData.close_price);
-        console.log(`aaaRetrieved price for ${symbol} on ${dateString}: ${price}`);
+        // console.log(`aaaRetrieved price for ${symbol} on ${dateString}: ${price}`);
         return price;
     } else {
-        console.log(`aaaNo price data available for ${symbol} on ${dateString}`);
+        // console.log(`aaaNo price data available for ${symbol} on ${dateString}`);
         return null;
     }
 }
@@ -90,29 +90,29 @@ export async function initializeStockData(symbols: string[]): Promise<void> {
     }
 }
 // 저장된 데이터를 출력하는 함수
-export function printCachedStockData(symbol?: string): void {
-    console.log("cccprintCachedStockData function called");
-    if (symbol) {
-        // 특정 심볼의 데이터 출력
-        if (stockDataCache[symbol]) {
-            const data = stockDataCache[symbol];
-            console.log(`Data for ${symbol}:`);
-            console.log(`Name: ${data.name}`);
-            console.log(`Currency: ${data.currency}`);
-            console.log(`Number of price entries: ${data.data.length}`);
-            console.log(`First entry: ${data.data[0].datetime}, ${data.data[0].close_price}`);
-            console.log(`Last entry: ${data.data[data.data.length - 1].datetime}, ${data.data[data.data.length - 1].close_price}`);
-        } else {
-            console.log(`cccNo cached data available for ${symbol}`);
-        }
-    } else {
-        // 모든 캐시된 데이터의 요약 출력
-        console.log("cccCached Stock Data Summary:");
-        for (const [sym, data] of Object.entries(stockDataCache)) {
-            console.log(`${sym}: ${data.name}, ${data.data.length} entries`);
-        }
-    }
-}
+// export function printCachedStockData(symbol?: string): void {
+//     console.log("cccprintCachedStockData function called");
+//     if (symbol) {
+//         // 특정 심볼의 데이터 출력
+//         if (stockDataCache[symbol]) {
+//             const data = stockDataCache[symbol];
+//             console.log(`Data for ${symbol}:`);
+//             console.log(`Name: ${data.name}`);
+//             console.log(`Currency: ${data.currency}`);
+//             console.log(`Number of price entries: ${data.data.length}`);
+//             console.log(`First entry: ${data.data[0].datetime}, ${data.data[0].close_price}`);
+//             console.log(`Last entry: ${data.data[data.data.length - 1].datetime}, ${data.data[data.data.length - 1].close_price}`);
+//         } else {
+//             console.log(`cccNo cached data available for ${symbol}`);
+//         }
+//     } else {
+//         // 모든 캐시된 데이터의 요약 출력
+//         console.log("cccCached Stock Data Summary:");
+//         for (const [sym, data] of Object.entries(stockDataCache)) {
+//             console.log(`${sym}: ${data.name}, ${data.data.length} entries`);
+//         }
+//     }
+// }
 
 // export async function getStockPrice(symbol: string, date: Date): Promise<number | null> {
 //     try {

@@ -44,27 +44,27 @@ export const calculateAssetValue = async ({
     
     if (price === null) {
         console.error(`dddFailed to get price for ${symbol} on ${date}`);
-        console.log(`dddAsset value set to 0 due to null price for ${symbol}`);
+        // console.log(`dddAsset value set to 0 due to null price for ${symbol}`);
         return 0;
     }
 
-    console.log(`dddProcessing ${symbol} (${type}) on ${date}`);
-    console.log(`dddPrice: ${price}, Amount: ${quantity}`);
+    // console.log(`dddProcessing ${symbol} (${type}) on ${date}`);
+    // console.log(`dddPrice: ${price}, Amount: ${quantity}`);
 
     let assetValue: number;
     if (type === 'american_stock') {
         assetValue = price * quantity * 1400;
-        console.log(`dddAmerican stock: ${price} * ${quantity} * 1400 = ${assetValue}`);
+        // console.log(`dddAmerican stock: ${price} * ${quantity} * 1400 = ${assetValue}`);
     } else if (type === 'korean_stock') {
         assetValue = price * quantity;
-        console.log(`dddKorean stock: ${price} * ${quantity} = ${assetValue}`);
+        // console.log(`dddKorean stock: ${price} * ${quantity} = ${assetValue}`);
     } else {
         console.error(`Unknown asset type: ${type}`);
         assetValue = 0;
-        console.log(`dddAsset value set to 0 due to unknown type for ${symbol}`);
+        // console.log(`dddAsset value set to 0 due to unknown type for ${symbol}`);
     }
 
-    console.log(`dddFinal asset value for ${symbol}: ${assetValue}`);
+    // console.log(`dddFinal asset value for ${symbol}: ${assetValue}`);
     return assetValue;
 }
 export const calculateNodePosition = (

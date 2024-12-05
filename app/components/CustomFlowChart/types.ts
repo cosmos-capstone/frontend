@@ -1,6 +1,10 @@
 // components/CustomFlowChart/types.ts
-import { Node, Edge, Block } from '../../types/types';
+import { Edge, Block } from '../../types/types';
+import { Node as modifyNode } from '@/app/types/types';
 import { Transaction } from '@/app/types/transaction';
+import {
+    SetStateAction,
+    Dispatch } from "react";
 
 export interface NodeSize {
     width: number;
@@ -8,9 +12,9 @@ export interface NodeSize {
 }
 
 export interface NodeProps {
-    node: Node;
-    
-    onHover: (node: Node | null) => void;
+    node: modifyNode;
+    onHover: Dispatch<SetStateAction<Node>>;
+    onClick: Dispatch<SetStateAction<Node>>;
 }
 
 export interface EdgeProps {
@@ -25,4 +29,5 @@ export interface BlockProps {
 
 export interface CustomFlowChartProps {
     transactions: Transaction[];
+    setCurrentEditIndex: Dispatch<SetStateAction<number>>;
 }

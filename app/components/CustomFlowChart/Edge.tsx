@@ -37,6 +37,13 @@ export const Edge = ({ edge, blocks }: EdgeProps) => {
     // const cp2x = endX - distance * curvature;    // unused variable error
 
     // const curveHeight = Math.max(startHeight, endHeight) * 0.5; // 곡선의 높이    // unused variable error
+
+    // Log input values for debugging
+    // console.log(`gggSource Node: ${sourceNode.id}, gggTarget Node: ${targetNode}, gggStart X, Y: ${startX}, ${startY}, gggEnd X, Y: ${endX}, ${endY}, gggSource Color: ${sourceColor}, gggTarget Color: ${targetColor}`);
+      
+
+
+
     const topPath = `
     M ${startX} ${startY}
     C ${startX + distance * 0.25} ${startY},

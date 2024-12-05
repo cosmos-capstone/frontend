@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import PieChart, { PieChartData } from '../components/PieChart';
 import CustomFlowChart from '../components/CustomFlowChart/index';
 import { Transaction } from '../types/transaction';
@@ -39,6 +39,8 @@ async function fetchProposedTransactions(
     setExistingTransactions(sortedData);
 }
 
+const noop: Dispatch<SetStateAction<number>> = () => { };
+
 const CompareRebalancing = () => {
     const [currProposedData, setCurrProposedData] = useState<PieChartData | null>(null);
     const [prev1ProposedData, setPrev1ProposedData] = useState<PieChartData | null>(null);
@@ -76,7 +78,7 @@ const CompareRebalancing = () => {
                 </div>
 
                 <div className="flex flex-row p-6 bg-white rounded-2xl border border-gray-200">
-                    <CustomFlowChart transactions={existingTransactions} />
+                    <CustomFlowChart transactions={existingTransactions} setCurrentEditIndex={noop} />
                 </div>
             </div>
 
@@ -87,7 +89,7 @@ const CompareRebalancing = () => {
                 </div>
 
                 <div className="flex flex-row p-6 bg-white rounded-2xl border border-gray-200">
-                    <CustomFlowChart transactions={prev1ProposedTransactions} />
+                    <CustomFlowChart transactions={prev1ProposedTransactions} setCurrentEditIndex={noop} />
                 </div>
             </div>
 
@@ -98,7 +100,7 @@ const CompareRebalancing = () => {
                 </div>
 
                 <div className="flex flex-row p-6 bg-white rounded-2xl border border-gray-200">
-                    <CustomFlowChart transactions={prev5ProposedTransactions} />
+                    <CustomFlowChart transactions={prev5ProposedTransactions} setCurrentEditIndex={noop} />
                 </div>
             </div>
         </>

@@ -34,7 +34,6 @@ export interface Block {
   };
   beforeNodes: Node[];
   afterNodes: Node[];
-  indexNodes: Node[];
   
 }
 
