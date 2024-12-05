@@ -9,7 +9,7 @@ import { fetchTransactions } from '../utils/api';
 import { fetchStockData } from '../utils/api';
 import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
 import AssetTracker from '@/app/components/AssetTracker';
-import { TRANSACTION_DATA, TRANSACTION_DATA_1 } from '@/app/data/transactionsMockup'
+// import { TRANSACTION_DATA, TRANSACTION_DATA_1 } from '@/app/data/transactionsMockup'
 import { initializeStockData } from '@/app/utils/api'
 import { addSymbolColor } from '@/app/constants/assetColors'
 import { Transaction } from "@/app/types/transaction";
@@ -25,11 +25,7 @@ export default function Home() {
   const [koreanStocks, setKoreanStocks] = useState<StockListElement[]>([]);
   const [americanStocks, setAmericanStocks] = useState<StockListElement[]>([]);
   const [currentEditIndex, setCurrentEditIndex] = useState(-1);
-
   useEffect(() => {
-
-
-
     const fetchDataAsync = async () => {
       await fetchData();
     };
@@ -132,18 +128,18 @@ export default function Home() {
     </div>
   );
 }
-function createTodayTransaction(): Transaction {
-  return {
-    id: -1,
-    transaction_date: new Date(),
-    transaction_type: "buy",
-    asset_category: "deposit",
-    asset_symbol: null,
-    asset_name: null,
-    quantity: 0,
-    transaction_amount: 1,
-  };
-}
+// function createTodayTransaction(): Transaction {
+//   return {
+//     id: -1,
+//     transaction_date: new Date(),
+//     transaction_type: "buy",
+//     asset_category: "deposit",
+//     asset_symbol: null,
+//     asset_name: null,
+//     quantity: 0,
+//     transaction_amount: 1,
+//   };
+// }
 
 export const EditTransactionRow = ({
   transaction,
