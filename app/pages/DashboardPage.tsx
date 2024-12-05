@@ -27,6 +27,10 @@ export default function Home() {
   const [currentEditIndex, setCurrentEditIndex] = useState(-1);
 
   useEffect(() => {
+    // fetchTransactions(setExistingTransactions);
+    //   fetchTransactions(setModifiedTransactions);
+    //   fetchStockData("korean_stocks", setKoreanStocks);
+    //   fetchStockData("american_stocks", setAmericanStocks);
 
     fetchData();
 
@@ -50,10 +54,10 @@ export default function Home() {
   async function getChartData() {
     try {
       //today block 을 만들기 위해 뒤에 추가
-      setExistingTransactions([...existingTransactions,createTodayTransaction()]);
+      setExistingTransactions([...existingTransactions, createTodayTransaction()]);
       // TRANSACTION_DATA에서 모든 고유한 심볼을 추출
       const symbols = Array.from(new Set(existingTransactions.map(t => t.asset_symbol).filter(Boolean).concat('^GSPC')));
-      
+
 
 
       // console.log('Starting to initialize stock data for symbols:', symbols);

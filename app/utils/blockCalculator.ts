@@ -1,7 +1,7 @@
 // utils/blockCalculator.ts
 import { Block, AssetHistory, Node } from '../types/types';
 import { calculateNodeSize, calculateAssetValue } from './nodeCalculator';
-
+import {getStockPrice} from '@/app/utils/api';
 import { BLOCK_CONFIG, nodeBaseWidth } from '../constants/globalConfig';
 import { Transaction } from '../types/transaction';
 import { blockWidthCalculate, MIN_BLOCK_WIDTH } from '@/app/utils/calculateBlockWidth';
@@ -44,6 +44,17 @@ type PreviousNodePositions = { [symbol: string]: PreviousNodeInfo };
 //     }
 //     return maxValue;
 // }
+async function calculateMaxAssetValue(history: AssetHistory): Promise<number> {
+    let maxValue = history.state.cash;
+    for (const [symbol, quantity] of Object.entries(history.state.holdings)) {
+                const indiviualStockPrice = await getStockPrice(symbol,history.date);
+                maxValue = maxValue +  indiviualStockPrice * quantity;
+            }
+    
+    
+    
+    return maxValue;
+}
 
 async function createSellNodes(
     nodes: Node[],
@@ -442,8 +453,9 @@ export async function createBlock(
         // console.log(`Block ${index} - No previous block`);
     }
 
-    const maxAssetValue = 99990; // 수정 임시 목업
-    // const maxAssetValue = await calculateMaxAssetValue(history);
+    // const maxAssetValue = 99990; // 수정 임시 목업
+    const maxAssetValue = await calculateMaxAssetValue(history);
+    // console.log ("jjj maxAssetValue : ",maxAssetValue);
     const beforeNodes = await createBeforeNodes(history, maxAssetValue, index, currentTransaction, previousBlock, previousNodePositions);
     const afterNodes = await createAfterNodes(history, maxAssetValue, index, previousBlock);
     // console.log(`Block ${index} - Created Node Positions:`);

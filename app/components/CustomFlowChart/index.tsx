@@ -14,9 +14,14 @@ import {extractIndexFromString} from '@/app/utils/extractIndexFromString';
 export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlowChartProps) => {
     const [blocks, setBlocks] = useState<BlockType[]>([]);
     const [edges, setEdges] = useState<EdgeType[]>([]);
-    const [hoveredNode, setHoveredNode] = useState<Node>(null);
+    const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
     // const [hoveredNode] = useState<Node | null>(null);
-    
+    const handleHoveredNode = (node) => {
+        
+        setHoveredNode(node);
+        
+        
+    };
     
 
     useEffect(() => {
@@ -227,15 +232,15 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
                             <Node
                                 key={node.id}
                                 node={node}
-                                onHover={setHoveredNode}
+                                onHover={() => handleHoveredNode(node)}
                                 onClick={() => handleNodeClick(node)} // 클릭 핸들러 추가
-                            />
+                            /> 
                         ))}
                         {block.afterNodes.map(node => (
                             <Node
                                 key={node.id}
                                 node={node}
-                                onHover={setHoveredNode}
+                                onHover={() => handleHoveredNode(node)}
                                 onClick={() => handleNodeClick(node)} // 클릭 핸들러 추가
                             />
                         ))}
