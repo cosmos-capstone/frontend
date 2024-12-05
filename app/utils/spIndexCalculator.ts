@@ -1,8 +1,8 @@
 // utils/spIndexCalculator.ts
-import { Node,AssetHistory ,Block} from '../types/types';
+import { Node,AssetHistory } from '../types/types';
 import { calculateNodeSize } from './nodeCalculator';
-import { BLOCK_CONFIG, nodeBaseWidth } from '../constants/globalConfig';
-import { blockWidthCalculate, MIN_BLOCK_WIDTH } from '@/app/utils/calculateBlockWidth';
+// import { BLOCK_CONFIG, nodeBaseWidth } from '../constants/globalConfig';
+// import { blockWidthCalculate, MIN_BLOCK_WIDTH } from '@/app/utils/calculateBlockWidth';
 
 export async function createIndicatorNodes(
     history: AssetHistory,
