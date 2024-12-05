@@ -35,14 +35,26 @@ export const Node = ({ node,onHover }: NodeProps) => {
             onMouseLeave={() => onHover(null)}
             >
                 {/* 기본 노드 */}
+                {node.state === 'index' ? (
                 <rect
-                    width={node.size.width}
-                    height={node.size.height}
-                    fill={backgroundColor}
-                    stroke="#1a192b"
-                    strokeWidth="0.1"
-                    filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
-                />
+                width={node.size.width}
+                height={node.size.height}
+                fill="rgba(0, 0, 0, 0)"  // 완전히 투명한 배경
+                stroke="rgba(0, 0, 0, 0.2)"  // 20% 투명한 테두리
+                strokeWidth="0.2"  // 두꺼운 테두리
+                opacity={0.5}  // 전체 요소의 투명도 (50%)
+            />
+            
+            ) : (
+                <rect
+                width={node.size.width}
+                height={node.size.height}
+                fill={backgroundColor}
+                stroke="#1a192b"
+                strokeWidth="0.1"
+                filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
+            />
+            )}
                 <text
                     x={node.size.width / 2}
                     y={node.size.height / 2}

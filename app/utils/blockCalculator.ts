@@ -5,7 +5,7 @@ import { calculateNodeSize, calculateAssetValue } from './nodeCalculator';
 import { BLOCK_CONFIG, nodeBaseWidth } from '../constants/globalConfig';
 import { Transaction } from '../types/transaction';
 import { blockWidthCalculate, MIN_BLOCK_WIDTH } from '@/app/utils/calculateBlockWidth';
-import {createIndicatorNodes} from '@/app/utils/spIndexCalculator'
+import { createIndicatorNodes } from '@/app/utils/spIndexCalculator'
 
 interface CreateNormalNodeParams {
     nodes: Node[];
@@ -195,6 +195,39 @@ async function createBeforeNodes(
     let currentY = 50;
 
     if (!history.previousState) return nodes;
+    console.log("hhhPrevious block check ", previousBlock);
+
+ //indicator 부분
+ const indicatorSize = await calculateNodeSize({
+    id: `INDICATOR-${index}-^GSPC`,
+    date: history.date,// 수정수정
+    amount: 1,// 수정 가격에 맞춰서
+    asset_symbol: '^GSPC',
+    position: { x_position: 0, y_position: 0 },
+    type: 'american_stock',// 수정 형식 추가하기
+    action: 'index',// 수정 형식 추가하기
+    state: 'index'// 수정 형식 추가하기
+}, maxAssetValue);
+
+nodes.push({
+    id: `INDICATOR-${index}-^GSPC`,
+    date: history.date,
+    amount: 1,// 수정 가격에 맞춰서
+    asset_symbol: '^GSPC',
+    position: {
+
+        x_position: 0,// 수정 긴급 목업
+
+        y_position: 50,// 수정 긴급 목업
+    },
+    type: 'american_stock',// 수정 형식 추가하기
+    action: 'index',// 수정 형식 추가하기
+    state: 'index',// 수정 형식 추가하기
+    size: indicatorSize,
+    value: history.state.cash
+});
+
+
 
     // Deposit node
 
@@ -210,6 +243,11 @@ async function createBeforeNodes(
         action: 'buy',
         state: 'before'
     }, maxAssetValue);
+
+
+    console.log("hhhhPrevious block check ", previousBlock);
+
+ 
 
     nodes.push({
         id: `DEPOSIT-${index}-before`,
@@ -253,6 +291,7 @@ async function createBeforeNodes(
             // (quantity - currentTransaction.quantity > 0 ? 2 : 1);
 
         } else {
+            console.log("hhhhhPrevious block check ", previousBlock);
             await createNormalNode(
                 {
                     nodes: nodes,
@@ -270,7 +309,8 @@ async function createBeforeNodes(
             currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
         }
     }
-    
+  
+
 
     return nodes;
 }
@@ -287,6 +327,41 @@ async function createAfterNodes(
 
     const blockWidth = previousBlock ? blockWidthCalculate(previousBlock.date, history.date) : MIN_BLOCK_WIDTH;
     const depositY = previousNodePositions?.['DEPOSIT']?.y_position || currentY;
+
+    // indicator after node 생성
+    const indicatorSize = await calculateNodeSize({
+        id: `INDICATOR-${index}-^GSPC`,
+
+        date: history.date,
+        amount: 1,// 수정 가격에 맞춰서
+        asset_symbol: '^GSPC',
+        position: { x_position: 0, y_position: 0 },
+        type: 'american_stock',// 수정 형식 추가하기
+        action: 'index',// 수정 형식 추가하기
+        state: 'index'// 수정 형식 추가하기
+    }, maxAssetValue);
+
+    nodes.push({
+        id: `INDICATOR-${index}-^GSPC`,
+        date: history.date,
+        amount: 1,// 수정 가격에 맞춰서
+        asset_symbol: '^GSPC',
+        position: {
+
+            x_position: 100,// 수정 긴급 목업
+
+            y_position: 50,// 수정 긴급 목업
+        },
+        type: 'american_stock',// 수정 형식 추가하기
+        action: 'index',// 수정 형식 추가하기
+        state: 'index',// 수정 형식 추가하기
+        size: indicatorSize,
+        value: history.state.cash
+    });
+
+
+
+
     // Deposit node
     const depositSize = await calculateNodeSize({
         id: `DEPOSIT-${index}-after`,
@@ -339,7 +414,8 @@ async function createAfterNodes(
         );
         currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
     }
-    createIndicatorNodes(history, maxAssetValue,index);
+
+
     return nodes;
 }
 
@@ -373,15 +449,14 @@ export async function createBlock(
     console.log(`Block ${index} - Created Node Positions:`);
     console.log('Before Nodes:', beforeNodes.map(node => ({ symbol: node.asset_symbol, y: node.position.y_position })));
     console.log('After Nodes:', afterNodes.map(node => ({ symbol: node.asset_symbol, y: node.position.y_position })));
-    const indexNodes = await createIndicatorNodes(history, maxAssetValue,index);
+
 
 
 
     const maxNodesHeight = Math.max(
         beforeNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0),
         afterNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0),
-        indexNodes.reduce((max, node) => Math.max(max, node.position.y_position + node.size.height), 0),
-        
+
     );
     // const timeDifference = previousBlock 
     //     ? calculateTimeDifference(previousBlock.date, history.date)
@@ -389,7 +464,7 @@ export async function createBlock(
     // const blockWidth = calculateBlockWidth(timeDifference);
 
     const blockWidth = previousBlock ? blockWidthCalculate(previousBlock.date, history.date) : MIN_BLOCK_WIDTH;
-    console.log(`eeeBlock ${index} - Created Index Nodes:`, indexNodes);
+
     return {
         date: history.date,
         position: {
@@ -403,6 +478,6 @@ export async function createBlock(
         },
         beforeNodes,
         afterNodes,
-        indexNodes,
+
     };
 }

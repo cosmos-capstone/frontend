@@ -52,7 +52,11 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                             });
                         }
                     });
+                    console.log("fff index nodes")
+                   
+                    
                 }
+               
 
                 // 2. 블록 내 거래 엣지
                 const currentTransaction = transactions.find(
@@ -157,6 +161,9 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
 
             setBlocks(newBlocks);
             setEdges(newEdges);
+            newEdges.forEach((edge) => {
+                console.log(`gggEdge ID: ${edge.id}, Source: ${edge.source}, Target: ${edge.target}, Type: ${edge.type}`);
+            });
         };
 
         initializeBlocks();
@@ -215,13 +222,7 @@ export const CustomFlowChart = ({ transactions }: CustomFlowChartProps) => {
                                 onHover={setHoveredNode}
                             />
                         ))}
-                        {block.indexNodes.map(node => (
-                            <Node
-                                key={node.id}
-                                node={node}
-                                onHover={setHoveredNode}
-                            />
-                        ))}
+                        
                     </Block>
                 ))}
 
