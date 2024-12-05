@@ -1,10 +1,13 @@
 // utils/blockCalculator.ts
 import { Block, AssetHistory, Node } from '../types/types';
 import { calculateNodeSize, calculateAssetValue } from './nodeCalculator';
-import {getStockPrice} from '@/app/utils/api';
+import { getStockPrice } from '@/app/utils/api';
 import { BLOCK_CONFIG, nodeBaseWidth } from '../constants/globalConfig';
 import { Transaction } from '../types/transaction';
 import { blockWidthCalculate, MIN_BLOCK_WIDTH } from '@/app/utils/calculateBlockWidth';
+import {indicatorAmount} from '@/app/pages/DashboardPage';
+import { maxAssetValue } from '@/app/utils/assetTracker'
+
 
 
 interface CreateNormalNodeParams {
@@ -44,17 +47,11 @@ type PreviousNodePositions = { [symbol: string]: PreviousNodeInfo };
 //     }
 //     return maxValue;
 // }
-async function calculateMaxAssetValue(history: AssetHistory): Promise<number> {
-    let maxValue = history.state.cash;
-    for (const [symbol, quantity] of Object.entries(history.state.holdings)) {
-                const indiviualStockPrice = await getStockPrice(symbol,history.date);
-                maxValue = maxValue +  indiviualStockPrice * quantity;
-            }
-    
-    
-    
-    return maxValue;
-}
+
+
+
+
+
 
 async function createSellNodes(
     nodes: Node[],
@@ -75,7 +72,7 @@ async function createSellNodes(
         amount: sellQuantity,
         asset_symbol: symbol,
         position: { x_position: 0, y_position: 0 },
-        type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
+        type: symbol.includes('.KS') || symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
         action: 'sell',
         state: 'before'
     }, maxAssetValue);
@@ -92,7 +89,7 @@ async function createSellNodes(
             x_position: BLOCK_CONFIG.leftMargin,
             y_position: currentY
         },
-        type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
+        type: symbol.includes('.KS') || symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
         action: 'sell',
         state: 'before',
         size: sellNodeSize,
@@ -108,7 +105,7 @@ async function createSellNodes(
             amount: remainingQuantity,
             asset_symbol: symbol,
             position: { x_position: 0, y_position: 0 },
-            type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
+            type: symbol.includes('.KS') || symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
             action: 'buy',
             state: 'before'
         }, maxAssetValue);
@@ -122,7 +119,7 @@ async function createSellNodes(
                 x_position: BLOCK_CONFIG.leftMargin,
                 y_position: currentY + sellNodeSize.height + 20
             },
-            type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
+            type: symbol.includes('.KS') || symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
             action: 'buy',
             state: 'before',
             size: holdNodeSize,
@@ -170,7 +167,7 @@ async function createNormalNode({// In this function you get the real asset valu
             amount: quantity,
             asset_symbol: symbol,
             position: { x_position: 0, y_position: 0 },
-            type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
+            type: symbol.includes('.KS') || symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
             action: 'buy',
             state: state
         }, maxAssetValue);
@@ -186,7 +183,7 @@ async function createNormalNode({// In this function you get the real asset valu
             x_position: state === 'before' ? BLOCK_CONFIG.leftMargin : blockWidth - nodeBaseWidth,
             y_position: currentY
         },
-        type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
+        type: symbol.includes('.KS') || symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
         action: 'buy',
         state: state,
         size: nodeSize,
@@ -205,47 +202,50 @@ async function createBeforeNodes(
     const nodes: Node[] = [];
     let currentY = 50;
 
-    if (!history.previousState) return nodes;
+    if (!history.previousState) {
+        
+        
+        return nodes;}
     // console.log("hhhPrevious block check ", previousBlock);
-
- //indicator 부분
- const indicatorSize = await calculateNodeSize({
-    id: `INDICATOR-${index}-^GSPC`,
-    date: history.date,// 수정수정
-    amount: 0.03,// 수정 가격에 맞춰서
-    asset_symbol: '^GSPC',
-    position: { x_position: 0, y_position: 0 },
-    type: 'american_stock',// 수정 형식 추가하기
-    action: 'index',// 수정 형식 추가하기
-    state: 'index'// 수정 형식 추가하기
-}, maxAssetValue);
-
-nodes.push({
-    id: `INDICATOR-${index}-^GSPC`,
-    date: history.date,
-    amount: 0.03,// 수정 가격에 맞춰서
-    asset_symbol: '^GSPC',
-    position: {
-
-        x_position: 0,// 수정 긴급 목업
-
-        y_position: 50,// 수정 긴급 목업
-    },
-    type: 'american_stock',// 수정 형식 추가하기
-    action: 'index',// 수정 형식 추가하기
-    state: 'index',// 수정 형식 추가하기
-    size: indicatorSize,
-    value: history.state.cash
-});
-
  
+    
+    //indicator 부분
+    const indicatorSize = await calculateNodeSize({
+        id: `INDICATOR-${index}-^GSPC`,
+        date: history.date,// 수정수정
+        amount: indicatorAmount,// 수정 가격에 맞춰서
+        asset_symbol: '^GSPC',
+        position: { x_position: 0, y_position: 0 },
+        type: 'american_stock',// 수정 형식 추가하기
+        action: 'index',// 수정 형식 추가하기
+        state: 'index'// 수정 형식 추가하기
+    }, maxAssetValue);
+
+    nodes.push({
+        id: `INDICATOR-${index}-^GSPC`,
+        date: history.date,
+        amount: indicatorAmount,// 수정 가격에 맞춰서
+        asset_symbol: '^GSPC',
+        position: {
+
+            x_position: 0,// 수정 긴급 목업
+
+            y_position: 50,// 수정 긴급 목업
+        },
+        type: 'american_stock',// 수정 형식 추가하기
+        action: 'index',// 수정 형식 추가하기
+        state: 'index',// 수정 형식 추가하기
+        size: indicatorSize,
+        value: history.state.cash
+    });
+
+
 
     // Deposit node
 
     const depositY = previousNodePositions?.['DEPOSIT']?.y_position || currentY;
     const depositSize = await calculateNodeSize({
-        id: `DEPOSIT-${index}-before`,
-        // date: history.date,
+        id: `DEPOSIT-${index}-before`,        
         date: history.date,
         amount: history.previousState.cash,
         asset_symbol: 'DEPOSIT',
@@ -258,39 +258,42 @@ nodes.push({
 
     // console.log("hhhhPrevious block check ", previousBlock);
 
- 
-if (previousBlock){
-    nodes.push({
-        id: `DEPOSIT-${index}-before`,
-        date: previousBlock.date,
-        amount: history.previousState.cash,
-        asset_symbol: 'DEPOSIT',
-        position: {
-            x_position: BLOCK_CONFIG.leftMargin,
-            y_position: depositY
-        },
-        type: 'deposit',
-        action: 'buy',
-        state: 'before',
-        size: depositSize,
-        value: history.previousState.cash
-    });
-} else{
-    nodes.push({
-        id: `DEPOSIT-${index}-before`,
-        date: history.date,
-        amount: history.previousState.cash,
-        asset_symbol: 'DEPOSIT',
-        position: {
-            x_position: BLOCK_CONFIG.leftMargin,
-            y_position: depositY
-        },
-        type: 'deposit',
-        action: 'buy',
-        state: 'before',
-        size: depositSize,
-        value: history.previousState.cash
-    });}
+
+    if (previousBlock) {
+        nodes.push({
+            id: `DEPOSIT-${index}-before`,
+            date: previousBlock.date,
+            amount: history.previousState.cash,
+            asset_symbol: 'DEPOSIT',
+            position: {
+                x_position: BLOCK_CONFIG.leftMargin,
+                y_position: depositY
+            },
+            type: 'deposit',
+            action: 'buy',
+            state: 'before',
+            size: depositSize,
+            value: history.previousState.cash
+        });
+
+    } else {
+        nodes.push({// 가장 첫번째 블럭 
+            id: `DEPOSIT-${index}-before`,
+            date: history.date,
+            amount: history.previousState.cash,
+            asset_symbol: 'DEPOSIT',
+            position: {
+                x_position: BLOCK_CONFIG.leftMargin,
+                y_position: depositY
+            },
+            type: 'deposit',
+            action: 'buy',
+            state: 'before',
+            size: depositSize,
+            value: history.previousState.cash
+        });
+        // indicatorAmount = amountCalculator(history.previousState.cash, history.date);
+    }
 
     currentY += depositSize.height + 20;
 
@@ -307,7 +310,7 @@ if (previousBlock){
                 symbol: symbol,
                 quantity: quantity,
                 date: history.date,
-                type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
+                type: symbol.includes('.KS') || symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
             });
             await createSellNodes(
                 nodes, symbolY, index, symbol, quantity,
@@ -330,13 +333,13 @@ if (previousBlock){
                     date: previousBlock.date,
                     state: 'before',
                     nodeHeight: previousNodePositions?.[symbol]?.height || 9999999,
-                    type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
+                    type: symbol.includes('.KS') || symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
                 }//임시 에러 처리부분
             );
             currentY = symbolY + nodes[nodes.length - 1].size.height + 20;
         }
     }
-  
+
 
 
     return nodes;
@@ -360,7 +363,7 @@ async function createAfterNodes(
         id: `INDICATOR-${index}-^GSPC`,
 
         date: history.date,
-        amount: 0.03,// 수정 가격에 맞춰서
+        amount: indicatorAmount,// 수정 가격에 맞춰서
         asset_symbol: '^GSPC',
         position: { x_position: 0, y_position: 0 },
         type: 'american_stock',// 수정 형식 추가하기
@@ -371,7 +374,7 @@ async function createAfterNodes(
     nodes.push({
         id: `INDICATOR-${index}-^GSPC`,
         date: history.date,
-        amount: 0.03,// 수정 가격에 맞춰서
+        amount: indicatorAmount,// 수정 가격에 맞춰서
         asset_symbol: '^GSPC',
         position: {
 
@@ -435,7 +438,7 @@ async function createAfterNodes(
                 date: history.date,
                 state: 'after',
                 blockWidth: blockWidth,
-                type: symbol.includes('.KS')||symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
+                type: symbol.includes('.KS') || symbol.includes('.KQ') ? 'korean_stock' : 'american_stock',
 
             }
         );
@@ -470,7 +473,7 @@ export async function createBlock(
     }
 
     // const maxAssetValue = 99990; // 수정 임시 목업
-    const maxAssetValue = await calculateMaxAssetValue(history);
+    
     // console.log ("jjj maxAssetValue : ",maxAssetValue);
     const beforeNodes = await createBeforeNodes(history, maxAssetValue, index, currentTransaction, previousBlock, previousNodePositions);
     const afterNodes = await createAfterNodes(history, maxAssetValue, index, previousBlock);

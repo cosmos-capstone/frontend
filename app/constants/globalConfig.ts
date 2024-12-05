@@ -9,3 +9,5 @@ export const BLOCK_CONFIG = {
   leftMargin: 0,
   rightMargin: 90, // 100 -10 
   } as const;
+
+  

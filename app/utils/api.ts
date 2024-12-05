@@ -19,7 +19,7 @@ export async function fetchTransactions(setExistingTransactions: (transactions: 
         transaction_date: new Date(item.transaction_date)
     })).sort((a: Transaction, b: Transaction) => a.transaction_date.getTime() - b.transaction_date.getTime());
     setExistingTransactions(sortedData);
-    console.log ("kkkexistingTransactions : ",sortedData);
+   
 }
 
 export async function fetchStockData(endpoint: string, setState: (data: StockListElement[]) => void) {
@@ -42,18 +42,18 @@ export async function fetchAndCacheStockData(symbol: string): Promise<void> {
     // console.log(`bbbAttempting to fetch data for ${symbol}`);
     try {
         const response = await fetch(`https://cosmos-backend.cho0h5.org/market_data/stock/${symbol}/prices`);
-        // console.log(`bbbResponse status for ${symbol}: ${response.status}`);
+        console.log(`bbbResponse status for ${symbol}: ${response.status}`);
 
         if (!response.ok) {
             throw new Error(`bbbHTTP error! status: ${response.status}`);
         }
 
         const data: StockPriceData = await response.json();
-        // console.log(`bbbReceived data for ${symbol}:`, JSON.stringify(data).slice(0, 200) + '...'); // 데이터의 처음 200자만 출력
+        console.log(`bbbReceived data for ${symbol}:`, JSON.stringify(data).slice(0, 200) + '...'); // 데이터의 처음 200자만 출력
 
         stockDataCache[symbol] = data;
-        // console.log(`bbbSuccessfully fetched and cached data for ${symbol}`);
-        // console.log(`bbbCache now contains data for symbols: ${Object.keys(stockDataCache).join(', ')}`);
+        console.log(`bbbSuccessfully fetched and cached data for ${symbol}`);
+        console.log(`bbbCache now contains data for symbols: ${Object.keys(stockDataCache).join(', ')}`);
     } catch (error) {
         console.error(`bbbError fetching stock data for ${symbol}:`, error);
         if (error instanceof Error) {
@@ -68,7 +68,7 @@ export async function fetchAndCacheStockData(symbol: string): Promise<void> {
 export function getStockPrice(symbol: string, date: Date): number | null {
     const stockData = stockDataCache[symbol];
     if (!stockData) {
-        // console.log(`aaaaNo cached data available for ${symbol}`);
+        console.log(`aaaaNo cached data available for ${symbol}`);
         return null;
     }
 
@@ -77,10 +77,10 @@ export function getStockPrice(symbol: string, date: Date): number | null {
 
     if (priceData) {
         const price = parseFloat(priceData.close_price);
-        // console.log(`aaaRetrieved price for ${symbol} on ${dateString}: ${price}`);
+        console.log(`aaaRetrieved price for ${symbol} on ${dateString}: ${price}`);
         return price;
     } else {
-        // console.log(`aaaNo price data available for ${symbol} on ${dateString}`);
+        console.log(`aaaNo price data available for ${symbol} on ${dateString}`);
         return null;
     }
 }

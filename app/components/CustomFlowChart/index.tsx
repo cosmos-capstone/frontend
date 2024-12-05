@@ -26,7 +26,7 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
 
     useEffect(() => {
         const initializeBlocks = async () => {
-            const assetHistory = trackAssets(transactions);
+            const assetHistory = await trackAssets(transactions);
             const newBlocks: BlockType[] = [];
             const newEdges: EdgeType[] = [];
 
@@ -182,7 +182,7 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
     const handleNodeClick = (node) => {
         
         setCurrentEditIndex(extractIndexFromString(node.id));
-        // console.log("kkkkNode has been clicked - node id : ",extractIndexFromString(node.id));
+        
         
     };
 

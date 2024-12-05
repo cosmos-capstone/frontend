@@ -13,11 +13,21 @@ interface AssetTrackerProps {
 export default function AssetTracker({ transactionData }: AssetTrackerProps) {
   const [assetHistory, setAssetHistory] = useState<AssetHistory[]>([]);
 
+
   useEffect(() => {
-    const history = trackAssets(transactionData);
-    setAssetHistory(history);
-    
+    const fetchAssetHistory = async () => {
+      try {
+        const history = await trackAssets(transactionData); // Promise를 해제
+        setAssetHistory(history); // 해제된 배열을 상태로 설정
+      } catch (error) {
+        console.error("Error fetching asset history:", error);
+        setAssetHistory([]); // 오류 발생 시 빈 배열로 초기화
+      }
+    };
+  
+    fetchAssetHistory();
   }, [transactionData]);
+  
 
   return (
     <div className="p-4">

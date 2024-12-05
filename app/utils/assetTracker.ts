@@ -1,7 +1,19 @@
 import { AssetHistory, AssetState } from '../types/types';
 import { Transaction } from '../types/transaction';
 
-export function trackAssets(transactions: Transaction[]): AssetHistory[] {
+import { fetchStockData, getStockPrice } from '../utils/api';
+
+export let maxAssetValue = 10;
+async function calculateMaxAssetValue(history: AssetHistory): Promise<number> {
+  let maxValue = history.state.cash;
+  for (const [symbol, quantity] of Object.entries(history.state.holdings)) {
+    const indiviualStockPrice = await getStockPrice(symbol, history.date);
+    maxValue = maxValue + indiviualStockPrice * quantity;
+  }
+
+  return maxValue;
+}
+export async function trackAssets(transactions: Transaction[]): Promise<AssetHistory[]> {
   const currentState: AssetState = {
     cash: 0,
     holdings: {}
@@ -50,6 +62,15 @@ export function trackAssets(transactions: Transaction[]): AssetHistory[] {
       },
       previousState: previousState
     });
+    maxAssetValue = await calculateMaxAssetValue({
+      date: transaction.transaction_date,
+      state: {
+        cash: currentState.cash,
+        holdings: { ...currentState.holdings }
+      },
+      previousState: previousState
+    })
+    
   }
 
   return assetHistory;
