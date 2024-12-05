@@ -110,7 +110,7 @@ export default function Home() {
   return (
     <div className="flex flex-col space-y-8 bg-gray-100">
       <Dashboard />
-      <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
+      <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200"style={{ maxHeight: '80vh', overflowY: 'auto' }}>
         {/* {isChartDataReady ? (
           <CustomFlowChart transactions={existingTransactions} setCurrentEditIndex={setCurrentEditIndex} />
         ) : (

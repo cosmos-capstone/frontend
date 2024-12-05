@@ -195,7 +195,7 @@ export const CustomFlowChart = ({ transactions ,setCurrentEditIndex}: CustomFlow
         }}>
             <svg
                 width={Math.max(1500, blocks.length * 200)}
-                height={400}
+                height={1000}
                 className="flow-chart"
             >
                 <defs>
