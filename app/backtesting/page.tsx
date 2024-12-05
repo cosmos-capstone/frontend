@@ -5,6 +5,7 @@ import PieChart, { PieChartData } from '../components/PieChart';
 import CustomFlowChart from '../components/CustomFlowChart/index';
 import { Transaction } from '../types/transaction';
 import { fetchTransactions } from '../utils/api';
+import { TransactionResponseItem } from '../types/transactionResponseItem';
 
 const fetchAndSetData = async (url, setData) => {
     try {
@@ -16,12 +17,36 @@ const fetchAndSetData = async (url, setData) => {
     }
 };
 
+export async function fetchProposedTransactions(
+    setExistingTransactions: (transactions: Transaction[]) => void,
+    date: string // 추가된 쿼리 파라미터
+) {
+    // 요청 URL에 date 쿼리 파라미터 추가
+    const res = await fetch(`https://cosmos-backend.cho0h5.org/transaction/rebalanced_transaction?date=${date}`);
+
+    // 응답 처리
+    const data = await res.json() as { data: TransactionResponseItem[] };
+
+    // 데이터 변환 및 정렬
+    const sortedData = data.data.map((item: TransactionResponseItem) => ({
+        ...item,
+        transaction_date: new Date(item.transaction_date)
+    })).sort((a: Transaction, b: Transaction) =>
+        a.transaction_date.getTime() - b.transaction_date.getTime()
+    );
+
+    // 상태 업데이트
+    setExistingTransactions(sortedData);
+}
+
 const CompareRebalancing = () => {
     const [currProposedData, setCurrProposedData] = useState<PieChartData | null>(null);
     const [prev1ProposedData, setPrev1ProposedData] = useState<PieChartData | null>(null);
     const [prev5ProposedData, setPrev5ProposedData] = useState<PieChartData | null>(null);
 
     const [existingTransactions, setExistingTransactions] = useState<Transaction[]>([]);
+    const [prev1ProposedTransactions, setPrev1ProposedTransactions] = useState<Transaction[]>([]);
+    const [prev5ProposedTransactions, setPrev5ProposedTransactions] = useState<Transaction[]>([]);
 
     useEffect(() => {
         const currentDate = new Date();
@@ -38,6 +63,8 @@ const CompareRebalancing = () => {
         fetchAndSetData(`https://cosmos-backend.cho0h5.org/transaction/rebalancing?date=${prev5YearDateString}`, setPrev5ProposedData);
 
         fetchTransactions(setExistingTransactions);
+        fetchProposedTransactions(setPrev1ProposedTransactions, prev1YearDateString);
+        fetchProposedTransactions(setPrev5ProposedTransactions, prev5YearDateString);
     }, []);
 
     return (
@@ -60,7 +87,7 @@ const CompareRebalancing = () => {
                 </div>
 
                 <div className="flex flex-row p-6 bg-white rounded-2xl border border-gray-200">
-                    <CustomFlowChart transactions={existingTransactions} />
+                    <CustomFlowChart transactions={prev1ProposedTransactions} />
                 </div>
             </div>
 
@@ -71,7 +98,7 @@ const CompareRebalancing = () => {
                 </div>
 
                 <div className="flex flex-row p-6 bg-white rounded-2xl border border-gray-200">
-                    <CustomFlowChart transactions={existingTransactions} />
+                    <CustomFlowChart transactions={prev5ProposedTransactions} />
                 </div>
             </div>
         </>
