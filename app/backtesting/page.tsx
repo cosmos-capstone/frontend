@@ -6,6 +6,20 @@ import CustomFlowChart from '../components/CustomFlowChart/index';
 import { Transaction } from '../types/transaction';
 import { fetchTransactions } from '../utils/api';
 import { TransactionResponseItem } from '../types/transactionResponseItem';
+import { initializeStockData } from '@/app/utils/api'
+import { addSymbolColor } from '@/app/constants/assetColors'
+import { getStockPrice } from '../utils/api';
+
+let indicatorAmount = 0.01;
+
+async function amountCalculator(cash: number, date: Date): Promise<number> {
+    // 주어진 날짜에 대한 주가 가져오기
+    const indicatorPrice = await getStockPrice('^GSPC', date) * 1400;
+    console.log("mmmIndicatorAmountCalculator ", await getStockPrice('^GSPC', date));
+    // 계산 결과 반환 (숫자)
+    console.log("mmmIndicatorAmountCalculator ", date, cash, indicatorPrice, cash / indicatorPrice);
+    return cash / indicatorPrice;
+}
 
 const fetchAndSetData = async (url, setData) => {
     try {
@@ -50,7 +64,10 @@ const CompareRebalancing = () => {
     const [prev1ProposedTransactions, setPrev1ProposedTransactions] = useState<Transaction[]>([]);
     const [prev5ProposedTransactions, setPrev5ProposedTransactions] = useState<Transaction[]>([]);
 
+    const [isChartDataReady, setIsChartDataReady] = useState(false);
+
     useEffect(() => {
+        console.log(isChartDataReady);
         const currentDate = new Date();
         const prev1YearDate = new Date(currentDate);
         prev1YearDate.setFullYear(prev1YearDate.getFullYear() - 1);
@@ -68,6 +85,60 @@ const CompareRebalancing = () => {
         fetchProposedTransactions(setPrev1ProposedTransactions, prev1YearDateString);
         fetchProposedTransactions(setPrev5ProposedTransactions, prev5YearDateString);
     }, []);
+
+    useEffect(() => {
+        if (existingTransactions && existingTransactions.length > 0) {
+            const initializeChart = async () => {
+                try {
+                    await getChartData();
+                } catch (error) {
+                    console.error("Error initializing chart data:", error);
+                }
+            };
+
+            initializeChart();
+        }
+    }, [existingTransactions]);
+
+
+    async function getChartData() {
+        try {
+            if (!existingTransactions || existingTransactions.length === 0) {
+                throw new Error("No transactions available to initialize chart data.");
+            }
+
+            //today block 을 만들기 위해 뒤에 추가
+            // setExistingTransactions([...existingTransactions, createTodayTransaction()]);
+            // TRANSACTION_DATA에서 모든 고유한 심볼을 추출
+            console.log("kkkkkexistingTransactions : ", existingTransactions)
+
+
+            // const symbols = ['^GSPC', '020180.KQ', '326030.KS', '005930.KS', 'NVDA', 'WMT', '009520.KQ'];
+            const symbols = Array.from(new Set(existingTransactions.map(t => t.asset_symbol).filter(Boolean).concat('^GSPC').concat('102110.KS').concat('SPY').concat('BND')));
+
+
+            // maxAssetValue = Math.max(maxAssetValue, await calculateMaxAssetValue(history));
+            const firstDeposit = existingTransactions[0].transaction_amount;
+
+            console.log('indicatorAmount : ', indicatorAmount);
+            // console.log('Starting to initialize stock data for symbols:', symbols);
+            await initializeStockData(symbols);
+            // console.log('Stock data initialization completed');
+            // printCachedStockData();
+            // 모든 고유한 심볼에 색상 배정
+            symbols.forEach(symbol => {
+                addSymbolColor(symbol);
+            });
+            console.log('Stock color initialization completed');
+            indicatorAmount = await amountCalculator(firstDeposit, existingTransactions[0].transaction_date); // 필수
+            setIsChartDataReady(true);
+
+        } catch (error) {
+            console.error('Error initializing chart data:', error);
+            // 오류 처리 로직 (예: 사용자에게 오류 메시지 표시)
+        }
+    }
+
 
     return (
         <>
