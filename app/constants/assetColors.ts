@@ -9,10 +9,17 @@ export const ASSET_COLORS = {
 
 // 색상 리스트: 이미 사용한 색상은 여기서 제거됩니다.
 const stockColors = {
-  'korean_stock': ['#a9f1dd', '#8eeed0', '#73ebc4', '#59e9b7', '#3fe6ab', '#20c997', '#1cab8c', '#178d71', '#127056', '#0d523b'],
-  'american_stock': ['#b3d2ff', '#99c4ff', '#80b6ff', '#66a8ff', '#4d99ff', '#0d6efd', '#0b62e4', '#0945b3', '#073982', '#052c61']
-  
+  'korean_stock': [
+    '#a9f1dd', '#8eeed0', '#73e0c4', '#5fc9b7', '#4fb9ab',
+    '#35d5a0', '#2dc094', '#20a988', '#1e967c', '#188270'
+  ],
+  'american_stock': [
+    '#b3d2ff', '#9ecaff', '#85b3f2', '#6ca6e0', '#5299d8',
+    '#338bff', '#1a7eff', '#2078c0', '#1a6a99', '#135477'
+  ]
 };
+
+
 
 // 색상 선택 함수
 const getStockColor = (symbol: string) => {
