@@ -21,9 +21,9 @@ export let indicatorAmount = 0.01;
 async function amountCalculator(cash: number, date: Date): Promise<number> {
   // 주어진 날짜에 대한 주가 가져오기
   const indicatorPrice = await getStockPrice('^GSPC', date) * 1400;
-  console.log("mmmIndicatorAmountCalculator ",await getStockPrice('^GSPC', date));
+  console.log("mmmIndicatorAmountCalculator ", await getStockPrice('^GSPC', date));
   // 계산 결과 반환 (숫자)
-  console.log("mmmIndicatorAmountCalculator ",date, cash, indicatorPrice, cash / indicatorPrice);
+  console.log("mmmIndicatorAmountCalculator ", date, cash, indicatorPrice, cash / indicatorPrice);
   return cash / indicatorPrice;
 }
 
@@ -59,11 +59,11 @@ export default function Home() {
           console.error("Error initializing chart data:", error);
         }
       };
-  
+
       initializeChart();
     }
   }, [existingTransactions]);
-  
+
 
   async function getChartData() {
     try {
@@ -83,7 +83,7 @@ export default function Home() {
 
       // maxAssetValue = Math.max(maxAssetValue, await calculateMaxAssetValue(history));
       const firstDeposit = existingTransactions[0].transaction_amount;
-      
+
       console.log('indicatorAmount : ', indicatorAmount);
       // console.log('Starting to initialize stock data for symbols:', symbols);
       await initializeStockData(symbols);
@@ -96,7 +96,7 @@ export default function Home() {
       console.log('Stock color initialization completed');
       indicatorAmount = await amountCalculator(firstDeposit, existingTransactions[0].transaction_date); // 필수
       setIsChartDataReady(true);
-      
+
     } catch (error) {
       console.error('Error initializing chart data:', error);
       // 오류 처리 로직 (예: 사용자에게 오류 메시지 표시)
@@ -108,9 +108,9 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col space-y-8 bg-gray-100">
+    <div className="flex flex-col space-y-8 bg-gray-100 pb-6">
       <Dashboard />
-      <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200"style={{ maxHeight: '80vh', overflowY: 'auto' }}>
+      <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200" style={{ maxHeight: '80vh', overflowY: 'auto' }}>
         {/* {isChartDataReady ? (
           <CustomFlowChart transactions={existingTransactions} setCurrentEditIndex={setCurrentEditIndex} />
         ) : (
@@ -123,50 +123,10 @@ export default function Home() {
           <div className="flex justify-center items-center w-full h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
           </div>)}
-        {/* <OptionSelector /> */}
       </div>
-      <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
-        {currentEditIndex >= 0 && modifiedTransactions && modifiedTransactions[currentEditIndex] && (
-          <EditTransactionRow
-            transaction={modifiedTransactions[currentEditIndex]}
-            index={currentEditIndex}
-            handleInputChange={handleInputChange}
-            handleAssetNameChange={handleAssetNameChange}
-            koreanStocks={koreanStocks}
-            americanStocks={americanStocks}
-            setModifiedTransactions={setModifiedTransactions}
-          />
-        )}
-      </div>
-      <div className="flex flex-row p-6 m-8 bg-white rounded-2xl border border-gray-200">
-        {/* {currentEditIndex >= 0 && modifiedTransactions&& isChartDataReady ? (
-          <CustomFlowChart transactions={modifiedTransactions} />
-        ) : (
-          <div className="flex justify-center items-center w-full h-64">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-          </div>)} */}
-
-      </div>
-      {existingTransactions && existingTransactions.length > 0 && (
-        <AssetTracker transactionData={existingTransactions} />
-      )}
-
-
     </div>
   );
 }
-// function createTodayTransaction(): Transaction {
-//   return {
-//     id: -1,
-//     transaction_date: new Date(),
-//     transaction_type: "buy",
-//     asset_category: "deposit",
-//     asset_symbol: null,
-//     asset_name: null,
-//     quantity: 0,
-//     transaction_amount: 1,
-//   };
-// }
 
 export const EditTransactionRow = ({
   transaction,
