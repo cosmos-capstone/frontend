@@ -1,22 +1,18 @@
 import React from 'react';
 import Select from 'react-select';
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent, Dispatch, SetStateAction } from 'react';
 import Dashboard from '../components/Dashboard';
-// import OptionSelector from '../components/OptionBoard';
 import CustomFlowChart from '../components/CustomFlowChart/index';
 import { StockListElement } from '../types/stockListElement';
-
 import { fetchTransactions } from '../utils/api';
-import { fetchStockData, getStockPrice } from '../utils/api';
-import { handleAssetNameChange, handleInputChange } from '../utils/dataRegistration';
-import AssetTracker from '@/app/components/AssetTracker';
-// import { TRANSACTION_DATA, TRANSACTION_DATA_1 } from '@/app/data/transactionsMockup'
+import { getStockPrice } from '../utils/api';
 import { initializeStockData } from '@/app/utils/api'
 import { addSymbolColor } from '@/app/constants/assetColors'
 import { Transaction } from "@/app/types/transaction";
 
 export let indicatorAmount = 0.01;
 
+const noop: Dispatch<SetStateAction<number>> = () => { };
 
 async function amountCalculator(cash: number, date: Date): Promise<number> {
   // 주어진 날짜에 대한 주가 가져오기
@@ -31,17 +27,10 @@ async function amountCalculator(cash: number, date: Date): Promise<number> {
 export default function Home() {
   const [isChartDataReady, setIsChartDataReady] = useState(false);
   const [existingTransactions, setExistingTransactions] = useState<Transaction[]>();
-  const [modifiedTransactions, setModifiedTransactions] = useState<Transaction[]>();
-  const [koreanStocks, setKoreanStocks] = useState<StockListElement[]>([]);
-  const [americanStocks, setAmericanStocks] = useState<StockListElement[]>([]);
-  const [currentEditIndex, setCurrentEditIndex] = useState(-1);
   useEffect(() => {
     const fetchData = async () => {
       try {
         await fetchTransactions(setExistingTransactions);
-        await fetchTransactions(setModifiedTransactions);
-        await fetchStockData("korean_stocks", setKoreanStocks);
-        await fetchStockData("american_stocks", setAmericanStocks);
       } catch (error) {
         console.error("Error fetching transactions:", error);
       }
@@ -103,10 +92,6 @@ export default function Home() {
     }
   }
 
-  useEffect(() => {
-    setCurrentEditIndex(2);
-  }, []);
-
   return (
     <div className="flex flex-col space-y-8 bg-gray-100 pb-6">
       <Dashboard />
@@ -118,7 +103,7 @@ export default function Home() {
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
           </div>)} */}
         {isChartDataReady ? (
-          <CustomFlowChart transactions={existingTransactions} setCurrentEditIndex={setCurrentEditIndex} />
+          <CustomFlowChart transactions={existingTransactions} setCurrentEditIndex={noop} />
         ) : (
           <div className="flex justify-center items-center w-full h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
